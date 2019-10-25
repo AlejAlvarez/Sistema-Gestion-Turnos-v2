@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
@@ -20,11 +21,11 @@ class Perfil(models.Model):
     apellido = models.CharField(max_length=50)
     documento = models.BigIntegerField(validators=[RegexValidator(regex='[0-9]{8}$', message='El documento introducido debe ser de 8 dígitos', code='nomatch')], unique=True)
     domicilio = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100)
+    email = models.EmailField("e-mail",max_length=100)
     telefono = models.BigIntegerField(validators=[RegexValidator(regex='[0-9]{2,4}-[0-9]{6}$', message='Introduzca un numero de teléfono válido, con la forma "+011-123456", o sea: "+", característica provincial, "-" (guión), y por último número de teléfono. En caso de ser celular, omita el "15".')])
     nacimiento = models.DateTimeField()
     registro = models.DateTimeField(auto_now_add=True)
-    ultima_conexion = models.DateTimeField()
+    ultima_conexion = models.DateTimeField("última conexión")
 
     class Meta:
         abstract = True 
@@ -40,7 +41,7 @@ class Paciente(Perfil):
 
     genero = models.PositiveSmallIntegerField(choices=GENERO_CHOICES)
     penalizado = models.BooleanField(default=False)
-    fecha_penalizacion = models.DateTimeField()
+    fecha_penalizacion = models.DateTimeField("fecha de penalización")
     obra_social = models.ForeignKey(ObraSocial, on_delete=models.CASCADE)
 
 class Recepcionista(Perfil):

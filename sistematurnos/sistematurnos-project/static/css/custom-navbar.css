@@ -1,0 +1,13 @@
+.main-navbar{
+    background-color:#f9fdfc;
+}
+
+.main-navbar a{
+    text-decoration: none;
+    color:black;
+}
+
+.main-navbar a:hover {
+    background-color:#6ed3cf;
+    color:#f9fdfc;
+}
