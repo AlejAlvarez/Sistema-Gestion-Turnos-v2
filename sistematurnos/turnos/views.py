@@ -3,7 +3,7 @@ from django.views.generic.base import TemplateView
 # Create your views here.
 
 class HomePageView(TemplateView):
-    template_name="home.html"
+    template_name="home.html" 
 
-class LoginPage(TemplateView):
-    template_name="login.html"   
+class UserView(TemplateView):
+    template_name="profile.html"

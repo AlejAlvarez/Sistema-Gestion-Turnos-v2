@@ -9,11 +9,14 @@
 
         Tasty Eighties Grey: #e1e8f0
 
+        Flaticon Blue: #324a5e
+
         Rich Red: #e62739
      -->
     <head>
     <title>{% block title %}Sistema de Turnos{% endblock %}</title>
     <style>
+        {% block custom_css %}
         #hospital-image-container{
             background-image:url("{% static "images/hospital-blur-background.jpg" %}");
             background-position:center center;
@@ -30,6 +33,14 @@
             height: 500px;
             padding-top: 50px; */
         }
+        .info-image{
+            height: 125px;
+            width: 125px;
+        }
+        .hospital-info-row{
+            padding-top: 5%;
+        }
+        {% endblock custom_css %}
     </style>
     </head>
     <body>
@@ -42,19 +53,58 @@
                         <p class="lead">Servicio médico en el cual usted puede confiar</p>
                         <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit sed diam nonummy nibh euismod.</p>
                         <p class="lead">
-                            <a class="btn btn-primary btn-lg" href="#" role="button">Login</a>
+                            <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
                         </p>
                     </div>
                 </div>
             </div>
         </div>  
         <div class="container">
-            <div class="row">
+            <div class="row hospital-info-row">
                 <div class="col-md-6">
-                    <h3>Horarios de Atención</h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="{% static "icons/nurse-1.png" %}" class="img-responsive info-image" />
+                        </div>
+                        <div class="col-md-8 info-box">
+                            <h3>Horarios de Atención</h3>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <h5>Lunes<h5>
+                                    <h5>Martes</h5>
+                                    <h5>Miércoles<h5>
+                                    <h5>Jueves</h5>
+                                    <h5>Viernes<h5>
+                                    <h5>Sábado</h5>
+                                    <h5>Domingo</h5>
+                                </div>
+                                <div class="col-md-7">
+                                    <h5>18 a 22</h5>
+                                    <h5>14 a 17</h5>
+                                    <h5>6 a 12</h5>
+                                    <h5>15 a 22</h5>
+                                    <h5>8 a 12</h5>
+                                    <h5>6 a 12</h5>
+                                    <h5>15 a 22</h5>
+                                </div>
+                            </div>
+                            </p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-6">
-                    <h3>Teléfonos de Contacto</h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="{% static "icons/smartphone.png" %}" class="img-responsive info-image" />
+                        </div>
+                        <div class="col-md-8 info-box">
+                            <h3>Teléfonos de Contacto</h3>
+                            <h5>+ 54 6788989 778</h5>
+                            <h5>+ 54 2954 434</h5>
+                            <h5>+54 3234 4233</h5>
+                            <h5>011 3785 534345</h5>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

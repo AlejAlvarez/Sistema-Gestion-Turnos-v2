@@ -5,6 +5,7 @@
         <link href="{% static "css/bootstrap4/bootstrap-yeti.min.css" %}" rel="stylesheet">
         <link href="{% static "css/custom-navbar.css" %}" rel="stylesheet">
         <title>{% block title %}Home{% endblock %}</title>
+        <style>{% block custom_css %}{% endblock custom_css %}</style>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg main-navbar">
@@ -18,7 +19,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Inicio<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="{% url 'turnos:home' %}">Inicio<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Nosotros</a>

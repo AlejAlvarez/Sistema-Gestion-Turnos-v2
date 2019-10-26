@@ -127,3 +127,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "sistematurnos-project", "static"),
 ]
+
+LOGIN_REDIRECT_URL = '/turnos/profile/'
+LOGOUT_REDIRECT_URL = '/turnos'
