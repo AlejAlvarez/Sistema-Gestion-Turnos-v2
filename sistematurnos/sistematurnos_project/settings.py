@@ -126,3 +126,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # Autenticacion de usuarios
 
 AUTH_USER_MODEL = 'app_usuarios.CustomUser'
+
+LOGIN_REDIRECT_URL = 'app_informacion:home'
+LOGOUT_REDIRECT_URL = 'app_informacion:home'
