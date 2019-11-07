@@ -1,0 +1,64 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, ListView, UpdateView
+
+from ..models import CustomUser, Medico
+from ..forms.form_medico import MedicoCreationForm, MedicoChangeForm 
+from ..forms.user_form import CustomUserChangeForm
+from app_informacion.models import Especialidad
+from .views_user import CustomUserCreateView, CustomUserUpdateView
+
+
+class SignUpMedicoView(CustomUserCreateView):
+    form_class = MedicoCreationForm
+    success_url = reverse_lazy('login')
+    #template_name = 'registration/signup.html'
+
+    def get(self, request, *args, **kwargs):
+
+        return super().get(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        form = MedicoCreationForm(request.POST)
+        if(form.is_valid()):
+            print('Entrando al is_valid(), previo a llamada super()')
+            kwargs['user_type'] = 3 # 3 es para el medico
+            kwargs['is_staff'] = False
+            super().post(request, *args, **kwargs)
+
+            user = CustomUser.objects.get(documento=form.cleaned_data.get('documento'))
+            cuil = form.cleaned_data.get('cuil')
+            especialidad_seleccionada = Especialidad.objects.get(nombre=form.cleaned_data['especialidad'])
+            perfil_medico = Medico.objects.create(user=user, cuil=cuil, especialidad=especialidad_seleccionada)
+            perfil_medico.save()
+
+            return HttpResponse('Exito creando medico')
+        else:
+            print('Error de validacion de formulario')
+            return super().get(request, *args, **kwargs)
+            
+def editar_medico(request, pk):
+
+    user = get_object_or_404(CustomUser, pk=pk)
+
+    if(user.user_type == 3):
+
+        if request.method == 'POST':
+            form = CustomUserChangeForm(request.POST, instance=user)
+            medico_form = MedicoChangeForm(request.POST, instance=user.medico)
+
+            if form.is_valid() and medico_form.is_valid():
+                user = form.save()
+                medico = medico_form.save(False)
+                medico.user = user
+                medico.save()
+                return redirect('app_informacion:home')
+        
+        else:
+            form = CustomUserChangeForm(instance=user)
+            medico_form = MedicoChangeForm(instance=user.medico)
+            args = {'form': form, 'perfil_form': medico_form}
+            return render(request, 'usuarios/update_user_mform.html', args)
+    else:
+        return HttpResponse('El usuario buscado no corresponde a un medico')

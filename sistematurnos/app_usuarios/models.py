@@ -30,7 +30,7 @@ class Paciente(models.Model):
     genero = models.PositiveSmallIntegerField(choices=GENERO_CHOICES)
     penalizado = models.BooleanField(default=False)
     fecha_despenalizacion = models.DateTimeField(verbose_name="fecha de despenalización", blank=True, null=True)
-    obra_social = models.ForeignKey(ObraSocial, on_delete=models.CASCADE)
+    obra_social = models.ForeignKey(ObraSocial, on_delete=models.CASCADE, blank=True, null=True)
 
 class Medico(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)

@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from ..models import CustomUser
 from django.forms import models
+
+from ..models import CustomUser
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -25,11 +26,6 @@ class CustomUserCreationForm(UserCreationForm):
             'username': 'Usuario',
         }
     
-    #@transaction.atomic
-    #def save(self, *args, **kwargs):       
-    #   user = super().save(commit=False)
-    #   user.
-    
 class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
@@ -45,7 +41,8 @@ class CustomUserChangeForm(UserChangeForm):
             'username', 
         )
         labels = {
-            'first_name': 'nombre',
-            'last_name': 'apellido',
-            'username': 'usuario',
+            'first_name': 'Nombre',
+            'last_name': 'Apellido',
+            'username': 'Usuario',
         }
+        

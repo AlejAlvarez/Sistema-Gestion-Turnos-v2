@@ -1,49 +1,23 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.forms import models
 from django.db import transaction
 
+from .user_form import CustomUserCreationForm, CustomUserChangeForm
 from ..models import CustomUser, Medico
 from app_informacion.models import Especialidad
 
 
-class MedicoCreationForm(UserCreationForm):
+class MedicoCreationForm(CustomUserCreationForm):
 
     cuil = forms.IntegerField()
     especialidad = forms.ModelChoiceField(
         queryset=Especialidad.objects.all(),
-        widget=forms.RadioSelect,
         required=True
     )
 
-    class Meta(UserCreationForm.Meta):
-
-        model = CustomUser
-        
-        fields = (
-            'first_name',
-            'last_name',
-            'documento',
-            'domicilio',
-            'telefono',
-            'nacimiento',
-            'email',
-            'username',
-            'password1',
-            'password2', 
-        )
-        labels = {
-            'first_name': 'Nombre',
-            'last_name': 'Apellido',
-            'username': 'Usuario',
-        }
-
-#    @transaction.atomic
-#    def save(self):
-#        user = super().save(commit=False)
-#        user.user_type = 
-#        user.save()
-#        student = Student.objects.create(user=user)
-#        student.interests.add(*self.cleaned_data.get('interests'))
-#        return user
+class MedicoChangeForm(models.ModelForm):
+    
+    class Meta:
+        model = Medico
+        fields = ('cuil', 'especialidad')
 

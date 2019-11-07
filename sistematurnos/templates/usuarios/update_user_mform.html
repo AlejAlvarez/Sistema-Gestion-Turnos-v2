@@ -1,0 +1,13 @@
+{% extends 'base_header.html' %}
+
+{% block title %}Editar Usuario{% endblock title %}
+
+{% block content %}
+<h2>Editar Usuario</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ perfil_form.as_p }}
+    <button type="submit">Actualizar</button>
+</form>
+{% endblock content %}
