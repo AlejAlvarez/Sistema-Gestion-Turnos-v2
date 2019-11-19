@@ -5,10 +5,26 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Permission
+<<<<<<< Updated upstream
 from django.core.exceptions import PermissionDenied
 
+=======
+>>>>>>> Stashed changes
 from ..models import CustomUser
 from ..forms.user_form import CustomUserCreationForm, CustomUserChangeForm
+from django.core.exceptions import PermissionDenied
+
+def check_ownership_or_403(request,access_pk):
+    """ se fija si el usuario que está logueado coincide con aquel que quiere acceder a la información """
+    if (access_pk != request.user.pk):
+        print("--------------------- CHECK -----------------")
+        print("--------------------- CHECK -----------------")
+        print("--------------------- CHECK -----------------")
+        print("--------------------- CHECK -----------------")
+        print("--------------------- CHECK -----------------")
+        print("access_pk = ",str(access_pk),"; request.user.pk = ",str(request.user.pk))
+        raise PermissionDenied(" No está autorizado a ingresar a este lugar de dios")
+
 
 def check_ownership_or_403(request,access_pk):
     """ se fija si el usuario que estÃ¡ logueado coincide con aquel que quiere acceder a la informaciÃ³n """
@@ -22,11 +38,12 @@ class CustomUserCreateView(LoginRequiredMixin, CreateView):
     form_class = CustomUserCreationForm
     template_name = 'registration/signup.html'
 
+    # verificar si el usuario que solicita la página es el que está logueado
     def get(self, request, *args, **kwargs):
         form = self.form_class()
-
         return render(request, self.template_name, {'form': form})
-        
+
+    # los permisos estarán definidos a través de los kwargs    
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if(form.is_valid()):
@@ -41,11 +58,18 @@ class CustomUserCreateView(LoginRequiredMixin, CreateView):
             telefono   = form.cleaned_data.get('telefono')
 
             user = CustomUser.objects.create_user(username, email, contrasena, first_name=nombre, last_name=apellido,
+<<<<<<< Updated upstream
                                                 documento=documento, domicilio=domicilio, nacimiento=nacimiento, telefono=telefono)            
             # adding permission
             user_role_permission = Permission.objects.get(codename=kwargs['user_permission_codename'])
             user.user_permissions.add(user_role_permission)            
 
+=======
+                                                documento=documento, domicilio=domicilio, nacimiento=nacimiento, telefono=telefono)
+            # adding permission
+            user_role_permission = Permission.objects.get(codename=kwargs['user_permission_codename'])
+            user.user_permissions.add(user_role_permission)            
+>>>>>>> Stashed changes
             user.save()
             return HttpResponse('Usuario del tipo %s creado con éxito' % user_role_permission.name)
         else:
@@ -65,5 +89,9 @@ class CustomUserUpdateView(LoginRequiredMixin, UpdateView):
         self.form_class = form_class
 
     def get_form_class(self):
+<<<<<<< Updated upstream
         return self.form_class
 
+=======
+        return self.form_class
+>>>>>>> Stashed changes

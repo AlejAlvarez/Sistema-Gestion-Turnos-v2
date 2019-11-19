@@ -15,6 +15,9 @@ class CustomUser(AbstractUser):
     class Meta:
         permissions = (('es_recepcionista','Usuario tiene rol de recepcionista'),)
 
+    class Meta:
+        permissions = (('is_recepcionist','User has a recepcionist role'),)
+
 class Paciente(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
     GENERO_CHOICES = (
@@ -28,7 +31,11 @@ class Paciente(models.Model):
     obra_social = models.ForeignKey(ObraSocial, on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
+<<<<<<< Updated upstream
          permissions = (('es_paciente','Usuario tiene rol de paciente'),)
+=======
+         permissions = (('is_patient','User has a pacient role'),)
+>>>>>>> Stashed changes
 
 class Medico(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
@@ -39,3 +46,5 @@ class Medico(models.Model):
     class Meta:
          permissions = (('es_medico','Usuario tiene rol de medico'),)
     
+    class Meta:
+         permissions = (('is_medic','User has a medic role'),)

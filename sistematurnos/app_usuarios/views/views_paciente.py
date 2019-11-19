@@ -14,12 +14,21 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission
 from .views_user import check_ownership_or_403
 
+<<<<<<< Updated upstream
 class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
+=======
+class SignUpPacienteView(PermissionRequiredMixin,CustomUserCreateView):
+>>>>>>> Stashed changes
     form_class = PacienteCreationForm
     success_url = reverse_lazy('login')
     #template_name = 'registration/signup.html'
     # being an admin, you have all permissions required to access every url in the system
+<<<<<<< Updated upstream
     permission_required = ('login_required','app_usuarios.es_recepcionista')
+=======
+    permission_required = ('login_required','app_usuarios.is_recepcionist')
+
+>>>>>>> Stashed changes
 
     def get(self, request, *args, **kwargs): 
 
@@ -29,7 +38,11 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
         form = PacienteCreationForm(request.POST)
         if(form.is_valid()):
             print('Entrando al is_valid(), previo a llamada super()')
+<<<<<<< Updated upstream
             kwargs['user_permission_codename'] = 'is_patient'
+=======
+            args['user_permission_codename'] = 'is_patient'
+>>>>>>> Stashed changes
             super().post(request, *args, **kwargs)
 
             user = CustomUser.objects.get(documento=form.cleaned_data.get('documento'))
@@ -39,8 +52,9 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
             else:
                 obra_social_seleccionada = ObraSocial.objects.get(nombre=form.cleaned_data['obra_social'])
                 perfil_paciente = Paciente.objects.create(user=user, genero=genero, obra_social=obra_social_seleccionada)
-            perfil_paciente.save()
 
+
+            perfil_paciente.save()
             return HttpResponse('Paciente creado con exito')
         else:
             print('Error de validacion de formulario')
@@ -51,11 +65,17 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
 def editar_paciente(request, pk):
 
     user = get_object_or_404(CustomUser, pk=pk)
-
     if request.method == 'POST':
         form = CustomUserChangeForm(request.POST, instance=user)
         paciente_form = PacienteChangeForm(request.POST, instance=user.paciente)
 
+<<<<<<< Updated upstream
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=user)
+        paciente_form = PacienteChangeForm(request.POST, instance=user.paciente)
+
+=======
+>>>>>>> Stashed changes
         if form.is_valid() and paciente_form.is_valid():
             user = form.save()
             paciente = paciente_form.save(False)
@@ -63,6 +83,7 @@ def editar_paciente(request, pk):
             paciente.save()
             return redirect('app_informacion:home')        
     else:
+<<<<<<< Updated upstream
         if (viewing_user.has_perm('app_usuarios.es_recepcionista') or (viewing_user.has_perm('app_usuarios.es_paciente'))):
             all_permissions = list(Permission.objects.filter(user=viewing_user.pk))  
             print(all_permissions) 
@@ -82,3 +103,18 @@ def perfil_paciente(request):
     args = {'paciente_user': paciente_user}
     return render(request, 'usuarios/paciente_profile.html', args)
 
+=======
+        if (user.has_perm('app_usuarios.is_recepcionist') or (user.has_perm('app_usuarios.is_patient'))):
+            if (user.has_perm('app_usuarios.is_patient')):
+                print("---------- USER PERMISSIONS ----------")  
+                print("---------- USER PERMISSIONS ----------")
+                print("---------- USER PERMISSIONS ----------")
+                print("---------- USER PERMISSIONS ----------")
+                print(user.user_permissions.all()) 
+                check_ownership_or_403(request,pk)
+
+            form = CustomUserChangeForm(instance=user)
+            paciente_form = PacienteChangeForm(instance=user.paciente)
+            args = {'form': form, 'perfil_form': paciente_form}
+            return render(request, 'usuarios/update_user_mform.html', args)
+>>>>>>> Stashed changes

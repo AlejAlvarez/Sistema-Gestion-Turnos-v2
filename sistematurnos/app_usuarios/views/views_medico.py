@@ -13,7 +13,10 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission
 from .views_user import check_ownership_or_403
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 class SignUpMedicoView(PermissionRequiredMixin, CustomUserCreateView):
     form_class = MedicoCreationForm
     success_url = reverse_lazy('login')
@@ -27,10 +30,14 @@ class SignUpMedicoView(PermissionRequiredMixin, CustomUserCreateView):
     def post(self, request, *args, **kwargs):
         form = MedicoCreationForm(request.POST)
         if(form.is_valid()):
+<<<<<<< Updated upstream
             kwargs['user_permission_codename'] = 'es_medico'
+=======
+            kwargs['user_permission_codename'] = 'is_medic'
+>>>>>>> Stashed changes
             super().post(request, *args, **kwargs)
 
-            user = CustomUser.objects.get(documento=form.cleaned_data.get('documento'))
+            user = CustomUser.objects.get(documento=form.c0leaned_data.get('documento'))
             cuil = form.cleaned_data.get('cuil')
             especialidad_seleccionada = Especialidad.objects.get(nombre=form.cleaned_data['especialidad'])
             perfil_medico = Medico.objects.create(user=user, cuil=cuil, especialidad=especialidad_seleccionada)
@@ -40,9 +47,15 @@ class SignUpMedicoView(PermissionRequiredMixin, CustomUserCreateView):
         else:
             print('Error de validacion de formulario')
             return super().get(request, *args, **kwargs)
+<<<<<<< Updated upstream
 
 @login_required
 @permission_required('app_usuarios.es_medico')                        
+=======
+            
+@login_required
+@permission_required('app_usuarios.is_medic')            
+>>>>>>> Stashed changes
 def editar_medico(request, pk):
 
     user = get_object_or_404(CustomUser, pk=pk)
@@ -57,11 +70,20 @@ def editar_medico(request, pk):
             medico.user = user
             medico.save()
             return redirect('app_informacion:home')
+<<<<<<< Updated upstream
     
     else:
         # lanza un permissiondenied si no es el paciente correcto
         if user.has_perm('app_usuarios.es_medico'):   
             check_ownership_or_403(request,pk)
+=======
+        
+    else:
+        # lanza un permissiondenied si no es el paciente correcto
+        if user.has_perm('app_usuarios.is_medic'):   
+            check_ownership_or_403(request,pk)
+
+>>>>>>> Stashed changes
         form = CustomUserChangeForm(instance=user)
         medico_form = MedicoChangeForm(instance=user.medico)
         args = {'form': form, 'perfil_form': medico_form}
