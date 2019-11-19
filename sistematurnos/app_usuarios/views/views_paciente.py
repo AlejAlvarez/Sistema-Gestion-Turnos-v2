@@ -4,18 +4,22 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView 
 
-from shapeshifter.views import MultiFormView
-
 from ..models import CustomUser, Paciente
 from ..forms.form_paciente import PacienteCreationForm, PacienteChangeForm
 from app_informacion.models import ObraSocial
 from .views_user import CustomUserCreateView, CustomUserUpdateView
 from ..forms.user_form import CustomUserChangeForm
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import Permission
+from .views_user import check_ownership_or_403
 
-class SignUpPacienteView(CustomUserCreateView):
+class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
     form_class = PacienteCreationForm
     success_url = reverse_lazy('login')
     #template_name = 'registration/signup.html'
+    # being an admin, you have all permissions required to access every url in the system
+    permission_required = ('login_required','app_usuarios.es_recepcionista')
 
     def get(self, request, *args, **kwargs): 
 
@@ -25,8 +29,7 @@ class SignUpPacienteView(CustomUserCreateView):
         form = PacienteCreationForm(request.POST)
         if(form.is_valid()):
             print('Entrando al is_valid(), previo a llamada super()')
-            kwargs['user_type'] = 1 # 1 es para el paciente
-            kwargs['is_staff'] = False
+            kwargs['user_permission_codename'] = 'is_patient'
             super().post(request, *args, **kwargs)
 
             user = CustomUser.objects.get(documento=form.cleaned_data.get('documento'))
@@ -43,59 +46,39 @@ class SignUpPacienteView(CustomUserCreateView):
             print('Error de validacion de formulario')
             return super().get(request, *args, **kwargs)
 
+
+@login_required
 def editar_paciente(request, pk):
 
     user = get_object_or_404(CustomUser, pk=pk)
 
-    if(user.user_type == 1):
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=user)
+        paciente_form = PacienteChangeForm(request.POST, instance=user.paciente)
 
-        if request.method == 'POST':
-            form = CustomUserChangeForm(request.POST, instance=user)
-            paciente_form = PacienteChangeForm(request.POST, instance=user.paciente)
-
-            if form.is_valid() and paciente_form.is_valid():
-                user = form.save()
-                paciente = paciente_form.save(False)
-                paciente.user = user
-                paciente.save()
-                return redirect('app_informacion:home')        
-        else:
-            form = CustomUserChangeForm(instance=user)
-            paciente_form = PacienteChangeForm(instance=user.paciente)
-            args = {'form': form, 'perfil_form': paciente_form}
-            return render(request, 'usuarios/update_user_mform.html', args)
+        if form.is_valid() and paciente_form.is_valid():
+            user = form.save()
+            paciente = paciente_form.save(False)
+            paciente.user = user
+            paciente.save()
+            return redirect('app_informacion:home')        
     else:
-        return HttpResponse('El usuario buscado no corresponde a un paciente')
+        if (viewing_user.has_perm('app_usuarios.es_recepcionista') or (viewing_user.has_perm('app_usuarios.es_paciente'))):
+            all_permissions = list(Permission.objects.filter(user=viewing_user.pk))  
+            print(all_permissions) 
+            if (viewing_user.has_perm('app_usuarios.es_paciente')):
+                print("---------- USER ES PACIENTE ----------")
+                check_ownership_or_403(request,pk)
+        form = CustomUserChangeForm(instance=user)
+        paciente_form = PacienteChangeForm(instance=user.paciente)
+        args = {'form': form, 'perfil_form': paciente_form}
+        return render(request, 'usuarios/update_user_mform.html', args)
 
-#    model = Paciente
-#    template_name = 'update_user.html'
-#    form_class = PacienteChangeForm
-#
-#    def get(self, request, pk):
-#        usuario = get_object_or_404(CustomUser, pk=pk)
-#
-#        if(usuario.user_type == 1):
-#            perfil_paciente = get_object_or_404(Paciente, user=usuario)
-#
-#            return super().get(request, pk)
-#        else:
-#            return HttpResponse('El usuario buscado no corresponde a un paciente')
-#    
-#    def post(self, request, pk):
-#        form = PacienteChangeForm(request.POST)
-#
-#        if form.is_valid():
-#            super().post(request, pk)
-#            usuario = get_object_or_404(CustomUser, pk=pk)
-#            perfil_paciente = Paciente.objects.get(user=usuario)
-#            obra_social_seleccionada = ObraSocial.objects.get(nombre=form.cleaned_data['obra_social'])
-#            perfil_paciente.obra_social = obra_social_seleccionada
-#            perfil_paciente.genero = form.cleaned_data['genero']
-#
-#            perfil_paciente.save()
-#
-#            return HttpResponse('Paciente editado con exito')
-#        
-#        else:
-#            return self.form_invalid(form)
+# va a retornar el user que estÃ¡ logueado
+@login_required
+def perfil_paciente(request):
+    user_pk = request.user.pk
+    paciente_user = get_object_or_404(CustomUser,pk=user_pk)
+    args = {'paciente_user': paciente_user}
+    return render(request, 'usuarios/paciente_profile.html', args)
 

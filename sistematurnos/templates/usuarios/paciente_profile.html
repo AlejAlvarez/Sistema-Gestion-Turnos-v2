@@ -1,0 +1,117 @@
+{% extends 'main_navbar.html' %}
+{% load static %}
+
+<head>
+<title>{% block title %}Informacion Paciente{% endblock title %}</title>
+<style>
+{% block custom_css %}
+    .profile-card {
+        padding:15px;
+        box-shadow: none;
+        background-color: transparent !important;
+    }
+    .center-block {
+        display:table;
+        margin: auto;
+    }
+    .profile-info {
+        font-size:1.1rem;
+        padding-left: 10px;
+    }
+    .profile-information-row {
+        margin-top: 3%;
+    }
+    .info-label {
+        font-weight: 800;
+        color: #2196F3;
+    }
+    #profile-container {
+        background-image:url("{% static "images/footer-bg.png" %}");*/
+        background-position:center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+{% endblock custom_css %}
+
+</style>
+</head>
+<body>
+{% block content %}
+    <div class="container-fluid" id="profile-container">
+        <div class="row" style="margin-top:5%">
+            <div class="col-md-3">
+                <div class=center-block>
+                    <div class="card profile-card" style="width:15em">
+                        <img src="{% static "images/002-user.png" %}" class="card-img-top" alt="Profile Picture">
+                        <div class="card-body text-center">
+                            <h5 class="card-title" style="font-size:1.3rem">{{ paciente_user.last_name }}, {{ paciente_user.first_name }}</h5>
+                            <a href="#" class="btn btn-primary">Modificar</a>
+                        </div>
+                    </div>
+                </div>               
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col">
+                        <h1>Información de Usuario</h1>
+                    </div>
+                </div>
+                <div class="row profile-information-row">
+                    <div class="col">
+                        <span class="info-label profile-info">Nombre</span>
+                        <br>
+                        <span class="profile-info">{{ paciente_user.first_name }}</span>
+                    </div>
+                    <div class="col profile-information-col">
+                        <span class="info-label profile-info">Apellido</span>
+                        <br>
+                        <span class="profile-info">{{ paciente_user.last_name }}</span>
+                    </div>
+                </div>
+                <div class="row profile-information-row">
+                    <div class="col">
+                        <span class="info-label profile-info">Documento</span>
+                        <br>
+                        <span class="profile-info">{{ paciente_user.documento }}</span>
+                    </div>
+                    <div class="col">
+                        <span class="info-label profile-info">Fecha de Nacimiento</span>
+                        <br>
+                        <span class="profile-info">{{ paciente_user.nacimiento }}</span>
+                    </div>                              
+                </div>
+                <div class="row profile-information-row">
+                    <div class="col">
+                            <span class="info-label profile-info">Domicilio</span>
+                            <br>
+                            <span class="profile-info">{{ paciente_user.domicilio }}</span>
+                    </div>
+                    <div class="col">
+                            <span class="info-label profile-info">Telefono</span>
+                            <br>
+                            <span class="profile-info">{{ paciente_user.telefono }}</span>
+                    </div>                              
+                </div>        
+                <div class="row profile-information-row">
+                    <div class="col">
+                            <span class="info-label profile-info">Genero</span>
+                            <br>
+                            <span class="profile-info">{{ paciente_user.genero }}</span>
+                    </div>
+                    <div class="col">
+                            <span class="info-label profile-info">Obra Social</span>
+                            <br>
+                            <span class="profile-info">{{ paciente_user.obra_social.nombre }}</span>
+                    </div>                              
+                </div>        
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <h1>Reservar Turno</h1>
+    </div>
+    <div class="container-fluid">
+        <h1>Estadísticas del Perfil</h1>
+    </div>
+{% endblock content %}
+</body>

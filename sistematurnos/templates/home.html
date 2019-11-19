@@ -1,44 +1,20 @@
-{% extends "base_header.html" %}
 {% load static %}
 <!DOCTYPE html>
 <html>
-    <!-- colors scheme selected: 
-        Light Blue Green: #6ed3cf
-
-        Soft Purple: #9068be
-
-        Tasty Eighties Grey: #e1e8f0
-
-        Flaticon Blue: #324a5e
-
-        Rich Red: #e62739
-     -->
     <head>
     <title>{% block title %}Sistema de Turnos{% endblock %}</title>
     <style>
         {% block custom_css %}
         #hospital-image-container{
-            background-image:url("{% static "images/hospital-blur-background.jpg" %}");
+            height: 30rem;
+            background-image:url("{% static "images/hero.jpg" %}");
             background-position:center center;
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-size: cover;
         }
-        #presentation-jumbotron {
-            background:none !important;
-           /* margin-top: 100px;*/
-            color:#000;
-            font-family:sans-serif;
-           /* width: 600px;
-            height: 500px;
-            padding-top: 50px; */
-        }
-        .info-image{
-            height: 125px;
-            width: 125px;
-        }
-        .hospital-info-row{
-            padding-top: 5%;
+        #presentation-row{
+            padding:100px 75px;
         }
         {% endblock custom_css %}
     </style>
@@ -46,68 +22,17 @@
     <body>
         {% block content %}
         <div id="hospital-image-container" class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="jumbotron" id="presentation-jumbotron">
-                        <h1 class="display-4"><strong>Turnos Hospitalarios</strong></h1>
-                        <p class="lead">Servicio médico en el cual usted puede confiar</p>
-                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit sed diam nonummy nibh euismod.</p>
-                        <p class="lead">
-                            <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
-                        </p>
-                    </div>
+            {% include "main_navbar.html" %}
+            <div class="row" id="presentation-row">
+                <div class="col-md-10">
+                    <h1>Turnos Hospitalarios</h1>
+                    <h5>Servicio para solicitar turnos por la web</h5>
+                    {% if not user.is_authenticated %}
+                    <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+                    {% endif %}
                 </div>
             </div>
         </div>  
-        <div class="container">
-            <div class="row hospital-info-row">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <img src="{% static "icons/nurse-1.png" %}" class="img-responsive info-image" />
-                        </div>
-                        <div class="col-md-8 info-box">
-                            <h3>Horarios de Atención</h3>
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <h5>Lunes<h5>
-                                    <h5>Martes</h5>
-                                    <h5>Miércoles<h5>
-                                    <h5>Jueves</h5>
-                                    <h5>Viernes<h5>
-                                    <h5>Sábado</h5>
-                                    <h5>Domingo</h5>
-                                </div>
-                                <div class="col-md-7">
-                                    <h5>18 a 22</h5>
-                                    <h5>14 a 17</h5>
-                                    <h5>6 a 12</h5>
-                                    <h5>15 a 22</h5>
-                                    <h5>8 a 12</h5>
-                                    <h5>6 a 12</h5>
-                                    <h5>15 a 22</h5>
-                                </div>
-                            </div>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <img src="{% static "icons/smartphone.png" %}" class="img-responsive info-image" />
-                        </div>
-                        <div class="col-md-8 info-box">
-                            <h3>Teléfonos de Contacto</h3>
-                            <h5>+ 54 6788989 778</h5>
-                            <h5>+ 54 2954 434</h5>
-                            <h5>+54 3234 4233</h5>
-                            <h5>011 3785 534345</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="container">
             <h1>¿Cómo sacar un turno por medio de la web?</h1>
             <p>Pasos a seguir:</p>

@@ -1,10 +1,12 @@
 from django.urls import path, include
 
 from .views import *
+from .views.views_user import *
 from .views.views_admin import *
 from .views.views_medico import *
 from .views.views_paciente import *
 from .views.views_recepcionista import *
+from .views.redirect_views import redirect_logged_user
 
 app_name = 'app_usuarios'
 
@@ -17,4 +19,6 @@ urlpatterns = [
     path('editar-recep/<int:pk>/', UpdateRecepcionistaView.as_view(), name='editar-recep'),
     path('editar-paciente/<int:pk>/', editar_paciente, name='editar-paciente'),
     path('editar-medico/<int:pk>/', editar_medico, name='editar-medico'),
+    path('login-redirect/',redirect_logged_user,name="login-redirect"),
+    path('paciente/perfil/',perfil_paciente,name="perfil-paciente"),
 ]

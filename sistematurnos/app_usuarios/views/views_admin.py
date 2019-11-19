@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.urls import reverse_lazy
+from django.views.generic import DetailView
 
 from ..models import CustomUser
 from ..forms.user_form import CustomUserCreationForm, CustomUserChangeForm
@@ -26,3 +27,7 @@ class UpdateAdminView(CustomUserUpdateView):
             return super().get(request, pk)
         else:
             return HttpResponse('El usuario buscado no corresponde a un administrador')
+
+class AdminDetailView(DetailView):
+    model = CustomUser
+    template_name = 'usuarios/detail.html'

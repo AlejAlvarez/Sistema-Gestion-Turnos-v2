@@ -4,6 +4,8 @@ from django.forms import models
 
 from ..models import CustomUser
 
+ANOS_NACIMIENTO_CHOICES = range(1920, 2020)
+
 class CustomUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
@@ -25,6 +27,9 @@ class CustomUserCreationForm(UserCreationForm):
             'last_name': 'Apellido',
             'username': 'Usuario',
         }
+        widgets = {
+            'nacimiento': forms.SelectDateWidget(years=ANOS_NACIMIENTO_CHOICES)
+        }
     
 class CustomUserChangeForm(UserChangeForm):
 
@@ -44,5 +49,8 @@ class CustomUserChangeForm(UserChangeForm):
             'first_name': 'Nombre',
             'last_name': 'Apellido',
             'username': 'Usuario',
+        }
+        widgets = {
+            'nacimiento': forms.SelectDateWidget(years=ANOS_NACIMIENTO_CHOICES)
         }
         

@@ -1,0 +1,16 @@
+.navbar {
+    box-shadow: none;
+}
+.navbar-brand{
+    text-decoration: none;
+    color: black;
+}
+.nav-link{
+    color: black;
+    font-size: 1.1em;
+}
+
+.nav-link:hover{
+    font-weight: bold;
+    color: #2196F3;
+}

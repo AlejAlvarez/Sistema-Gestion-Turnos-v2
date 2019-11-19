@@ -4,14 +4,22 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import Permission
+from django.core.exceptions import PermissionDenied
 
 from ..models import CustomUser
 from ..forms.user_form import CustomUserCreationForm, CustomUserChangeForm
 
+def check_ownership_or_403(request,access_pk):
+    """ se fija si el usuario que estÃ¡ logueado coincide con aquel que quiere acceder a la informaciÃ³n """
+    if (access_pk != request.user.pk):
+        print("--------------------- CHECK -----------------")
+        print("access_pk = ",str(access_pk),"; request.user.pk = ",str(request.user.pk))
+        raise PermissionDenied(" No estÃ¡ autorizado a ingresar a este lugar de dios")
+
 class CustomUserCreateView(LoginRequiredMixin, CreateView):
     login_url = 'login'
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'
 
     def get(self, request, *args, **kwargs):
@@ -33,11 +41,13 @@ class CustomUserCreateView(LoginRequiredMixin, CreateView):
             telefono   = form.cleaned_data.get('telefono')
 
             user = CustomUser.objects.create_user(username, email, contrasena, first_name=nombre, last_name=apellido,
-                                                documento=documento, domicilio=domicilio, nacimiento=nacimiento, telefono=telefono,
-                                                **kwargs)
+                                                documento=documento, domicilio=domicilio, nacimiento=nacimiento, telefono=telefono)            
+            # adding permission
+            user_role_permission = Permission.objects.get(codename=kwargs['user_permission_codename'])
+            user.user_permissions.add(user_role_permission)            
 
             user.save()
-            return HttpResponse('Usuario del tipo %s creado con éxito' % dict(CustomUser.USER_TYPE_CHOICES).get(kwargs['user_type']))
+            return HttpResponse('Usuario del tipo %s creado con éxito' % user_role_permission.name)
         else:
             return render(request, self.template_name, {'form': form})
     
@@ -56,30 +66,4 @@ class CustomUserUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_form_class(self):
         return self.form_class
-        
-#    def get(self, request, pk):
-#        user = CustomUser.objects.get(pk=pk)
-#
-#        return render(request, self.template_name, {'form':self.form_class})
-#    
-#    def post(self, request, pk):
-#        form = self.form_class
-#
-#        if form.is_valid():
-#            user = CustomUser.objects.get(pk=pk)
-#
-#            user.username   = form.cleaned_data.get('username')
-#            user.password   = form.cleaned_data.get('password1')
-#            user.email      = form.cleaned_data.get('email')
-#            user.first_name = form.cleaned_data.get('first_name')
-#            user.last_name  = form.cleaned_data.get('last_name')
-#            user.documento  = form.cleaned_data.get('documento')
-#            user.domicilio  = form.cleaned_data.get('domicilio')
-#            user.nacimiento = form.cleaned_data.get('nacimiento')
-#            user.telefono   = form.cleaned_data.get('telefono')
-#
-#            user.save()
-#
-#            return HttpResponse('%s editado con éxito' % dict(CustomUser.USER_TYPE_CHOICES).get(kwargs['user_type']))
-#        else:
-#            return self.form_invalid(form)
+

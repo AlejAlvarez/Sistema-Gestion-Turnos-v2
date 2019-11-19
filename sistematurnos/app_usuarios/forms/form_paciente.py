@@ -19,9 +19,4 @@ class PacienteChangeForm(models.ModelForm):
     class Meta:
         model = Paciente
         fields = ('genero', 'obra_social')
-    #genero = forms.ChoiceField(choices=Paciente.GENERO_CHOICES, widget=forms.RadioSelect)
-    #obra_social = forms.ModelChoiceField(
-    #    queryset=ObraSocial.objects.all(),
-    #    required=False
-    #)
 
