@@ -1,16 +1,11 @@
-.navbar {
+#navbar-l {
     box-shadow: none;
 }
-.navbar-brand{
-    text-decoration: none;
-    color: black;
-}
-.nav-link{
-    color: black;
-    font-size: 1.1em;
+#navbar-l .nav-link {
+    color: #333;
+    font-size: 1.2em;
 }
 
-.nav-link:hover{
-    font-weight: bold;
-    color: #2196F3;
+#navbar-l .nav-link:hover {
+    color: #18a3eb
 }

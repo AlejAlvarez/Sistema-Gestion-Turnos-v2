@@ -15,14 +15,11 @@ class CustomUser(AbstractUser):
     class Meta:
         permissions = (('es_recepcionista','Usuario tiene rol de recepcionista'),)
 
-    class Meta:
-        permissions = (('is_recepcionist','User has a recepcionist role'),)
-
 class Paciente(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
     GENERO_CHOICES = (
-        (1, "masculino"),
-        (2, "femenino"),
+        (1, "Masculino"),
+        (2, "Femenino"),
     )
 
     genero = models.PositiveSmallIntegerField(choices=GENERO_CHOICES)
@@ -30,12 +27,12 @@ class Paciente(models.Model):
     fecha_despenalizacion = models.DateTimeField(verbose_name="fecha de despenalización", blank=True, null=True)
     obra_social = models.ForeignKey(ObraSocial, on_delete=models.CASCADE, blank=True, null=True)
 
+    def get_genero(self):
+        return dict(self.GENERO_CHOICES).get(self.genero)
+
+
     class Meta:
-<<<<<<< Updated upstream
          permissions = (('es_paciente','Usuario tiene rol de paciente'),)
-=======
-         permissions = (('is_patient','User has a pacient role'),)
->>>>>>> Stashed changes
 
 class Medico(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
@@ -45,6 +42,3 @@ class Medico(models.Model):
 
     class Meta:
          permissions = (('es_medico','Usuario tiene rol de medico'),)
-    
-    class Meta:
-         permissions = (('is_medic','User has a medic role'),)

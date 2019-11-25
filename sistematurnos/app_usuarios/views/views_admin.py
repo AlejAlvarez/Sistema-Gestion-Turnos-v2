@@ -13,20 +13,14 @@ class SignUpAdminView(CustomUserCreateView):
         return super().get(request, *args, **kwargs)
         
     def post(self, request, *args, **kwargs):
-        kwargs['user_type'] = 4 # 4 es de Administrador
-        kwargs['is_staff'] = True
-        kwargs['is_superuser'] = True # parece ser que solo permite esto cuando se crea de consola con el createsuperuser
         return super().post(request, *args, **kwargs)
 
+# debería tener permisos de superusuario
 class UpdateAdminView(CustomUserUpdateView):
 
     def get(self, request, pk):
         usuario = get_object_or_404(CustomUser, pk=pk)
-        
-        if(usuario.user_type == 4):
-            return super().get(request, pk)
-        else:
-            return HttpResponse('El usuario buscado no corresponde a un administrador')
+        return super().get(request, pk)
 
 class AdminDetailView(DetailView):
     model = CustomUser
