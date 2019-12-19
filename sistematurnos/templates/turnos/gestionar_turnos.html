@@ -1,0 +1,14 @@
+{% extends 'base_header.html' %}
+<meta http-equiv="refresh" content="5" />
+
+{% block title %} Gestión de Turnos {% endblock title %}
+
+{% block content %}
+    <h2>Gestión de Turnos</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="confirmar" value="Confirmar">Confirmar</button>
+        <button type="submit" name="cancelar" value="Cancelar">Cancelar</button>
+    </form>
+{% endblock content %}

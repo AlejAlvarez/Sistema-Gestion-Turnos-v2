@@ -20,7 +20,7 @@ class SignUpRecepcionistaView(PermissionRequiredMixin,CustomUserCreateView):
         return super().post(request, *args, **kwargs)
 
 class UpdateRecepcionistaView(PermissionRequiredMixin,CustomUserUpdateView):
-    permission_required = ('login_required','app_usuarios.is_recepcionist')
+    permission_required = ('login_required','app_usuarios.es_recepcionista')
     
     def get(self, request, pk):
         usuario = get_object_or_404(CustomUser, pk=pk)

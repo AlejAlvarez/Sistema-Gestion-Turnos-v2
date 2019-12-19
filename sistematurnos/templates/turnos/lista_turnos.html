@@ -6,20 +6,25 @@
     <h1>Listado de Turnos</h1>
     <table>
         <tr>
-            <th>id</th>
             <th>Fecha</th>
             <th>Medico</th>
             <th>Paciente</th>
             <th>Estado</th>
         </tr>
-        {% for turno in object_list %}
+        {% for turno in lista_turnos %}
             <tr>
-                <td>{{ turno.id }}</td>
                 <td>{{ turno.fecha }}</td>
-                <td>{{ turno.medico.first_name }}</td>
-                <td>{{ turno.paciente.first_name }}</td>
-                <td>{{ turno.estado }}</td>
+                <td>{{ turno.medico }}</td>
+                {% if turno.paciente == None %}
+                    <td>Ninguno</td>
+                {% else %}
+                    <td>{{ turno.paciente }}</td>
+                {% endif %}
+                <td>{{ turno.get_estado }}</td>
+                {% comment %} Aca va un link a la DetailView del Turno (donde podra imprimir o cancelar dicho turno) {% endcomment %}
+                <td><a href="#">Ver</a></td>
             </tr>
         {% endfor %}
     </table>
+{% comment %}<button type="submit" onclick="location.href='{% url 'buscar-turnos' %}'">Cancelar Turnos</button>{% endcomment %}
 {% endblock content %}

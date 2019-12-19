@@ -42,7 +42,7 @@ class SignUpMedicoView(PermissionRequiredMixin, CustomUserCreateView):
             return super().get(request, *args, **kwargs)
 
 @login_required
-@permission_required('app_usuarios.es_medico')                        
+@permission_required('app_usuarios.es_medico')                    
 def editar_medico(request, pk):
 
     user = get_object_or_404(CustomUser, pk=pk)

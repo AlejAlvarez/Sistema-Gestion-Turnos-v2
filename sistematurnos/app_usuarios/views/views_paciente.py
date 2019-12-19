@@ -29,7 +29,7 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
         form = PacienteCreationForm(request.POST)
         if(form.is_valid()):
             print('Entrando al is_valid(), previo a llamada super()')
-            kwargs['user_permission_codename'] = 'is_patient'
+            kwargs['user_permission_codename'] = 'es_paciente'
             super().post(request, *args, **kwargs)
 
             user = CustomUser.objects.get(documento=form.cleaned_data.get('documento'))

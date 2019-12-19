@@ -106,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-ar'
 
 TIME_ZONE = 'UTC'
 
@@ -126,6 +126,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # Autenticacion de usuarios
 
 AUTH_USER_MODEL = 'app_usuarios.CustomUser'
+
+LOGIN_URL = 'app_usuarios:login'
 
 LOGIN_REDIRECT_URL = 'app_informacion:home'
 LOGOUT_REDIRECT_URL = 'app_informacion:home'

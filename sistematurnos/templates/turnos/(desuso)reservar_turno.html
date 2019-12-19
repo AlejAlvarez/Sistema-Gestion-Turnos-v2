@@ -1,0 +1,12 @@
+{% extends 'base_header.html' %}
+
+{% block title %} Reservar Turno {% endblock title %}
+
+{% block content %}
+    <h2>Reservar Turno</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Reservar</button>
+    </form>
+{% endblock content %}

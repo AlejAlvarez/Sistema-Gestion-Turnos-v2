@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
+from datetime import datetime, timedelta
 
 from app_informacion.models import ObraSocial, Especialidad
 
@@ -15,11 +16,17 @@ class CustomUser(AbstractUser):
     class Meta:
         permissions = (('es_recepcionista','Usuario tiene rol de recepcionista'),)
 
+    def str(self):
+        return '%s %s' % (self.first_name, self.last_name)
+    
+    def __str__(self):
+        return self.str()
+
 class Paciente(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
     GENERO_CHOICES = (
-        (1, "masculino"),
-        (2, "femenino"),
+        (1, "Masculino"),
+        (2, "Femenino"),
     )
 
     genero = models.PositiveSmallIntegerField(choices=GENERO_CHOICES)
@@ -30,6 +37,16 @@ class Paciente(models.Model):
     class Meta:
          permissions = (('es_paciente','Usuario tiene rol de paciente'),)
 
+    def __str__(self):
+        return self.user.__str__()
+    
+    def penalizar(self):
+        self.penalizado = True
+        self.fecha_despenalizacion = datetime.date.today() + timedelta(days=7)
+    
+    def despenalizar(self):
+        self.penalizado = False
+
 class Medico(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
     # Validator del CUIL, ídem que con el documento: validators=[RegexValidator(regex='[0-9]{2}-[0-9]{8}-[0-9]$', message='La constancia de CUIL introducida debe ser de formato "XX-XXXXXXXX-X".', code='nomatch')], 
@@ -38,4 +55,7 @@ class Medico(models.Model):
 
     class Meta:
          permissions = (('es_medico','Usuario tiene rol de medico'),)
+
+    def __str__(self):
+        return self.user.__str__()
     
