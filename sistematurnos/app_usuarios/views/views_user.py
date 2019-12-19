@@ -6,15 +6,13 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Permission
 from django.core.exceptions import PermissionDenied
-
 from ..models import CustomUser
 from ..forms.user_form import CustomUserCreationForm, CustomUserChangeForm
+from django.core.exceptions import PermissionDenied
 
 def check_ownership_or_403(request,access_pk):
-    """ se fija si el usuario que estÃ¡ logueado coincide con aquel que quiere acceder a la informaciÃ³n """
+    """ se fija si el usuario que está logueado coincide con aquel que quiere acceder a la información """
     if (access_pk != request.user.pk):
-        print("--------------------- CHECK -----------------")
-        print("access_pk = ",str(access_pk),"; request.user.pk = ",str(request.user.pk))
         raise PermissionDenied(" No estÃ¡ autorizado a ingresar a este lugar de dios")
 
 class CustomUserCreateView(LoginRequiredMixin, CreateView):
@@ -22,11 +20,12 @@ class CustomUserCreateView(LoginRequiredMixin, CreateView):
     form_class = CustomUserCreationForm
     template_name = 'registration/signup.html'
 
+    # verificar si el usuario que solicita la página es el que está logueado
     def get(self, request, *args, **kwargs):
         form = self.form_class()
-
         return render(request, self.template_name, {'form': form})
-        
+
+    # los permisos estarán definidos a través de los kwargs    
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if(form.is_valid()):

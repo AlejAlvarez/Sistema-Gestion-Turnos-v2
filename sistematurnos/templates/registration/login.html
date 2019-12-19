@@ -1,4 +1,4 @@
-{% extends 'main_navbar.html' %}
+{% extends 'main_layout.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -60,6 +60,7 @@
     </head>
     <body>
         {% block content %}
+        {% include "main_navbar.html" %}
         <div id="background-image-container" class="container-fluid">
         <div class="container">
             <div class="row">
@@ -68,7 +69,7 @@
                         <img src="{% static "icons/team-256.png" %}" alt="profile_img" height="100px" width="100px;">
                     </div>
                     <h3>Ingresar</h3>
-                    <form method="POST" action="{% url 'login' %}">
+                    <form method="POST" action="{% url 'app_usuarios:log-user' %}">
                         {% csrf_token %}
                         <div class="form-group">
                             <input type="text" class="form-control" name="username" placeholder="Nombre de Usuario">
@@ -88,6 +89,7 @@
         </div>
         </div>
         </div>
+        {% include "main_footer.html" %}
         {% endblock content %}
     </body>
 </html>

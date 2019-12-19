@@ -13,7 +13,6 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission
 from .views_user import check_ownership_or_403
 
-
 class SignUpMedicoView(PermissionRequiredMixin, CustomUserCreateView):
     form_class = MedicoCreationForm
     success_url = reverse_lazy('login')
@@ -30,7 +29,7 @@ class SignUpMedicoView(PermissionRequiredMixin, CustomUserCreateView):
             kwargs['user_permission_codename'] = 'es_medico'
             super().post(request, *args, **kwargs)
 
-            user = CustomUser.objects.get(documento=form.cleaned_data.get('documento'))
+            user = CustomUser.objects.get(documento=form.c0leaned_data.get('documento'))
             cuil = form.cleaned_data.get('cuil')
             especialidad_seleccionada = Especialidad.objects.get(nombre=form.cleaned_data['especialidad'])
             perfil_medico = Medico.objects.create(user=user, cuil=cuil, especialidad=especialidad_seleccionada)

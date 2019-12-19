@@ -6,8 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-django = "*"
-django-shapeshifter = "*"
+django = "==2.2"
 
 [requires]
 python_version = "3.6"

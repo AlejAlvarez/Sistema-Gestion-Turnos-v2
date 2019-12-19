@@ -1,12 +1,19 @@
-{% extends 'main_navbar.html' %}
+{% extends 'main_layout.html' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        {% block title %}Nuevo Usuario{% endblock title %}
 
-{% block title %}Nuevo Usuario{% endblock title %}
-
-{% block content %}
-<h2>Registrar Usuario</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrar</button>
-</form>
-{% endblock content %}
+    </head>
+    <body>
+        {% block content %}
+        {% include "main_navbar.html" %}
+        <h2>Registrar Usuario</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Registrar</button>
+        </form>
+        {% endblock content %}        
+    </body>
+</html>

@@ -34,6 +34,10 @@ class Paciente(models.Model):
     fecha_despenalizacion = models.DateTimeField(verbose_name="fecha de despenalización", blank=True, null=True)
     obra_social = models.ForeignKey(ObraSocial, on_delete=models.CASCADE, blank=True, null=True)
 
+    def get_genero(self):
+        return dict(self.GENERO_CHOICES).get(self.genero)
+
+
     class Meta:
          permissions = (('es_paciente','Usuario tiene rol de paciente'),)
 

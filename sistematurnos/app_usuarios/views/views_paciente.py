@@ -39,8 +39,9 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
             else:
                 obra_social_seleccionada = ObraSocial.objects.get(nombre=form.cleaned_data['obra_social'])
                 perfil_paciente = Paciente.objects.create(user=user, genero=genero, obra_social=obra_social_seleccionada)
-            perfil_paciente.save()
 
+
+            perfil_paciente.save()
             return HttpResponse('Paciente creado con exito')
         else:
             print('Error de validacion de formulario')
@@ -51,7 +52,6 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
 def editar_paciente(request, pk):
 
     user = get_object_or_404(CustomUser, pk=pk)
-
     if request.method == 'POST':
         form = CustomUserChangeForm(request.POST, instance=user)
         paciente_form = PacienteChangeForm(request.POST, instance=user.paciente)
@@ -74,11 +74,42 @@ def editar_paciente(request, pk):
         args = {'form': form, 'perfil_form': paciente_form}
         return render(request, 'usuarios/update_user_mform.html', args)
 
-# va a retornar el user que estÃ¡ logueado
+# va a retornar el user que está logueado, aún así debe ser un paciente
 @login_required
+@permission_required('app_usuarios.es_paciente')
 def perfil_paciente(request):
     user_pk = request.user.pk
-    paciente_user = get_object_or_404(CustomUser,pk=user_pk)
-    args = {'paciente_user': paciente_user}
+    logged_user = get_object_or_404(CustomUser,pk=user_pk)
+    print(logged_user.paciente.get_genero())
+    args = {'logged_user': logged_user}
     return render(request, 'usuarios/paciente_profile.html', args)
 
+@login_required
+@permission_required('app_usuarios.es_paciente')
+def paciente_editar(request):
+
+    user = get_object_or_404(CustomUser, pk=request.user.pk)
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=user)
+        paciente_form = PacienteChangeForm(request.POST, instance=user.paciente)
+
+        if form.is_valid() and paciente_form.is_valid():
+            user = form.save()
+            paciente = paciente_form.save(False)
+            paciente.user = user
+            paciente.save()
+            return redirect('app_informacion:home')        
+    else:
+        form = CustomUserChangeForm(instance=user)
+        paciente_form = PacienteChangeForm(instance=user.paciente)
+        args = {'form': form, 'perfil_form': paciente_form}
+        return render(request, 'usuarios/update_user_mform.html', args)
+
+
+@login_required
+@permission_required('app_usuarios.es_paciente')
+def reservar_turno_paciente(request):
+    paciente_user = get_object_or_404(CustomUser,pk=request.user.pk)
+    #especialidades = Especialidad.objects.all()
+    args = {'paciente_user': paciente_user}
+    return render(request, 'usuarios/reservar_turno_paciente.html',args)
