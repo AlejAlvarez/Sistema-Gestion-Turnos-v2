@@ -4,7 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import ListView
 from django.core import serializers
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import PermissionRequiredMixin 
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.utils import timezone
 
 from datetime import timedelta, datetime, date
 
@@ -34,18 +35,25 @@ def gestionar_turnos(request):
                 turno = form.cleaned_data.get('turno')
                 turno.estado = 3 # Cambio el estado a 'Confirmado'
                 turno.save()
+                
             elif 'cancelar' in request.POST:
                 print("Entro al cancelar")
                 turno = form.cleaned_data.get('turno')
-                turno.estado = 5 # Cambio el estado a 'Cancelado'
-                turno.save()
-                turno_cancelado = TurnoCancelado(turno=turno, fecha_cancelado=datetime.datetime.now())
-                turno_cancelado.save()
-                if turno_cancelado.debe_penalizar():
-                    usuario = CustomUser.objects.get(pk=request.user.pk)
-                    paciente = Paciente.objects.get(user=usuario)
-                    paciente.penalizar()
+                hora_actual = timezone.now()
+
+                # Si cancela menos de 2 horas antes
+                if hora_actual + timedelta(hours=2) >= turno.fecha:
+                    turno.estado = 5 # Estado cancelado
+                    turno.save()
+                    turno_cancelado = TurnoCancelado.objects.create(turno=turno, fecha_cancelado=hora_actual)
+                    turno_cancelado.save()
+                    paciente.penalizado = True
+                    paciente.fecha_despenalizacion = timezone.now() + timedelta(days=2) # Lo penalizo por 2 días nomas porque fue copado y avisó
                     paciente.save()
+                else:
+                    turno.estado = 1 # Estado disponible
+                    turno.paciente = None
+                    turno.save()
             
         form = SeleccionarTurnoForm(turnos=turnos)
         return render(request, 'turnos/gestionar_turnos.html', {'form':form})

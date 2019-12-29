@@ -33,6 +33,12 @@ class Turno(models.Model):
             if turno.fecha.date() == fecha:
                 lista_turnos.append(turno)
         return lista_turnos
+    
+    @staticmethod
+    def historial(paciente):
+        turnos = Turno.objects.filter(paciente=paciente).order_by('-fecha', 'medico')
+
+        return turnos
 
 
 class TurnoCancelado(models.Model):

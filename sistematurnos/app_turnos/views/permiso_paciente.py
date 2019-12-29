@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.core import serializers
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import PermissionRequiredMixin 
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.utils import timezone
 
 from datetime import timedelta, datetime, date
 
@@ -26,6 +27,11 @@ class ListarTurnos(PermissionRequiredMixin, ListView):
         paciente = Paciente.objects.get(pk=self.request.user.pk)
         lista_turnos = queryset.filter(paciente=paciente, estado=2)
         return lista_turnos
+
+class VerTurno(PermissionRequiredMixin, DetailView):
+    permission_required = ('app_usuarios.es_paciente')
+    model = Turno
+    template_name = 'turnos/informacion_turno.html'
 
 @login_required
 @permission_required('app_usuarios.es_paciente')
@@ -101,3 +107,38 @@ def reservar_turno(request):
         # Renderizo la datatable con los datos de los turnos        
         form = SeleccionarTurnoForm(turnos=turnos)
         return render(request, 'turnos/accion_turno.html', {'form':form, 'accion': "Reservar"})
+
+@login_required
+@permission_required('app_usuarios.es_paciente')
+def cancelar_turno(request, pk):
+    
+    turno = Turno.objects.get(pk=pk)
+    hora_actual = timezone.now()
+
+    # Si cancela menos de 2 horas antes
+    if hora_actual + timedelta(hours=2) >= turno.fecha:
+        turno.estado = 5 # Estado cancelado
+        turno.save()
+        turno_cancelado = TurnoCancelado.objects.create(turno=turno, fecha_cancelado=hora_actual)
+        turno_cancelado.save()
+        paciente.penalizado = True
+        paciente.fecha_despenalizacion = timezone.now() + timedelta(days=2) # Lo penalizo por 2 días nomas porque fue copado y avisó
+        paciente.save()
+    else:
+        turno.estado = 1 # Estado disponible
+        turno.paciente = None
+        turno.save()
+
+    return redirect('app_turnos:mis-turnos')
+
+
+@login_required
+@permission_required('app_usuarios.es_paciente')
+def ver_historial(request):
+
+    paciente = Paciente.objects.get(pk=request.user.pk)
+    turnos = Turno.objects.filter(paciente=paciente).order_by('-fecha', 'especialidad')
+
+    return render(request, 'turnos/lista_turnos.html', lista_turnos=turnos)
+
+

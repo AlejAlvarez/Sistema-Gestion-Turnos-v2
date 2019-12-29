@@ -1,4 +1,4 @@
-{% extends 'base_header.html' %}
+{% extends 'main_navbar.html' %}
 
 {% block title %} Listado de Turnos {% endblock title %}
 
@@ -22,7 +22,7 @@
                 {% endif %}
                 <td>{{ turno.get_estado }}</td>
                 {% comment %} Aca va un link a la DetailView del Turno (donde podra imprimir o cancelar dicho turno) {% endcomment %}
-                <td><a href="#">Ver</a></td>
+                <td><a href="{% url 'app_turnos:ver-turno' turno.pk %}">Ver</a></td>
             </tr>
         {% endfor %}
     </table>

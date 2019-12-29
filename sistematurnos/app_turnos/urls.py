@@ -13,4 +13,7 @@ urlpatterns = [
     path('seleccionar-turno/', seleccionar_turno_a_atender, name='seleccionar-turno-a-atender'),
     path('atender-turno/<int:turno_id>/', atender_turno, name='atender-turno'),
     path('mis-turnos/', ListarTurnos.as_view(), name='mis-turnos'),
+    path('ver-turno/<int:pk>/', VerTurno.as_view(), name='ver-turno'),
+    path('cancelar-turno/<int:pk>/', cancelar_turno, name='cancelar-turno'),
+    path('historial/', ver_historial, name='ver-historial'),
 ]

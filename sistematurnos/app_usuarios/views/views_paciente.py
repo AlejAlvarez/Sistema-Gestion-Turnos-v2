@@ -7,6 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from ..models import CustomUser, Paciente
 from ..forms.form_paciente import PacienteCreationForm, PacienteChangeForm
 from app_informacion.models import ObraSocial
+from app_turnos.models import Turno
 from .views_user import CustomUserCreateView, CustomUserUpdateView
 from ..forms.user_form import CustomUserChangeForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -80,8 +81,8 @@ def editar_paciente(request, pk):
 def perfil_paciente(request):
     user_pk = request.user.pk
     logged_user = get_object_or_404(CustomUser,pk=user_pk)
-    print(logged_user.paciente.get_genero())
-    args = {'logged_user': logged_user}
+    lista_turnos = Turno.historial(Paciente.objects.get(user=logged_user))
+    args = {'logged_user': logged_user, 'lista_turnos':lista_turnos}
     return render(request, 'usuarios/paciente_profile.html', args)
 
 @login_required
