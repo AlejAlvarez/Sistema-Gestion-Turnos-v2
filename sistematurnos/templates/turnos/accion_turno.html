@@ -1,4 +1,4 @@
-{% extends 'main_navbar.html' %}
+{% extends 'main_layout.html' %}
 <meta http-equiv="refresh" content="30" />
 
 {% block title %} {{ accion }} Turno {% endblock title %}
@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block content %}
+{% include 'main_navbar.html' %}
     <h2>{{ accion }} Turno</h2>
     <form method="post">
         {% csrf_token %}

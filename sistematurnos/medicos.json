@@ -1,0 +1,18 @@
+[
+{
+  "model": "app_usuarios.medico",
+  "pk": 5,
+  "fields": {
+    "cuil": 20453547,
+    "especialidad": 1
+  }
+},
+{
+  "model": "app_usuarios.medico",
+  "pk": 6,
+  "fields": {
+    "cuil": 348582383,
+    "especialidad": 1
+  }
+}
+]

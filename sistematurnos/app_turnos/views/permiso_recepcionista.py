@@ -14,7 +14,6 @@ from app_usuarios.models import Medico, CustomUser
 from ..forms import *
 from app_usuarios.views.views_user import check_ownership_or_403
 
-
 @login_required
 @permission_required('app_usuarios.es_recepcionista')
 def gestionar_turnos(request):
@@ -58,6 +57,6 @@ def gestionar_turnos(request):
         form = SeleccionarTurnoForm(turnos=turnos)
         return render(request, 'turnos/gestionar_turnos.html', {'form':form})
     else:
-        form = SeleccionarTurnoForm(turnos=turnos)
+        form = SeleccionarTurnoForm(turnos=turnos) 
         return render(request, 'turnos/gestionar_turnos.html', {'form':form})
 

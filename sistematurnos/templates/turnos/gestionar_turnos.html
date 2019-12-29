@@ -1,9 +1,9 @@
-{% extends 'base_header.html' %}
+{% extends 'main_layout.html' %}
 <meta http-equiv="refresh" content="5" />
 
 {% block title %} Gestión de Turnos {% endblock title %}
-
 {% block content %}
+{% include 'main_navbar.html'%}
     <h2>Gestión de Turnos</h2>
     <form method="post">
         {% csrf_token %}

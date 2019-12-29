@@ -1,0 +1,83 @@
+{% extends "usuarios/recepcionista/recepcionista_layout.html" %}
+
+{% block title %}Confirmar Turnos{% endblock title %}
+{% block import_css %}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
+{% endblock %}
+{% block import_js %}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.js"></script>
+{% endblock %}
+{% block custom_css %}
+    #table-turnos td input[type=radio]{
+        transform:scale(1.4);
+    }   
+{% endblock  %}
+{% block content %}
+    <div class="container">
+        <h2>MENÚ DE CONFIRMACIÓN DE TURNOS</h2>
+
+        <table id="table-turnos" class="table table-bordered" style="width:100%">
+            <thead class="thead-light">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Paciente</th>
+                    <th>Medico</th>
+                    <th>Prioridad</th>
+                    <th>Confirmar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+            {% for turno in turnos %}
+                    <td>
+                        {{ turno.fecha.date }}        
+                    </td>
+                    <td>
+                        {{ turno.fecha.time }}
+                    </td>
+                    <td>
+                        {{ turno.paciente.user.last_name }} {{ turno.paciente.user.first_name }}
+                    </td>
+                    <td>
+                        {{ turno.medico.user.last_name }} {{ turno.medico.user.first_name }}
+                    </td>
+                    <td>
+                        {% if turno.prioridad %}
+                            {{ turno.prioridad }}
+                        {% else %}
+                            No tiene
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="form-check text-center">
+                            <input class="form-check-input" type="radio" aria-label="..." name="optradio">
+                        </div>
+                    </td>
+            </tr>   
+            {% empty %}
+                <h5>No se encontraron turnos disponibles para el día de hoy.</h5>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div class="col-md-9">
+            </div>
+            <div class="col-md-3 text-right">
+                <button class="btn btn-danger pr-3 pl-3 mr-1">Cancelar</button>
+                <button class="btn btn-success pr-3 pl-3 ">Confirmar</button>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function() {
+                $('#table-turnos').DataTable({
+                    "language": {
+                        "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    }
+                });
+            } );
+        </script>
+    </div>    
+{% endblock content %}

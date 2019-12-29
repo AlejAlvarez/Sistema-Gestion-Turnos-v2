@@ -1,0 +1,214 @@
+[
+    {
+      "model": "app_usuarios.customuser",
+      "pk": 1,
+      "fields": {
+        "password": "pbkdf2_sha256$150000$5M9OwFkqVO7t$L+r4A/lMXOhhSyvC6VcPzqXHS7A1uyI0QjIN+2OvD9s=",
+        "last_login": "2019-12-20T02:06:58.318Z",
+        "is_superuser": true,
+        "username": "gonzalorolon",
+        "first_name": "Gonzalo",
+        "last_name": "Rolon",
+        "email": "g_rolon@mail.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2019-12-20T00:23:57Z",
+        "documento": null,
+        "domicilio": null,
+        "telefono": null,
+        "nacimiento": null,
+        "groups": [],
+        "user_permissions": []
+      }
+    },
+    {
+      "model": "app_usuarios.customuser",
+      "pk": 2,
+      "fields": {
+        "password": "pbkdf2_sha256$150000$nyWT0IJDPkfU$zZ3ASH2arneb81pusjSIIKeoZqL8lhMXnAKQ3j/E/fA=",
+        "last_login": null,
+        "is_superuser": true,
+        "username": "alealvarez",
+        "first_name": "Alejandro",
+        "last_name": "Alvarez",
+        "email": "ale@mail.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2019-12-20T00:24:56Z",
+        "documento": null,
+        "domicilio": null,
+        "telefono": null,
+        "nacimiento": null,
+        "groups": [],
+        "user_permissions": []
+      }
+    },
+    {
+      "model": "app_usuarios.customuser",
+      "pk": 3,
+      "fields": {
+        "password": "pbkdf2_sha256$150000$T6lBT59LLVXh$WWNnFs1fvYAuo5Od/KFyj4kjcKGCyA9xqzdNZzM1s+o=",
+        "last_login": "2019-12-20T02:07:52.131Z",
+        "is_superuser": false,
+        "username": "cosmefulanito",
+        "first_name": "Cosme",
+        "last_name": "Fulanito",
+        "email": "cosme@mail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-12-20T00:44:36Z",
+        "documento": null,
+        "domicilio": null,
+        "telefono": null,
+        "nacimiento": null,
+        "groups": [],
+        "user_permissions": [
+          25
+        ]
+      }
+    },
+    {
+      "model": "app_usuarios.customuser",
+      "pk": 4,
+      "fields": {
+        "password": "pbkdf2_sha256$150000$vLqmHr94LE78$M3fK98LnSxdMUG6dkAgl39o8a9i3uNUCLoB8xFlrcvI=",
+        "last_login": "2019-12-20T01:52:16.405Z",
+        "is_superuser": false,
+        "username": "carlitosmenem",
+        "first_name": "Carlos",
+        "last_name": "Menem",
+        "email": "menem@mail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-12-20T00:47:06Z",
+        "documento": null,
+        "domicilio": null,
+        "telefono": null,
+        "nacimiento": null,
+        "groups": [],
+        "user_permissions": [
+          25
+        ]
+      }
+    },
+    {
+      "model": "app_usuarios.customuser",
+      "pk": 5,
+      "fields": {
+        "password": "pbkdf2_sha256$150000$NcvqCakwL8OB$2Su2CREfSjquOE6dRCp3WBsEXIG4vvBGsZLC0rHKFOE=",
+        "last_login": "2019-12-20T01:57:44.665Z",
+        "is_superuser": false,
+        "username": "francogomez",
+        "first_name": "Franco",
+        "last_name": "Gomez",
+        "email": "frangomez@mail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-12-20T01:12:34Z",
+        "documento": null,
+        "domicilio": null,
+        "telefono": null,
+        "nacimiento": null,
+        "groups": [],
+        "user_permissions": [
+          35
+        ]
+      }
+    },
+    {
+      "model": "app_usuarios.customuser",
+      "pk": 6,
+      "fields": {
+        "password": "pbkdf2_sha256$150000$8v5qHj8ylFef$PlHPvFamdk98AQyZIvLTzuBX1U9+1c3o0OAQ3jHSuxo=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "rodrigomorales",
+        "first_name": "Rodrigo",
+        "last_name": "Morales",
+        "email": "rmorales@mail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-12-20T01:22:01Z",
+        "documento": null,
+        "domicilio": null,
+        "telefono": null,
+        "nacimiento": null,
+        "groups": [],
+        "user_permissions": [
+          35
+        ]
+      }
+    },
+    {
+      "model": "app_usuarios.customuser",
+      "pk": 7,
+      "fields": {
+        "password": "pbkdf2_sha256$150000$tKJEQQO3wd49$UMM4cEPeOOVMlRlYeMbBVGP7qVPOVPTeJ7WHnJYH/Ww=",
+        "last_login": "2019-12-20T01:36:25.668Z",
+        "is_superuser": false,
+        "username": "coreytaylor",
+        "first_name": "Corey",
+        "last_name": "Taylor",
+        "email": "coreytaylor@mail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-12-20T01:28:08Z",
+        "documento": null,
+        "domicilio": null,
+        "telefono": null,
+        "nacimiento": null,
+        "groups": [],
+        "user_permissions": [
+          30
+        ]
+      }
+    },
+    {
+      "model": "app_usuarios.customuser",
+      "pk": 8,
+      "fields": {
+        "password": "pbkdf2_sha256$150000$rYDEMsqGiJlT$yBIRrxAt+B+qxq2++cbSWDAKaB1rplicLr32FH/nDLc=",
+        "last_login": "2019-12-20T01:57:21.278Z",
+        "is_superuser": false,
+        "username": "johnfrusciante",
+        "first_name": "John",
+        "last_name": "Frusciante",
+        "email": "johnfrusciante@mail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-12-20T01:29:59Z",
+        "documento": null,
+        "domicilio": null,
+        "telefono": null,
+        "nacimiento": null,
+        "groups": [],
+        "user_permissions": [
+          30
+        ]
+      }
+    },
+    {
+      "model": "app_usuarios.customuser",
+      "pk": 9,
+      "fields": {
+        "password": "pbkdf2_sha256$150000$3DNSC5b67TNN$tYChdb1Fzj0K9rkwLvoZkeMp6wLsFB87hJS53oulUec=",
+        "last_login": "2019-12-20T02:20:54.254Z",
+        "is_superuser": false,
+        "username": "chriscornell",
+        "first_name": "Chris",
+        "last_name": "Cornell",
+        "email": "chriscornell@mail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2019-12-20T01:30:45Z",
+        "documento": null,
+        "domicilio": null,
+        "telefono": null,
+        "nacimiento": null,
+        "groups": [],
+        "user_permissions": [
+          30
+        ]
+      }
+    }
+  ]

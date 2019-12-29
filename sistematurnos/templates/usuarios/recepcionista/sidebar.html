@@ -1,0 +1,16 @@
+<!-- SIDEBAR DE RECEPCIONISTA -->
+
+ <!-- <div class="list-group">
+    <a href="{% url 'app_usuarios:index-recepcionista' %}" class="list-group-item"><span>Inicio</span></a>
+    <a href="{% url 'app_usuarios:confirmar-turnos' %}" class="list-group-item"><span>Confirmar Turnos</span></a>
+    <a href="#" class="list-group-item"><span>Reservar Turnos</span></a>
+    <a href="#" class="list-group-item"><span>Registrar Paciente</span></a>
+</div> -->
+<div class="sidebar-sticky">
+    <ul class="nav flex-column flex-sm-column">
+        <li class="nav-item active"><a class="nav-link" href="{% url 'app_usuarios:index-recepcionista' %}">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'app_usuarios:confirmar-turnos' %}">Confirmar Turnos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Reservar Turnos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Registrar Paciente</a></li>
+    </ul>
+</div>

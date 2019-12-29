@@ -47,12 +47,14 @@ def buscar_turnos(request):
             if medico == None:
                 lista_medicos = Medico.objects.filter(especialidad=especialidad)
                 for medico in lista_medicos:
-                    lista_turnos_medico = Turno.objects.filter(medico=medico, estado=1) # Estado 1 = 'Disponible'
+                    # Estado 1 = 'Disponible'
+                    lista_turnos_medico = Turno.objects.filter(medico=medico, estado=1)
                     # Voy concatenando las listas de turnos
                     lista_turnos.extend(Turno.get_turnos_fecha(lista_turnos_medico, fecha))
                 lista_turnos.sort(key=lambda turno: turno.fecha)
             else:
-                lista_turnos_medico = Turno.objects.filter(medico=medico, estado=1) # Estado 1 = 'Disponible'
+                # Estado 1 = 'Disponible'
+                lista_turnos_medico = Turno.objects.filter(medico=medico, estado=1)
                 # Consigo los turnos de una determinada fecha
                 lista_turnos = Turno.get_turnos_fecha(lista_turnos_medico, fecha)
                 lista_turnos.sort(key=lambda turno: turno.fecha)
@@ -97,7 +99,8 @@ def reservar_turno(request):
             turno = form.cleaned_data.get('turno')
             if turno.estado == 1:
                 turno.paciente = paciente
-                turno.estado = 2 # Cambio el estado del turno a 'Reservado'
+                # Cambio el estado del turno a 'Reservado'
+                turno.estado = 2 
                 turno.save()
             else:
                 return HttpResponse("Lo sentimos, ese turno parece ya no estar disponible. \n Por favor, seleccione otro.")

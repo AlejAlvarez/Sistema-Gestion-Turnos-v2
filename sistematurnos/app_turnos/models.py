@@ -40,6 +40,14 @@ class Turno(models.Model):
 
         return turnos
 
+    # por defecto va a retornar dos semanas
+    @staticmethod 
+    def get_turnos_weeks_ahead(number_of_weeks=2):
+        time_dt = timedelta(weeks=number_of_weeks)
+        startdate = datetime.now()
+        enddate = datetime.now() + time_dt
+        lista_turnos = Turno.objects.filter(fecha__range=[startdate,enddate])
+        return lista_turnos
 
 class TurnoCancelado(models.Model):
     turno = models.OneToOneField(Turno, on_delete=models.CASCADE, primary_key=True)

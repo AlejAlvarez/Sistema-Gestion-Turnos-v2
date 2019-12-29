@@ -27,7 +27,9 @@ def log_user(request):
             if (user.has_perm('is_superuser')):
                 return redirect('/admin')
             elif (user.has_perm("app_usuarios.es_paciente")):
-                return redirect(reverse_lazy('app_usuarios:perfil-paciente'),request=request)    
+                return redirect(reverse_lazy('app_usuarios:perfil-paciente'),request=request)  
+            elif (user.has_perm('app_usuarios.es_recepcionista')):
+                return redirect(reverse_lazy('app_usuarios:index-recepcionista'),request=request)
             else:    
                 return HttpResponse("Hola" + name + "!") 
         else:

@@ -24,7 +24,7 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
 
     def get(self, request, *args, **kwargs): 
 
-        return super().get(request, *args, **kwargs)
+        return super().geth(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
         form = PacienteCreationForm(request.POST)
@@ -111,6 +111,5 @@ def paciente_editar(request):
 @permission_required('app_usuarios.es_paciente')
 def reservar_turno_paciente(request):
     paciente_user = get_object_or_404(CustomUser,pk=request.user.pk)
-    #especialidades = Especialidad.objects.all()
     args = {'paciente_user': paciente_user}
     return render(request, 'usuarios/reservar_turno_paciente.html',args)
