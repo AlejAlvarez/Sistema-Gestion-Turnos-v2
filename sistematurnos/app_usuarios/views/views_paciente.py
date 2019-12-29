@@ -64,12 +64,6 @@ def editar_paciente(request, pk):
             paciente.save()
             return redirect('app_informacion:home')        
     else:
-        if (viewing_user.has_perm('app_usuarios.es_recepcionista') or (viewing_user.has_perm('app_usuarios.es_paciente'))):
-            all_permissions = list(Permission.objects.filter(user=viewing_user.pk))  
-            print(all_permissions) 
-            if (viewing_user.has_perm('app_usuarios.es_paciente')):
-                print("---------- USER ES PACIENTE ----------")
-                check_ownership_or_403(request,pk)
         form = CustomUserChangeForm(instance=user)
         paciente_form = PacienteChangeForm(instance=user.paciente)
         args = {'form': form, 'perfil_form': paciente_form}

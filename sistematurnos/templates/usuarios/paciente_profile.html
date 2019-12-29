@@ -65,7 +65,7 @@
                         <img src="{% static "images/002-user.png" %}" class="card-img-top" alt="Profile Picture">
                         <div class="card-body text-center">
                             <h5 class="card-title" style="font-size:1.2rem"><strong>{{ logged_user.last_name }}, {{ logged_user.first_name }}</strong></h5>
-                            <a href="{% url 'app_usuarios:paciente-editar' %}" class="btn btn-primary btn-lg">Editar</a>
+                            <a href="{% url 'app_usuarios:editar-paciente' logged_user.id %}" class="btn btn-primary btn-lg">Editar</a>
                         </div>
                     </div>
                 </div>               
@@ -134,8 +134,28 @@
         </div>
     </div>
     <div class="container-fluid">
-        <h1 style="padding-top:20px">Historia</h1>
-        <a class="btn btn-primary btn-lg" href="{% url 'app_usuarios:reservar-turno-paciente' %}" role="button">Reservar Turno</a>
+        <div class="well">
+            <h1 style="padding-top:20px">Historia</h1>
+            <table class="table table-scroll table-striped table-hover">
+                <tr>
+                    <th>Especialidad</th>
+                    <th>Médico</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Detalles</th>
+                </tr>
+                {% for turno in lista_turnos %}
+                    <tr>
+                        <td>{{ turno.medico.especialidad }}</td>
+                        <td>{{ turno.medico }}</td>
+                        <td>{{ turno.fecha }}</td>
+                        <td>{{ turno.get_estado_display }}</td>
+                        <td><a href="{% url 'app_turnos:ver-turno' turno.pk %}" class="btn">Ver</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <a class="btn btn-primary btn-lg" href="{% url 'app_turnos:buscar-turnos' %}" role="button">Reservar nuevo Turno</a>
     </div>
 {% endblock content %}
 </body>
