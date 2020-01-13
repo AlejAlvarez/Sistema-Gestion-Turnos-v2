@@ -1,0 +1,11 @@
+{% extends "usuarios/recepcionista/recepcionista_layout.html" %}
+{% block title %} Gestión de Turnos {% endblock title %}
+
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {{ form.errors }}
+        <button type="submit" name="reservar" class="btn btn-dark pr-4 pl-4" value="Reservar">Reservar</button>
+    </form>
+{% endblock %}

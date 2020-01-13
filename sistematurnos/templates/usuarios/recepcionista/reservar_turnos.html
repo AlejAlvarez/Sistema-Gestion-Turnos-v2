@@ -1,0 +1,150 @@
+{% extends "usuarios/recepcionista/recepcionista_layout.html" %}
+
+{% block import_links %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.js"></script>
+{% endblock %}
+
+{% block title %}Reservar Turno{% endblock title %}
+
+{% block css %}
+    .displayNone {
+        display:none;
+    }
+    #table-turnos td input[type=radio]{
+        transform:scale(1.4);
+    }   
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2>MENÚ DE RESERVA DE TURNOS</h2>
+        <form id="especialidad-form" method="POST">
+            {% csrf_token %}
+            <label for="id_especialidad">Especialidad</label>
+            <div class="form-row">
+                <div class="col">
+                    {{ especialidad_form.especialidades }}
+                </div>
+                <div class="col">
+                    <input type="submit" class="btn btn-primary pl-4 pr-4" value="Buscar" />
+                </div>
+            </div>    
+        </form>
+    </div>
+    <div id="container-turnos" class="container">
+        <form class="displayNone" id="turnos-form" method="POST">
+            {% csrf_token %}
+        <table id="table-turnos" class="table table-bordered" style="width:100%">
+            <thead class="thead-light">
+                <tr>
+                    <th>Nro Turno</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Medico</th>
+                    <th>Seleccionar</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="form-row">
+            <div class="col-md-9">
+            </div>
+            <div class="col-md-3 text-right">
+                <button type="submit" name="reservar" class="btn btn-dark pr-4 pl-4 mt-3" value="Reservar">Reservar</button>
+            </div>
+        </div>
+        </form>
+    </div>
+    <script>
+        /* $(document).ready(function(){
+            $('#table-turnos').DataTable({
+                    "language": {
+                        "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    }
+                });
+        });*/
+        $('#especialidad-form').submit(function(e){
+            e.preventDefault();
+            let nombre_especialidad = $('#id_especialidades').children("option:selected").text();
+            let noDataReturnedh3 = document.getElementById("h3-no-data-returned");
+            if (noDataReturnedh3 == null){
+                noDataReturnedh3 = document.createElement("h3");
+                noDataReturnedh3.appendChild(document.createTextNode("No hay turnos disponibles para " + nombre_especialidad));
+                noDataReturnedh3.setAttribute("id","h3-no-data-returned");
+            } else{
+                noDataReturnedh3.innerHTML = "No hay turnos disponibles para " + nombre_especialidad;
+            }
+            $.ajax({
+                method:"GET",
+                url:'{% url "app_turnos:get-turnos-ajax" %}',
+                data: {'especialidad_seleccionada':nombre_especialidad},
+                dataType:'json',
+                success:function(data){
+                    let containerTurnos = document.getElementById("container-turnos");
+                    // osea, que no retorne una lista vacía
+                    if (data.length > 0) {
+                        let i = 0;
+                        let turnosRows = [];
+                        data.forEach(element => {
+                            let trTurno = createTurnoRow(element);
+                            let radioInputTurno = createTurnoRadioInput(i,element.pk);
+                            i++;
+                            let radioInputTd = document.createElement("td");
+                            radioInputTd.setAttribute("class","text-center");
+                            radioInputTd.appendChild(radioInputTurno);
+                            trTurno.appendChild(radioInputTd);
+                            turnosRows.push(trTurno);
+                        });
+                        // agrego a la dataTable todas las filas creadas
+                        // Datatables methods
+                        let turnosTable = $("#table-turnos").DataTable();
+                        turnosTable.clear().draw();
+                        turnosTable.rows.add(turnosRows).draw();
+                        // End Datatables methods
+                        if (containerTurnos.contains(noDataReturnedh3)){
+                            containerTurnos.removeChild(noDataReturnedh3);
+                        }
+                        $("#turnos-form").show().children().show();
+                    } else {
+                        $('#turnos-form').hide();
+                        if (!containerTurnos.contains(noDataReturnedh3)){
+                            containerTurnos.appendChild(noDataReturnedh3);
+                        }
+                    }
+                }
+            })
+        });
+        function createTurnoRow(turno_json){
+            let tableRow = document.createElement("tr");
+            let tdPk = document.createElement("td");
+                tdPk.innerText = turno_json.pk;
+            let tdFecha = document.createElement("td");
+                tdFecha.innerHTML = turno_json.fecha;
+            let tdHora = document.createElement("td");
+                tdHora.innerHTML = turno_json.hora;
+            let tdMedico = document.createElement("td");
+                tdMedico.innerHTML = turno_json.medico;
+            tableRow.appendChild(tdPk);
+            tableRow.appendChild(tdFecha);
+            tableRow.appendChild(tdHora);
+            tableRow.appendChild(tdMedico);
+
+            return tableRow;
+        }
+        function createTurnoRadioInput(label_id,input_id){
+            let inputLabel = document.createElement("label");
+            let labelStr = "id_turno_" + label_id;
+                inputLabel.setAttribute("for",labelStr);
+            let inputRadioButton = document.createElement("input");
+            inputRadioButton.setAttribute("type","radio");
+            inputRadioButton.setAttribute("name","turno");
+            inputRadioButton.setAttribute("value",input_id);
+            inputRadioButton.setAttribute("id",labelStr);
+            
+            inputLabel.appendChild(inputRadioButton);
+
+            return inputLabel;
+        }
+    </script>
+{% endblock content %}

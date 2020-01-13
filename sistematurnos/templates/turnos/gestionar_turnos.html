@@ -1,14 +1,81 @@
-{% extends 'main_layout.html' %}
+{% extends "usuarios/recepcionista/recepcionista_layout.html" %}
 <meta http-equiv="refresh" content="5" />
 
 {% block title %} Gestión de Turnos {% endblock title %}
+{% block custom_css %}
+    #table-turnos td input[type=radio]{
+        transform:scale(1.4);
+    }   
+{% endblock  %}
+
 {% block content %}
-{% include 'main_navbar.html'%}
-    <h2>Gestión de Turnos</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" name="confirmar" value="Confirmar">Confirmar</button>
-        <button type="submit" name="cancelar" value="Cancelar">Cancelar</button>
-    </form>
+    <div class="container">
+        <h2>Gestión de Turnos</h2>
+        <h2>MENÚ DE CONFIRMACIÓN DE TURNOS</h2>
+        {% if form.turnos_informacion %}
+        <form id="turno-form" method="POST">
+            {% csrf_token %}
+        <table id="table-turnos" class="table table-bordered" style="width:100%">
+            <thead class="thead-light">
+                <tr>
+                    <th>Nro Turno</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Paciente</th>
+                    <th>Medico</th>
+                    <th>Prioridad</th>
+                    <th>Seleccionar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for info_turno in form.turnos_informacion %}
+                <tr>
+
+                        <td>{{ info_turno.id }}</td>    
+                        <td>
+                            {{ info_turno.fecha.date }}        
+                        </td>
+                        <td>
+                            {{ info_turno.fecha.time }}
+                        </td>
+                        <td>
+                            {{ info_turno.paciente.user.last_name }} {{ info_turno.paciente.user.first_name }}
+                        </td>
+                        <td>
+                            {{ info_turno.medico.user.last_name }} {{ info_turno.medico.user.first_name }}
+                        </td>
+                        <td>
+                            {% if info_turno.prioridad %}
+                                {{ info_turno.prioridad }}
+                            {% else %}
+                                No tiene
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="text-center">
+                                {% for turno_form in form.turno %}
+                                    {% if forloop.counter == forloop.parentloop.counter %} 
+                                        {{ turno_form }}
+                                    {% endif %}    
+                                {% endfor %}
+                            </div>
+                        </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div class="col-md-9">
+            </div>
+            <div class="col-md-3 text-right">
+                <button type="submit" id="boton-cancelar" name="confirmar" class="btn btn-danger pr-3 pl-3 mr-1" value="Cancelar">Cancelar</button>
+                <button type="submit" id="boton-confirmar" name="cancelar" class="btn btn-success pr-3 pl-3 " value="Confirmar">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <h3>No se encontraron turnos disponibles para el día de hoy.</h3>
+    {% endif %}
 {% endblock content %}

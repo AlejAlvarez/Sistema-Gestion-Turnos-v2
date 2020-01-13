@@ -7,22 +7,13 @@ class RecepcionistaInformationForm(ModelForm):
     class Meta:
         model = CustomUser
         fields = ['first_name','last_name','username','last_login']
-        atrs = {
-            'class': 'form-control',
+
+    # método para aplicar atributos a todos los widgets
+    def __init__(self,*args,**kwargs):
+        super(RecepcionistaInformationForm,self).__init__(*args,**kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
             'id': 'disabledInput',
-            'disabled': True            
-        }
-        widgets = {
-            'first_name': forms.TextInput(
-                attrs = atrs
-            ),
-            'last_name': forms.TextInput(
-                attrs = atrs
-            ),
-            'username': forms.TextInput(
-                attrs = atrs
-            ),
-            'last_login': forms.TextInput(
-                attrs = atrs
-            )
-        }
+            'disabled': True,
+            'class': 'form-control'
+            })

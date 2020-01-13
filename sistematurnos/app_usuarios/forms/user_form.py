@@ -28,7 +28,9 @@ class CustomUserCreationForm(UserCreationForm):
             'username': 'Usuario',
         }
         widgets = {
-            'nacimiento': forms.SelectDateWidget(years=ANOS_NACIMIENTO_CHOICES)
+            'nacimiento': forms.SelectDateWidget(
+                years=ANOS_NACIMIENTO_CHOICES,
+                attrs={'class':"snps-inline-select"})
         }
     
 class CustomUserChangeForm(UserChangeForm):

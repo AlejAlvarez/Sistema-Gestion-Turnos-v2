@@ -18,13 +18,12 @@ from .views_user import check_ownership_or_403
 class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
     form_class = PacienteCreationForm
     success_url = reverse_lazy('login')
-    #template_name = 'registration/signup.html'
+    template_name = 'usuarios/recepcionista/signup_paciente.html'
     # being an admin, you have all permissions required to access every url in the system
-    permission_required = ('login_required','app_usuarios.es_recepcionista')
+    permission_required = ('app_usuarios.es_recepcionista',)
 
     def get(self, request, *args, **kwargs): 
-
-        return super().geth(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
         form = PacienteCreationForm(request.POST)
@@ -40,8 +39,6 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
             else:
                 obra_social_seleccionada = ObraSocial.objects.get(nombre=form.cleaned_data['obra_social'])
                 perfil_paciente = Paciente.objects.create(user=user, genero=genero, obra_social=obra_social_seleccionada)
-
-
             perfil_paciente.save()
             return HttpResponse('Paciente creado con exito')
         else:

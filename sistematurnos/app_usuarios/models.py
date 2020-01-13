@@ -38,7 +38,6 @@ class Paciente(models.Model):
     def get_genero(self):
         return dict(self.GENERO_CHOICES).get(self.genero)
 
-
     class Meta:
          permissions = (('es_paciente','Usuario tiene rol de paciente'),)
 
