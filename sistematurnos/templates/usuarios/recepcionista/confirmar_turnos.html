@@ -15,10 +15,13 @@
 {% block content %}
     <div class="container">
         <h2>MENÚ DE CONFIRMACIÓN DE TURNOS</h2>
-
+        {% if turnos %}
+        <form id="turno-form" method="POST">
+            {% csrf_token %}
         <table id="table-turnos" class="table table-bordered" style="width:100%">
             <thead class="thead-light">
                 <tr>
+                    <th>Nro Turno</th>
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Paciente</th>
@@ -28,36 +31,35 @@
                 </tr>
             </thead>
             <tbody>
+                {% for turno in form.turno %}
                 <tr>
-            {% for turno in turnos %}
-                    <td>
-                        {{ turno.fecha.date }}        
-                    </td>
-                    <td>
-                        {{ turno.fecha.time }}
-                    </td>
-                    <td>
-                        {{ turno.paciente.user.last_name }} {{ turno.paciente.user.first_name }}
-                    </td>
-                    <td>
-                        {{ turno.medico.user.last_name }} {{ turno.medico.user.first_name }}
-                    </td>
-                    <td>
-                        {% if turno.prioridad %}
-                            {{ turno.prioridad }}
-                        {% else %}
-                            No tiene
-                        {% endif %}
-                    </td>
-                    <td>
-                        <div class="form-check text-center">
-                            <input class="form-check-input" type="radio" aria-label="..." name="optradio">
-                        </div>
-                    </td>
-            </tr>   
-            {% empty %}
-                <h5>No se encontraron turnos disponibles para el día de hoy.</h5>
-            {% endfor %}
+                        <td >{{ turno.id }}</td>    
+                        <td>
+                            {{ turno.fecha.date }}        
+                        </td>
+                        <td>
+                            {{ turno.fecha.time }}
+                        </td>
+                        <td>
+                            {{ turno.paciente.user.last_name }} {{ turno.paciente.user.first_name }}
+                        </td>
+                        <td>
+                            {{ turno.medico.user.last_name }} {{ turno.medico.user.first_name }}
+                        </td>
+                        <td>
+                            {% if turno.prioridad %}
+                                {{ turno.prioridad }}
+                            {% else %}
+                                No tiene
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="text-center">
+                                {{ turno }}
+                            </div>
+                        </td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -66,20 +68,63 @@
             <div class="col-md-9">
             </div>
             <div class="col-md-3 text-right">
-                <button class="btn btn-danger pr-3 pl-3 mr-1">Cancelar</button>
-                <button class="btn btn-success pr-3 pl-3 ">Confirmar</button>
+                <button id="boton-cancelar" class="btn btn-danger pr-3 pl-3 mr-1">Cancelar</button>
+                <button id="boton-confirmar" class="btn btn-success pr-3 pl-3 ">Confirmar</button>
             </div>
         </div>
+    </div>
+    <div class="container">
+        <form method="POST">
+        {{ turno_form }}
+        </form>
+        </div>    
+    </form>
+        {% else %}
+        <h3>No se encontraron turnos disponibles para el día de hoy.</h3>
+        {% endif %}    
         <script>
             $(document).ready(function() {
+                // asignar los id a los radio button
+                radioButtons = $("#table-turnos input:radio")
+                for(let i=0;i<radioButtons.length;i++){
+                    radioButtons[i].setAttribute("id",i);
+                }
+                // método POST de ajax para confirmar un turno
+                $("#boton-confirmar").click(function(event){
+                    event.preventDefault();
+                    let $form = $('<form>',{
+                        "method": "POST"
+                    });
+                    // almancenar el turno que haya sido seleccionado
+                    let selectedInput = $("#table-turnos input:radio:checked");
+                    if(selectedInput[0] == undefined){
+                        console.log("unselected option")
+                    }else{
+                        let selectedRow = $("#table-turnos > tbody > tr").eq(selectedInput[0].id);
+                        let numeroTurnoSeleccionado = selectedRow.find("td").eq(0).text();
+                        let $inputTurno = $('<input>',{
+                            "type":"number",
+                            "value": numeroTurnoSeleccionado
+                        });
+                        $form.appendTo(document.body)
+                        $form.append('{% csrf_token %}');
+                        $form.append($inputTurno)
+                        let serializedForm = $form.serialize()
+                        console.log(serializedForm)
+                        $.ajax({
+                            type:"POST",
+                            url:"{% url 'app_usuarios:confirmar-turnos' %}",
+                            data:serializedForm,
+                            success:alert("Success")
+                        });
+                    
+                    }          
+                });
                 $('#table-turnos').DataTable({
                     "language": {
                         "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
                     }
                 });
-
-                // método POST de ajax para confirmar un turno
-            } );
-        </script>
-    </div>    
+            });
+        </script>  
 {% endblock content %}

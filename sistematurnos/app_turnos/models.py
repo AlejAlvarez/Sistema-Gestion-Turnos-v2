@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from datetime import datetime, timedelta
-
 from app_usuarios.models import Medico, Paciente
 
 ESTADO_CHOICES = (
@@ -15,7 +14,7 @@ ESTADO_CHOICES = (
 class Turno(models.Model):
     estado        = models.PositiveSmallIntegerField(choices=ESTADO_CHOICES)
     fecha         = models.DateTimeField()
-    paciente      = models.ForeignKey(Paciente, on_delete=models.CASCADE, null=True)
+    paciente      = models.ForeignKey(Paciente, on_delete=models.CASCADE, null=True,blank=True)
     medico        = models.ForeignKey(Medico, on_delete=models.CASCADE)
     es_sobreturno = models.BooleanField(default=False)
     prioridad     = models.PositiveSmallIntegerField(blank=True, null=True)
@@ -42,12 +41,26 @@ class Turno(models.Model):
 
     # por defecto va a retornar dos semanas
     @staticmethod 
-    def get_turnos_weeks_ahead(number_of_weeks=2):
+    def get_turnos_weeks_ahead(estado,number_of_weeks=2):
         time_dt = timedelta(weeks=number_of_weeks)
         startdate = datetime.now()
         enddate = datetime.now() + time_dt
-        lista_turnos = Turno.objects.filter(fecha__range=[startdate,enddate])
+        if estado:
+            lista_turnos = Turno.objects.filter(estado=estado,fecha__range=[startdate,enddate])
+        else: 
+            lista_turnos = Turno.objects.filter(fecha__range=[startdate,enddate])
         return lista_turnos
+
+    def as_json(self):
+        return dict({
+            'pk':self.pk,
+            'fecha':self.fecha.strftime('%d-%m-%Y'),
+            'hora':self.fecha.strftime('%H:%M'),
+            'paciente':self.paciente.__str__(),
+            'medico':self.medico.__str__(),
+            'es_sobreturno':self.es_sobreturno,
+            'prioridad':self.prioridad
+        })
 
 class TurnoCancelado(models.Model):
     turno = models.OneToOneField(Turno, on_delete=models.CASCADE, primary_key=True)
