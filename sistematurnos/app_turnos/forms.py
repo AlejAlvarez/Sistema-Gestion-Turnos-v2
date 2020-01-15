@@ -57,7 +57,6 @@ class SeleccionarEspecialidadForm(forms.Form):
         super(SeleccionarEspecialidadForm,self).__init__(*args,**kwargs)
         if(especialidades_queryset):
             self.set_especialidades(especialidades_queryset)
-            set_all_widgets_bootstrap_class(self.fields)
 
     def set_especialidades(self,especialidades):
         self.fields['especialidades'].queryset = especialidades

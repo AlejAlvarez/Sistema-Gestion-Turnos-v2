@@ -1,4 +1,5 @@
 {% extends "usuarios/recepcionista/recepcionista_layout.html" %}
+{% load widget_tweaks %}
 
 {% block import_links %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
@@ -23,7 +24,7 @@
             <label for="id_especialidad">Especialidad</label>
             <div class="form-row">
                 <div class="col">
-                    {{ especialidad_form.especialidades }}
+                    {{ especialidad_form.especialidades|add_class:"form-control"  }}
                 </div>
                 <div class="col">
                     <input type="submit" class="btn btn-primary pl-4 pr-4" value="Buscar" />
