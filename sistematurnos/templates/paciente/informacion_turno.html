@@ -1,0 +1,25 @@
+{% extends 'paciente/paciente_layout.html' %}
+
+{% block title %}Turno{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h2>Informacion del Turno</h2>
+        <div class="informacion-turno">
+            <p>Medico: {{ turno.medico }}</p>
+            <p>Fecha: {{ turno.fecha }}</p>
+            <p>Estado: {{ turno.estado }}</p>
+        </div>
+        <button onclick="cancelar()">- Cancelar Turno</button>
+    </div>
+{% comment %}<a href="{% url 'cancelar-turno' turno.pk %}">- Cancelar Turno</a>{% endcomment %}
+{% endblock content %}
+{% block javascript %}
+<script>
+    function cancelar() {
+        if (confirm("Desea cancelar el turno?")){
+            window.location.replace(" {% url 'cancelar-turno' turno.pk %} ")
+        }
+    }
+</script>
+{% endblock %}

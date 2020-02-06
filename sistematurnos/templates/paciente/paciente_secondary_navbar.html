@@ -1,0 +1,16 @@
+<nav class="navbar navbar-expand-lg" id="secondary-navbar">
+    <ul class="navbar-nav ml-5">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'index-paciente' %}">Información de Perfil<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'hacer-reserva' %}">Reservar Turno</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'mis-turnos' %}">Turnos Pendientes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'ver-historial' %}">Historial</a>
+        </li>
+      </ul>
+  </nav>

@@ -1,0 +1,135 @@
+{% extends "paciente/paciente_layout.html" %}
+{% load widget_tweaks %}
+{% block title %}Reservar Turno {% endblock title %}
+{% block import_links %}
+    {# Adds all flatpickr JS/CSS files from CDN #}
+    {{ especialidad_form.media.css }} 
+    <link href="https://unpkg.com/flatpickr@4.6.3/dist/themes/light.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block css %}
+    .form-card {
+        background-color: #06b2b6;
+        padding: 15px 30px;
+        color: #fffefe;
+    }
+    .form-control {
+        border-radius: 2px;
+        background-color: #fffefe;
+    }
+    .thead-turnos {
+        /* coral table head */
+        background-color: #F94D49;
+        color: #fffefe;
+    }
+    .reserva-radio-button input[type=radio] {
+        transform:scale(1.4);
+    }
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-card">
+                    <h2>{{ accion }} Turno</h2>
+                    <form id="form-buscar-turnos" method="GET" data-url='/paciente/ajax/buscar-turnos'>
+                        <div class="form-group">
+                            <label for="{{ especialidad_form.especialidad.id_for_label }}">Especialidad:</label>
+                            {{ especialidad_form.especialidad|add_class:"form-control" }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ especialidad_form.fecha.id_for_label }}">Fecha:</label>
+                            {% render_field especialidad_form.fecha id="form-datepicker" %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ medico_form.medico.id_for_label }}">Medico:</label>
+                            {{ medico_form.medico|add_class:"form-control" }}
+                        </div>
+                        <button type="submit" class="btn btn-paciente">{{ accion }}</button>
+                    </form>
+                </div>
+            </div>
+            <div id="col-turnos" class="col-md-8 display-none">
+                <form id="form-reserva" method="POST">
+                    {% csrf_token %}
+                    <div id="form-fields"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ especialidad_form.media.js }}
+    <!-- AJAX CALLS CODE -->
+<script>
+    $(document).ready(function(e){
+        $(".flatpickr-input").prop("disabled",true);
+        $("#id_medico").prop("disabled",true);
+        $(".btn-paciente[type=submit]").prop("disabled",true);
+    })
+    // el formulario de input se va a habilitar una vez que se seleccione una especialidad válida
+    $("#id_especialidad").on("change",function(event){
+        if ($(this).val() > 0) {
+            $(".flatpickr-input").prop("disabled",false);
+        } else {
+            $(".flatpickr-input").prop("disabled",true);
+        }
+    });
+    // cuando cambia, seleccionando una fecha, se realiza un llamado AJAX
+    $("#form-datepicker").on("change",function(event){
+        let especialidadForm = $("#form-buscar-turnos");
+        let $thisURL = "/paciente/ajax/filtrar-medicos";
+        console.log($thisURL);
+        let $formData = especialidadForm.serialize();
+        console.log($thisURL);
+        console.log($formData);
+        $.ajax({
+            method: "GET",
+            url: $thisURL,
+            data: $formData,
+            success: function(data) {
+                console.log("success");
+                console.log(data);
+                $("#id_medico").find("option").remove();
+                $("#id_medico").append($('<option>').text("Seleccione un medico").prop("selected",true));
+                $("#id_medico").prop("disabled",false);
+                for (item in data) {
+                    $('#id_medico').append($('<option>').val(data[item]['id']).text(data[item]['nombre']));
+                }
+            },
+            error: function(data){
+                console.log("error");
+                console.log(data);
+            },
+        });
+    });
+    $("#id_medico").on("change",function(event) {
+        if ($(this).val() > 0) {
+            $(".btn-paciente[type=submit]").prop("disabled",false);
+        } else {
+            $(".btn-paciente[type=submit]").prop("disabled",true);
+        }
+    });
+    $("#form-buscar-turnos").on("submit",function(event){
+        event.preventDefault();
+        /* $.(this) references the object which is "listening" to a event, in this case, it will be the form */
+        let $thisURL = $(this).attr('data-url');
+        let $formData = $(this).serialize();
+        $.ajax({
+            method: "GET",
+            url: $thisURL,
+            data: $formData,
+            success: function(data) {
+                let $formFields = document.getElementById("form-fields");
+                $formFields.innerHTML = "";
+                $formFields.innerHTML += data;
+                //$("#col-turnos").prop("hidden",false);
+                $("#col-turnos").show(100);
+            },
+            error: function(data){
+                console.log("error");
+                console.log(data);
+            },
+        });
+    });
+</script>
+{% endblock %}

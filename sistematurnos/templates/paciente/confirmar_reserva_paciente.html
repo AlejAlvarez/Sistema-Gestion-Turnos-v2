@@ -1,0 +1,11 @@
+{% extends "paciente/paciente_layout.html" %}
+{% block content %}
+<div class="container">
+    <form method="POST" >
+    {% csrf_token %}
+    <label for="turno">Numero de Turno</label>
+    <input name="turno" type="number" value={{ turno_id }} />
+    <button type="submit" class="btn btn-danger" name="Confirmar">Confirmar Reserva</button>
+    </form> 
+</div>
+{% endblock %}

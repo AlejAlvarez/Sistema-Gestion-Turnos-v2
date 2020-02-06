@@ -1,0 +1,7 @@
+{% extends "paciente/paciente_layout.html" %}
+
+{% block content %}
+
+    <h1>Su turno ha sido reservado con éxito</h1>
+    <a href="{% url 'index-paciente' %}">Volver a Inicio</a> | <a href="{% url 'buscar-turnos' %}">Reservar Turno</a>
+{% endblock %}

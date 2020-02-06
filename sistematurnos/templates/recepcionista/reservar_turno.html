@@ -1,0 +1,76 @@
+{% extends "recepcionista/recepcionista_layout.html" %}
+{% load widget_tweaks %}
+
+{% block import_links %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.js"></script>
+{% endblock %}
+
+{% block title %}Reservar Turno{% endblock title %}
+
+{% block css %}
+    .displayNone {
+        display:none;
+    }
+    #table-turnos td input[type=radio]{
+        transform:scale(1.4);
+    }   
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2>MENÚ DE RESERVA DE TURNOS</h2>
+        <form id="especialidad-form" method="GET">
+            <div class="form-group">
+                <label for="documento">Documento</label>
+                <input type="number" name="documento" class="form-control" placeholder="DNI del paciente"/>
+            </div>
+            <label for="id_especialidad">Especialidad</label>
+            <div class="form-row">
+                <div class="col">
+                    {{ especialidad_form.especialidades|add_class:"form-control"  }}
+                </div>
+                <div class="col">
+                    <input type="submit" class="btn btn-primary pl-4 pr-4" value="Buscar" />
+                </div>
+            </div>    
+        </form>
+    </div>
+    <div id="container-turnos" class="container display-none">
+    </div>
+{% endblock content %}
+
+{% block javascript %}
+
+<script>
+    $("#especialidad-form input[name='documento']").on("input",function(event){
+        console.log(event);
+    });
+    $("#especialidad-form").on("submit",function(event){
+        event.preventDefault();
+        $targetURL = "{% url 'consultar-turnos-especialidad-ajax' %}";
+        let $formData = $(this).serialize();
+        $.ajax({
+            method: "GET",
+            url: $targetURL,
+            data: $formData,
+            success: function(data) {
+                let $containerTurnos = document.getElementById("container-turnos");
+                $containerTurnos.innerHTML = "";
+                $containerTurnos.innerHTML += data;
+                $("#container-turnos").show();
+                $('#table-turnos').DataTable({
+                    "language": {
+                        "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    }
+                });
+            },
+            error: function(data){
+                console.log("error");
+                console.log(data);
+            },
+        });
+    });
+
+</script>
+
+{% endblock %}

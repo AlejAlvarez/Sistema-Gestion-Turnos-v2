@@ -40,3 +40,9 @@
   .sidebar .nav-link.active .feather {
     color: inherit;
   }
+
+
+/* -- General -- */
+.display-none {
+  display:none;
+}

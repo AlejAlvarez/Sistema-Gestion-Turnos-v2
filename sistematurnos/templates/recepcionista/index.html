@@ -1,0 +1,29 @@
+{% extends "recepcionista/recepcionista_layout.html" %}
+
+{% block title %}Index Recepcionista{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h2>Index Recepcionista</h2>
+        <form>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="id_first_name">Nombre</label>
+                    <input class="form-control" type="text" value="{{ recepcionista.first_name }}" disabled=true>
+                </div>
+                <div class="form-group col">
+                    <label for="id_last_name">Apellido</label>
+                    <input class="form-control" type="text" value="{{ recepcionista.last_name }}" disabled=true>
+                </div>    
+            </div>
+            <div class="form-group">
+                <label for="id_username">Nombre de Usuario</label>
+                <input class="form-control" type="text" value="{{ recepcionista.username }}" disabled=true>
+            </div>
+            <div class="form-group">
+                <label for="id_last_login">Última Conexión</label>
+                <input class="form-control" type="text" value="{{ recepcionista.last_login }}" disabled=true>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

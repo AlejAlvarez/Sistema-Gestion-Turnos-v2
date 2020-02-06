@@ -1,0 +1,50 @@
+{% extends 'paciente/paciente_layout.html' %}
+{% block title %} Listado de Turnos {% endblock title %}
+{% block css %}
+    /* codigo de ale */
+    .table-scroll thead > tr > th {
+        border: none;
+    }
+    .well {
+        background: none;
+        height: 320px;
+    }
+{% endblock %}
+{% block content %}
+    <div class="container">
+    {% if lista_turnos %}
+        <h1>Historial</h1>
+        <div class="well">
+            <table class="table table-scroll table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Especialidad</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Información</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for turno in lista_turnos %}
+                    <tr>
+                        <td>{{ turno.fecha }}</td>
+                        <td>{{ turno.medico.especialidad }}</td>
+                        {% comment %} Aca va un link a la DetailView del Turno (donde podra imprimir o cancelar dicho turno) {% endcomment %}
+                        {% if turno.estado == 4 %}
+                            <td class="text-success">Atendido</td>
+                        {% endif %}
+                        {% if turno.estado == 5 %}
+                            <td class="text-danger">Cancelado</td>
+                        {% endif %}
+                        <td><a href="{% url 'ver-turno' turno.pk %}">Ver</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+    <h1>Aún no tiene turnos registrados en el historial</h1>
+    {% endif %}
+</div>
+{% comment %}<button type="submit" onclick="location.href='{% url 'buscar-turnos' %}'">Cancelar Turnos</button>{% endcomment %}
+{% endblock content %}
