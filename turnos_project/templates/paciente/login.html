@@ -1,0 +1,28 @@
+{% extends "main_layout.html" %}
+{% block title %}Login Paciente{% endblock %}
+{% block importlinks %}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+{% endblock %}
+{% block css %}
+{% endblock %}
+{% block content %}
+<div class="container h-75">
+    <h2>Paciente Login</h2>
+    <form method="POST" action="{% url 'loguear-usuario' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" class="form-control" name="username" placeholder="Nombre de Usuario">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Contraseña">
+        </div> 
+        <input type="hidden" name="rol" value="paciente" />
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

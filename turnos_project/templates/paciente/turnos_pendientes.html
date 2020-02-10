@@ -1,0 +1,33 @@
+{% extends "paciente/paciente_layout.html" %}
+{% load static %}
+{% block title %}Informacion Paciente{% endblock title %}
+{% block css %}
+    .turno-card {
+        border-color:grey;
+        margin: 15px 0px;
+    }
+{% endblock %}
+{% block content %}  
+    <div class="container">
+        <h1>Turnos Pendientes</h1>
+        {% for turno in lista_turnos %}
+        <div class="card turno-card">
+            <div class="row no-gutters">
+                <div class="col-md-2 m-auto">
+                    <img class="card-img" src="{% static "images/stethoscope-GerdAltmann.png" %}" alt="Image by Gerd Altmann from Pixabay">
+                </div>
+                <div class="col">
+                    <div class="card-header"><span class="featured">Turno #{{ turno.id }}</span></div>
+                    <div class="card-body">
+                        <p class="card-text">Fecha y Hora de Atención: {{ turno.fecha.date }}, {{ turno.fecha.time }} </p>
+                        <p class="card-text">Médico: {{ turno.medico }}</p>
+                        <p class="card-text">Especialidad: {{ turno.medico.especialidad }}</p>
+                    </div>
+                </div>    
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
+{% block javascript %}
+{% endblock  %}

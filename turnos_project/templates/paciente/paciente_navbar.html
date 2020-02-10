@@ -1,0 +1,19 @@
+{% load static %}   
+<nav class="navbar navbar-expand-lg navbar-expand-md" id="primary-navbar">
+        <span class="navbar-brand" href="#">
+          <img src="{% static "images/red-cross-logo.svg" %}" height="55px"/>
+          <a class="navbar-brand">TURNOS</a>
+        </span>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Cuenta
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'logout-paciente' %}">Cerrar Sesión</a>
+              </div>
+            </li>
+          </ul>
+        </div>  
+</nav>

@@ -1,0 +1,13 @@
+{% extends "main_layout.html" %}
+{% block title %}Login Paciente{% endblock %}
+{% block css %}
+    
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>LOGGED OUT AS PACIENTE</h1>
+        <a href="{% url 'login-paciente' %}">Volver a conectarse</a> | <a href="{% url 'home' %}">Inicio</a>
+    </div>
+{% endblock %}
+{% block javascript %}
+{% endblock %}
