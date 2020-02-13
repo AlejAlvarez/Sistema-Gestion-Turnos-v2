@@ -13,7 +13,6 @@ urlpatterns = [
     # general
 
     path('',home,name='home'),
-    path('loguear-usuario',loguear_usuario,name='loguear-usuario'),
 
     # recepcionista patterns
 

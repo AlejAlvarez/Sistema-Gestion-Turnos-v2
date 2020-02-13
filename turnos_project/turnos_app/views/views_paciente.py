@@ -23,11 +23,14 @@ class LoginPacienteView(View):
     
     # loguea al paciente
     def get(self, request, *args, **kwargs):
-        auth_form = AuthenticationForm()
-        context = {
-            'auth_form':auth_form,
-        }
-        return render(request,self.template_name,context)
+        if request.user.is_authenticated:
+            return redirect(self.success_url)
+        else:
+            auth_form = AuthenticationForm()
+            context = {
+                'auth_form':auth_form,
+            }
+            return render(request,self.template_name,context)
 
     def post(self, request, *args, **kwargs):
         # get auth form and validate
