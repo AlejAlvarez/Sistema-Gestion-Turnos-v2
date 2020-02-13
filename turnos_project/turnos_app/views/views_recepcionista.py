@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView 
+from django.views import View
 
 from ..models import *
 from .views_usuario import *
@@ -16,6 +17,44 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from datetime import timedelta, datetime, date
 
+
+class LoginRecepcionistaView(View):
+
+    template_name = 'recepcionista/login.html'
+    success_url = 'index-recepcionista'
+    
+    # loguea al paciente
+    def get(self, request, *args, **kwargs):
+        auth_form = AuthenticationForm()
+        context = {
+            'auth_form':auth_form,
+        }
+        return render(request,self.template_name,context)
+
+    def post(self, request, *args, **kwargs):
+        # get auth form and validate
+        auth_form = AuthenticationForm(data=request.POST)
+        context = {
+            'auth_form': auth_form,
+            'error_message':'',
+        }        
+        if auth_form.is_valid():
+            username = auth_form.cleaned_data['username']
+            password = auth_form.cleaned_data['password']
+            user = authenticate(username=username,password=password)
+            if user is not None:
+                # se comprueba que tenga el permiso necesario para ingresar
+                if (user.has_perm('turnos_app.es_recepcionista')):
+                    login(request,user)    
+                    return redirect(self.success_url)
+                else:
+                    context['error_message'] = 'No tiene permiso para acceder'
+                    return render(request,self.template_name,context)
+            context['error_message'] = 'No tiene permiso para acceder'
+            return render(request,self.template_name,context)
+        else:
+            context['error_message'] = 'Nombre de Usuario o Contraseña Incorrecto'
+            return render(request,self.template_name,context)
 
 
 @login_required(login_url='/recepcionista/login')

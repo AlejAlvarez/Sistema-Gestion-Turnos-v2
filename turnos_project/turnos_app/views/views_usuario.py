@@ -12,28 +12,6 @@ from django.contrib.auth import authenticate, login
 from ..models import CustomUser
 from ..models import *
 
-def loguear_usuario(request):
-    default_get_view = reverse_lazy('home')
-    print(request.method)
-    if request.method == 'POST':   
-        username = request.POST['username']
-        password = request.POST['password'] 
-        rol = request.POST['rol']
-        user = authenticate(username=username,password=password)
-        if user is not None:
-            login(request,user)
-            user_perm = 'turnos_app.es' + '_' + rol
-            accept_view_name = 'index' + '-' + rol
-            reject_view_name = 'login' + '-' + rol
-            if (user.has_perm(user_perm)):
-                return redirect(accept_view_name)
-            else: 
-                return redirect(reject_view_name) 
-        else: 
-            return HttpResponse('No se pudo autenticar')   
-    else:
-        return redirect(default_get_view)
-
 class CustomUserCreateView(LoginRequiredMixin, CreateView):
     login_url = 'login'
     form_class = CustomUserCreationForm

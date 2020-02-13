@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView 
+from django.views import View
 
 from ..models import *
 from ..forms.forms_paciente import PacienteChangeForm
@@ -13,6 +14,50 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView
+
+
+class LoginPacienteView(View):
+    
+    template_name = 'paciente/login.html'
+    success_url = 'index-paciente'
+    
+    # loguea al paciente
+    def get(self, request, *args, **kwargs):
+        auth_form = AuthenticationForm()
+        context = {
+            'auth_form':auth_form,
+        }
+        return render(request,self.template_name,context)
+
+    def post(self, request, *args, **kwargs):
+        # get auth form and validate
+        auth_form = AuthenticationForm(data=request.POST)
+        if auth_form.is_valid():
+            username = auth_form.cleaned_data['username']
+            password = auth_form.cleaned_data['password']
+            user = authenticate(username=username,password=password)
+            if user is not None:
+                # se comprueba que tenga el permiso necesario para ingresar
+                if (user.has_perm('turnos_app.es_paciente')):
+                    login(request,user)    
+                    return redirect(self.success_url)
+                else:
+                    context = {
+                        'auth_form':auth_form,
+                        'error_message':'No tiene permiso para acceder a esta página', 
+                    }
+                    return render(request,self.template_name,context)
+            context = {
+                'auth_form':auth_form,
+                'error_message':'No tiene permiso para acceder a esta página',
+            }
+            return render(request,self.template_name,context)
+        else:
+            context = {
+                'auth_form':auth_form,                
+                'error_message':'Nombre de Usuario o Contraseña Incorrecto',
+            }
+            return render(request,self.template_name,context)
 
 # va a retornar el user que está logueado, aún así debe ser un paciente
 @login_required(login_url='/paciente/login')

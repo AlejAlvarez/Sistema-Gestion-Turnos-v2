@@ -1,4 +1,5 @@
 {% extends "main_layout.html" %}
+{% load widget_tweaks %}
 {% block title %}Login Paciente{% endblock %}
 {% block importlinks %}
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
@@ -6,20 +7,22 @@
 {% block css %}
 {% endblock %}
 {% block content %}
-<div class="container h-75">
+<div class="container">
     <h2>Paciente Login</h2>
-    <form method="POST" action="{% url 'loguear-usuario' %}">
+    <form method="POST" action="{% url 'login-paciente' %}">
         {% csrf_token %}
         <div class="form-group">
-            <input type="text" class="form-control" name="username" placeholder="Nombre de Usuario">
+            <label for="{{ auth_form.username.id_for_label }}">Usuario</label>            
+            {{ auth_form.username | add_class:'form-control' }}
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" name="password" placeholder="Contraseña">
-        </div> 
-        <input type="hidden" name="rol" value="paciente" />
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+            <label for="{{ auth_form.password.id_for_label }}">Contraseña</label> 
+            {{ auth_form.password | add_class:'form-control' }}
         </div>
+        {% if error_message %}
+            <p class="warning-text">{{ error_message }}</p>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Login</button>
     </form>
 </div>
 {% endblock %}

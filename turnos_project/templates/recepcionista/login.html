@@ -1,25 +1,27 @@
 {% extends "main_layout.html" %}
-{% block title %}Login Paciente{% endblock %}
+{% load widget_tweaks %}
+{% block title %}Login Recepcionista{% endblock %}
 {% block css %}
-    
 {% endblock %}
 {% block content %}
-    <div class="container">
-        <h2>Recepcionista Login</h2>
-        <form method="POST" action="{% url 'loguear-usuario' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <input type="text" class="form-control" name="username" placeholder="Nombre de Usuario">
-            </div>
-            <div class="form-group">
-                <input type="password" class="form-control" name="password" placeholder="Contraseña">
-            </div> 
-            <input type="hidden" name="rol" value="recepcionista" />
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
-            </div>
-        </form>
-    </div>
+<div class="container">
+    <h2>Recepcionista Login</h2>
+    <form method="POST" action="{% url 'login-recepcionista' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ auth_form.username.id_for_label }}">Usuario</label>            
+            {{ auth_form.username | add_class:'form-control' }}
+        </div>
+        <div class="form-group">
+            <label for="{{ auth_form.password.id_for_label }}">Contraseña</label> 
+            {{ auth_form.password | add_class:'form-control' }}
+        </div>
+        {% if error_message %}
+            <p class="warning-text">{{ error_message }}</p>
+        {% endif %}
+        <button type="submit" class="btn btn-dark">Login</button>
+    </form>
+</div>
 {% endblock %}
 {% block javascript %}
 {% endblock %}

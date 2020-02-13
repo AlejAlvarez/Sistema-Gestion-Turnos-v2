@@ -17,7 +17,7 @@ urlpatterns = [
 
     # recepcionista patterns
 
-    path('recepcionista/login',auth_views.LoginView.as_view(template_name='recepcionista/login.html'),name='login-recepcionista'),
+    path('recepcionista/login',LoginRecepcionistaView.as_view(),name='login-recepcionista'),
     path('recepcionista/logout',auth_views.LogoutView.as_view(template_name='recepcionista/logout.html'),name='logout-recepcionista'),
     path('recepcionista/index/',index_recepcionista,name='index-recepcionista'),
     path('recepcionista/gestionar-turnos/',gestionar_turnos,name='gestionar-turnos'),
@@ -36,7 +36,7 @@ urlpatterns = [
     
     # paciente patterns
 
-    path('paciente/login/',auth_views.LoginView.as_view(template_name='paciente/login.html'),name='login-paciente'),
+    path('paciente/login/',LoginPacienteView.as_view(),name='login-paciente'),
     path('paciente/logout/',auth_views.LogoutView.as_view(template_name='paciente/logout.html'),name='logout-paciente'),
     path('paciente/index/',index_paciente,name='index-paciente'),
     path('paciente/buscar-turnos/',buscar_turnos,name='hacer-reserva'),
