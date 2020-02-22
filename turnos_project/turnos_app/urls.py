@@ -21,9 +21,10 @@ urlpatterns = [
     path('recepcionista/index/',index_recepcionista,name='index-recepcionista'),
     path('recepcionista/gestionar-turnos/',gestionar_turnos,name='gestionar-turnos'),
     path('recepcionista/registrar-paciente/',SignUpPacienteView.as_view(),name='registrar-paciente'),
-    path('recepcionista/reservar-turno/',reservar_turno,name='reservar-turno'),
-    path('recepcionista/reservar-turno/<int:pk>/',completar_reserva,name='completar-reserva'),
+    path('recepcionista/reservar-turno/',ReservarTurnoView.as_view(),name='reservar-turno'),
+    path('recepcionista/completar-reserva/<int:pk>/',CompletarReservaView.as_view(),name='completar-reserva'),
     path('recepcionista/ajax/buscar-turnos',ConsultarTurnosEspecialidadAjax.as_view(),name='consultar-turnos-especialidad-ajax'),
+    path('recepcionista/ajax/obtener-paciente',ObtenerPacienteAjax.as_view(),name='obtener-paciente-ajax'),
     
     # medico patterns
     

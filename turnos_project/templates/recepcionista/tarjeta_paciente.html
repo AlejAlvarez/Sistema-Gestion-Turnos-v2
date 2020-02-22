@@ -1,0 +1,25 @@
+{% if paciente %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ paciente.user.first_name }} {{ paciente.user.last_name }}</h5>
+            <div class="row">
+                <div class="col">
+                    <p class="card-text">Nro Documento: {{ paciente.user.documento }}</p>
+                    <p class="card-text">Fecha de Nacimiento: {{ paciente.user.nacimiento }}</p>
+                </div>
+                <div class="col">
+                    <p class="card-text">
+                        PENALIZADO: 
+                        {% if paciente.penalizado %}
+                        <span class="text-warning">SÍ</span>
+                        {% else %}
+                        </span class="text-success">NO</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <p>No se ha encontrado un paciente con el documento ingresado</p>
+{% endif %} 

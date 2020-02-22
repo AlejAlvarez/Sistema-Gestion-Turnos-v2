@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse,Http404
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView 
@@ -8,7 +8,7 @@ from django.views import View
 from ..models import *
 from .views_usuario import *
 from ..forms.user_forms import CustomUserChangeForm
-from ..forms.forms_recepcionista import PacienteCreationForm
+from ..forms.forms_recepcionista import *
 from ..forms.forms_turno import SeleccionarEspecialidadForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
@@ -154,7 +154,7 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
             return super().get(request, *args, **kwargs)
 
 @login_required(login_url='/recepcionista/login')
-@permission_required('turnos_app.es_rececepcionista')
+@permission_required('turnos_app.es_recepcionista')
 def editar_informacion_paciente(request, pk):
 
     user = get_object_or_404(CustomUser, pk=pk)
@@ -174,16 +174,28 @@ def editar_informacion_paciente(request, pk):
         args = {'form': form, 'perfil_form': paciente_form}
         return render(request, 'paciente/update_user_mform.html', args)
 
-@login_required(login_url='/recepcionista/login')
-@permission_required('turnos_app.es_recepcionista')
-def reservar_turno(request):
+class ReservarTurnoView(PermissionRequiredMixin,View):
 
-    if request.method == "POST":
+    template_name = 'recepcionista/reservar_turno.html'
+    permission_required = ('turnos_app.es_recepcionista',)
+
+    def get(self,request,*args,**kwargs):
+        documento_form = DocumentoForm()
+        especialidades = Especialidad.objects.all()
+        especialidades_form = SeleccionarEspecialidadForm(especialidades=especialidades)
+        context = {
+            'especialidad_form':especialidades_form,
+            'documento_form': documento_form,
+        }
+        return render(request,self.template_name,context)
+
+    def post(self,request,*args,**kwargs):
         especialidades_form = SeleccionarEspecialidadForm(especialidades=Especialidad.objects.all(),data=request.POST)
+        print(request.POST)
         if  ("reservar" in request.POST):
-            turno_id = request.POST.get('turno')
+            turno_id = request.POST.get('turnos')
             # lógica para reservar turno
-            return redirect('completar-reserva',turno_id=turno_id)
+            return redirect('completar-reserva',pk=turno_id)
         elif (especialidades_form.is_valid()):
             especialidad_seleccionada = especialidades_form.cleaned_data.get('especialidades')
             # obtener primero los médicos por esp1ecialidad
@@ -193,33 +205,36 @@ def reservar_turno(request):
             ]
             # luego obtener los turnos por médico, falta filtrarlos por medico
             turnos_especialidad = Turno.get_turnos_weeks_ahead(estado=1).filter(medico_id__in=medicos_id)
-            return render(request,"recepcionista/reservar_turno.html",{'especialidad_form':especialidades_form})    
-            
-    else:
-        user = request.user
-        permissions = Permission.objects.filter(user=user)
-        print("PERMISOS USUARIOS: ",permissions[0].codename)
-        especialidades = Especialidad.objects.all()
-        especialidades_form = SeleccionarEspecialidadForm(especialidades=especialidades)
-        return render(request,'recepcionista/reservar_turno.html',{'especialidad_form':especialidades_form})
+            return render(request,self.template_name,{'especialidad_form':especialidades_form})    
 
-@login_required(login_url='/recepcionista/login')
-@permission_required('turnos_app.es_recepcionista')
-def completar_reserva(request,turno_id):
-        turno_reservado = Turno.objects.get(id=turno_id)
-        turno_reserva_form = CompletarReservaForm(turno=turno_reservado)
-        if request.method == "GET":
-            return render(request,'recepcionista/completar_reserva.html',{'form':turno_reserva_form})
+
+class CompletarReservaView(PermissionRequiredMixin,View):
+
+    template_name = 'recepcionista/completar_reserva.html'
+    permission_required = ('turnos_app.es_recepcionista',)
+
+    def get(self,request,*args,**kwargs):
+        # mejor podría ser el método get_or_404
+        turno_reservado = get_object_or_404(Turno,pk=kwargs['pk'])
+        # primero verificar por estado, estado 1 = disponible
+        # luego verificar por rango de fecha
+        if turno_reservado.estado != 1:
+            raise Http404('Página no encontrada')   
+        context = {
+            'turno':turno_reservado
+        }
+        return render(request,'recepcionista/completar_reserva.html',context)
+    
+    def post(self,request,*args,**kwargs):
+        print('POST')
+        """
+        # POST method 
+        if(form.is_valid()):
+            turno = Turno.objects.get(id=form.cleaned_data.get('turno_id'))
+            # estado 2 = reservado
+            turno.estado = 2
+            #turno.paciente = Paciente.objects.get(dni = dni)
+            turno.save()
+            return HttpResponse("Turno Reservado con éxito titán")
         else:
-            #<input type="text" name="fecha" value="2020-01-11 20:39:06" required="" id="id_fecha">
-            # POST method 
-            form = CompletarReservaForm(data=request.POST)
-            if(form.is_valid()):
-                turno = Turno.objects.get(id=form.cleaned_data.get('turno_id'))
-                # estado 2 = reservado
-                turno.estado = 2
-                #turno.paciente = Paciente.objects.get(dni = dni)
-                turno.save()
-                return HttpResponse("Turno Reservado con éxito titán")
-            else:
-                return render(request,'recepcionista/completar_reserva.html',{'form':form})
+            return render(request,'recepcionista/completar_reserva.html',{'form':form}) """

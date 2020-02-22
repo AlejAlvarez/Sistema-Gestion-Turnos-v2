@@ -17,22 +17,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Servicios</a>
                 </li>
-                <li class="nav-item">
+                <li class=."nav-item">
                     <a class="nav-link" href="#">FAQs</a>
-                </li>
-                {% if user.is_authenticated %}
-                <!-- acá debería ir el logo de rol y las opciones -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <img src="{% static "images/nav-user2.png" %}" height="20px"/>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                      <a class="dropdown-item" href="{% url 'index-paciente' %}">Mi Perfil</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="{% url 'logout-paciente' %}">Cerrar Sesión</a>
-                    </div>
-                  </li>
-                  {% endif %}                
+                </li>               
             </ul>
         </div>    
 </nav>

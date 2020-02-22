@@ -17,7 +17,7 @@
             {{ auth_form.password | add_class:'form-control' }}
         </div>
         {% if error_message %}
-            <p class="text-warning">{{ error_message }}</p>
+            <p class="text-danger">{{ error_message }}</p>
         {% endif %}
         <button type="submit" class="btn btn-dark">Login</button>
     </form>

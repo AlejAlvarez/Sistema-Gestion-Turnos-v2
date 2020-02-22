@@ -26,3 +26,6 @@ class PacienteCreationForm(CustomUserCreationForm):
     def __init__(self, *args, **kwargs):
         super(PacienteCreationForm, self).__init__(*args, **kwargs)
 
+class DocumentoForm(forms.Form):
+    
+    documento = forms.IntegerField()
