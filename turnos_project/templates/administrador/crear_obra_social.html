@@ -1,0 +1,27 @@
+{% extends 'administrador/administrador_layout.html' %}
+{% load widget_tweaks %}
+
+{% block title %} Crear Obra Social {% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h2>Nueva Obra Social</h2>
+    {% if messages %}
+        <div class="alert-success">
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.nombre.id_for_label }}">Nombre</label>
+            {{ form.nombre|add_class:"form-control" }}
+        </div>
+        <button class="btn btn-info" type="submit">Crear</button>
+    </form>
+</div>
+{% endblock content %}

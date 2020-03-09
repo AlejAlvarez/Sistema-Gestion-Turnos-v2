@@ -1,0 +1,25 @@
+{% extends 'administrador/administrador_layout.html' %}
+{% block title %}Detalles Recepcionista{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h2>Detalles del Recepcionista</h2>
+    <div class="row justify-content-center">
+        <div class="col">
+            <p>Nombre: {{ object.first_name }}</p>
+            <p>Apellido: {{ object.last_name }}</p>
+            <p>Documento: {{ object.documento }}</p>
+            <p>Usuario: {{ object.username }}</p>
+            <p>Domicilio: {{ object.domicilio }}</p>
+            <p>Telefono: {{ object.telefono }}</p>
+            <p>Nacimiento: {{ object.nacimiento }}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary" href="{% url 'editar-recepcionista' object.pk %}">Editar Recepcionista</a>
+            <a class="btn btn-primary" href="{% url 'eliminar-recepcionista' object.pk %}">Eliminar Recepcionista</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

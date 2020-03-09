@@ -1,0 +1,89 @@
+{% extends 'administrador/administrador_layout.html' %}
+{% block title %} Lista de Especialidades {% endblock title %}
+{% block import_css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/sp-1.0.1/sl-1.3.1/datatables.min.css"/>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/sp-1.0.1/sl-1.3.1/datatables.min.js"></script>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Lista de Especialidades</h1>
+        {% if messages %}
+            <div class="alert-success">
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col">
+                <table id="tabla-especialidades" class="table table-striped table-bordered table-hover" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Medicos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for especialidad in object_list %}
+                            <tr>
+                                <td>{{ especialidad.id }}</td>
+                                <td>{{ especialidad.nombre }}</td>
+                                <td>{{ especialidad.medicos }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-md">
+                <a class="btn btn-primary" href="{% url 'crear-especialidad' %}">Nueva Especialidad</a>
+            </div>    
+            <div class="col col-md">
+                <button id="btn-eliminar" type="button" class="btn btn-primary">Eliminar Especialidad</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            $('#tabla-especialidades').DataTable({
+                select: {
+                    style: 'single'
+                },
+                "language": {
+                        "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                }
+            });
+            
+            var tabla = $('#tabla-especialidades').DataTable();
+            var btn = document.getElementById("btn-eliminar");
+            btn.disabled = true;
+            var especialidad_id = null;
+
+            tabla.on('select', function(e, dt, type, indexes){
+                if (type === 'row'){
+                    especialidad_id = tabla.row().data()[0];
+                    btn.disabled = false;
+                }
+            });
+
+            tabla.on('deselect', function(e, dt, type, indexes){
+                if (type === 'row'){
+                    especialidad_id = null;
+                    btn.disabled = true;
+                }
+            });
+
+            btn.onclick = function(){
+                let url = "eliminar-especialidad/" + especialidad_id + "/" ;
+                window.location.replace(url);
+            };
+        });
+        
+    </script>
+{% endblock content %}

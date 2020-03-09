@@ -1,7 +1,7 @@
-{% extends "recepcionista/recepcionista_layout.html" %}
+{% extends 'administrador/administrador_layout.html' %}
 {% load widget_tweaks %}
 
-{% block title %}Registrar Paciente{% endblock title %}
+{% block title %}Registrar Administrador{% endblock title %}
 {% block css %}
     .snps-inline-select {
         width: auto;
@@ -11,9 +11,18 @@
 {% endblock %}
 {% block content %}
     <div class="container">
-        <h2>MENÚ DE REGISTRO DE PACIENTE</h2>
+        <h2>Registrar Administrador</h2>
         <form method="POST">
             {% csrf_token %}
+            {% if messages %}
+                <div class="alert-success">
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
             <div class="form-group">
                 <label for="{{ form.username.id_for_label }}">Nombre de Usuario</label>
                 {{ form.username|add_class:"form-control" }}
@@ -59,19 +68,6 @@
             <div class="form-group">
                 <label for="id_nacimiento_day">Nacimiento</label>
                 {{ form.nacimiento|add_class:"form-control snps-inline-select" }}
-            </div>
-            <fieldset class="form-group">
-                <label for="{{ form.genero.id_for_label }}">Genero</label>
-                {% for genero in form.genero %}
-                <div class="form-check">
-                    <span class="form-check-input">{{ genero.tag }}</span> 
-                    <label class="form-check-label" for="{{ genero.id_for_label }}">{{ genero.choice_label }}</label>
-                </div>
-                {% endfor %}
-            </fieldset>
-            <div class="form-group">
-                <label for="{{ form.obra_social.id_for_label }}">Obra Social</label>
-                {{ form.obra_social|add_class:"form-control" }}
             </div>
             <button class="btn btn-info" type="submit">Registrar</button>
         </form>

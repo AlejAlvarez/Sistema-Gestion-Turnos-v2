@@ -1,0 +1,68 @@
+{% extends 'administrador/administrador_layout.html' %}
+{% load widget_tweaks %}
+
+{% block title %} Editar Medico {% endblock %}
+{% block content %}
+    <div class="container">
+        <h2>Editar Medico</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {% if messages %}
+                <div class="alert-success">
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Nombre de Usuario</label>
+                {{ form.username|attr:"value: user.username "|add_class:"form-control" }}
+            </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="{{ form.first_name.id_for_label }}">Nombre</label>
+                    {{ form.first_name|attr:"value: user.first_name "|add_class:"form-control" }}
+                </div>
+                <div class="form-group col">
+                    <label for="{{ form.last_name.id_for_label }}">Apellido</label>
+                    {{ form.last_name|attr:"value: user.last_name "|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="{{ form.documento.id_for_label }}">Documento</label>
+                    {{ form.documento|attr:"value: user.documento "|add_class:"form-control" }}
+                </div>
+                <div class="form-group col">
+                    <label for="{{ form.domicilio.id_for_label }}">Domicilio</label>
+                    {{ form.domicilio|attr:"value: user.domicilio "|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="{{ form.telefono.id_for_label }}">Telefono</label>
+                    {{ form.telefono|attr:"value: user.telefono "|add_class:"form-control" }}
+                </div>
+                <div class="form-group col">
+                    <label for="{{ form.email.id_for_label }}">E-mail</label>
+                    {{ form.email|attr:"value: user.email "|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_nacimiento_day">Nacimiento</label>
+                {{ form.nacimiento|attr:"value: user.nacimiento "|add_class:"form-control snps-inline-select" }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.cuil.id_for_label }}"></label>
+                {{ form.cuil|attr:"value: perfil.cuil "|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.especialidad.id_for_label }}">Especialidad</label>
+                {{ form.especialidad|attr:"value: perfil.especialidad "|add_class:"form-control" }}
+            </div>
+            <button class="btn btn-info" type="submit">Actualizar</button>
+        </form>
+    </div>
+{% endblock content %}

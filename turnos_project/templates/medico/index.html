@@ -1,0 +1,29 @@
+{% extends "main_layout.html" %}
+
+{% block title %}Index Medico{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h2>Index Medico</h2>
+        <form>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="id_first_name">Nombre</label>
+                    <input class="form-control" type="text" value="{{ medico.first_name }}" disabled=true>
+                </div>
+                <div class="form-group col">
+                    <label for="id_last_name">Apellido</label>
+                    <input class="form-control" type="text" value="{{ medico.last_name }}" disabled=true>
+                </div>    
+            </div>
+            <div class="form-group">
+                <label for="id_username">Nombre de Usuario</label>
+                <input class="form-control" type="text" value="{{ medico.username }}" disabled=true>
+            </div>
+            <div class="form-group">
+                <label for="id_last_login">Última Conexión</label>
+                <input class="form-control" type="text" value="{{ medico.last_login }}" disabled=true>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

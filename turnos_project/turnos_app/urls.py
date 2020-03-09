@@ -6,6 +6,7 @@ from .views.views_usuario import *
 from .views.views_paciente import *
 from .views.views_recepcionista import *
 from .views.views_medico import *
+from .views.views_administrador import *
 from .views.ajax_views import *
 
 urlpatterns = [
@@ -49,4 +50,13 @@ urlpatterns = [
     path('paciente/ajax/filtrar-medicos',BuscarMedicosAjax.as_view(),name='filtrar-medicos-ajax'),
     path('paciente/ajax/buscar-turnos',BuscarTurnosAjax.as_view(),name='buscar-turnos-ajax'),
     #path('paciente/editar/<int:pk>/',editar_paciente, name='editar-paciente'),
+
+    # administrador patterns
+
+    path('admin/login/',auth_views.LoginView.as_view(template_name='admin/login.html'),name='login-admin'),
+    path('admin/logout/',auth_views.LogoutView.as_view(template_name='admin/logout.html'),name='logout-admin'),
+    path('admin/index/', index_administrador,name='index-administrador'),
+    path('admin/registrar-recepcionista/', SignUpRecepcionistaView.as_view(), name='registrar-recepcionista'),
+    path('admin/registrar-medico/', SignUpMedicoView.as_view(), name='registrar-medico'),
+    path('admin/registrar-admin/', SignUpAdministradorView.as_view(), name='registrar-administrador'),
 ]

@@ -8,7 +8,7 @@ from django.views import View
 from ..models import *
 from .views_usuario import *
 from ..forms.user_forms import CustomUserChangeForm
-from ..forms.forms_recepcionista import *
+from ..forms.forms_paciente import PacienteCreationForm
 from ..forms.forms_turno import SeleccionarEspecialidadForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
@@ -23,7 +23,7 @@ class LoginRecepcionistaView(View):
     template_name = 'recepcionista/login.html'
     success_url = 'index-recepcionista'
     
-    # loguea al paciente
+    # loguea al recepcionista
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect(self.success_url)
@@ -145,8 +145,10 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
             if(form.cleaned_data['obra_social'] is None):
                 perfil_paciente = Paciente.objects.create(user=user, genero=genero)
             else:
-                obra_social_seleccionada = ObraSocial.objects.get(nombre=form.cleaned_data['obra_social'])
-                perfil_paciente = Paciente.objects.create(user=user, genero=genero, obra_social=obra_social_seleccionada)
+                obra_social = form.cleaned_data.get('obra_social')
+                obra_social.pacientes += 1
+                obra_social.save()
+                perfil_paciente = Paciente.objects.create(user=user, genero=genero, obra_social=obra_social)
             perfil_paciente.save()
             return HttpResponse('Paciente creado con exito')
         else:
@@ -172,7 +174,7 @@ def editar_informacion_paciente(request, pk):
         form = CustomUserChangeForm(instance=user)
         paciente_form = PacienteChangeForm(instance=user.paciente)
         args = {'form': form, 'perfil_form': paciente_form}
-        return render(request, 'paciente/update_user_mform.html', args)
+        return render(request, 'recepcionista/editar_paciente.html', args)
 
 class ReservarTurnoView(PermissionRequiredMixin,View):
 

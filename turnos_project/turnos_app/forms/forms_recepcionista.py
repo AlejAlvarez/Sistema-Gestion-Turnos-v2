@@ -15,16 +15,6 @@ class RecepcionistaInformationForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super(RecepcionistaInformationForm,self).__init__(*args,**kwargs)
 
-class PacienteCreationForm(CustomUserCreationForm):
-
-    genero = forms.ChoiceField(choices=Paciente.GENERO_CHOICES, widget=forms.RadioSelect)
-    obra_social = forms.ModelChoiceField(
-        queryset=ObraSocial.objects.all(),
-        required=False
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(PacienteCreationForm, self).__init__(*args, **kwargs)
 
 class DocumentoForm(forms.Form):
     

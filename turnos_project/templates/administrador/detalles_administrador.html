@@ -1,0 +1,26 @@
+{% extends 'administrador/administrador_layout.html' %}
+{% block title %}Detalles Administrador{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h2>Detalles del Administrador</h2>
+    <div class="row justify-content-center">
+        <div class="col">
+            <h2>Detalles del Administrador</h2>
+            <p>Nombre: {{ object.first_name }}</p>
+            <p>Apellido: {{ object.last_name }}</p>
+            <p>Documento: {{ object.documento }}</p>
+            <p>Usuario: {{ object.username }}</p>
+            <p>Domicilio: {{ object.domicilio }}</p>
+            <p>Telefono: {{ object.telefono }}</p>
+            <p>Nacimiento: {{ object.nacimiento }}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary" href="{% url 'editar-administrador' object.pk %}">Editar Administrador</a>
+            <a class="btn btn-primary" href="{% url 'eliminar-administrador' object.pk %}">Eliminar Administrador</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

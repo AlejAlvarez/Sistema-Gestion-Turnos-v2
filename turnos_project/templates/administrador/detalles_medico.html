@@ -1,0 +1,28 @@
+{% extends 'administrador/administrador_layout.html' %}
+{% block title %}Detalles Medico{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <h2>Detalles del Medico</h2>
+    <div class="row justify-content-center">
+        <div class="col">
+            <h2>Detalles del Medico</h2>
+            <p>Nombre: {{ object.first_name }}</p>
+            <p>Apellido: {{ object.last_name }}</p>
+            <p>Documento: {{ object.documento }}</p>
+            <p>CUIL: {{ cuil }}</p>
+            <p>Usuario: {{ object.username }}</p>
+            <p>Especialidad: {{ especialidad }}</p>
+            <p>Domicilio: {{ object.domicilio }}</p>
+            <p>Telefono: {{ object.telefono }}</p>
+            <p>Nacimiento: {{ object.nacimiento }}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary" href="{% url 'editar-medico' object.pk %}">Editar Medico</a>
+            <a class="btn btn-primary" href="{% url 'eliminar-medico' object.pk %}">Eliminar Medico</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}
