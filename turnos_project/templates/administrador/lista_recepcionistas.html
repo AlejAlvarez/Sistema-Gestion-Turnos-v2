@@ -26,7 +26,7 @@
                                 <td>{{ recepcionista.first_name }}</td>
                                 <td>{{ recepcionista.last_name }}</td>
                                 <td>{{ recepcionista.username }}</td>
-                                <td><a href="{% url 'ver-recepcionista' user.pk %}" class="btn btn-secondary">Ver</a></td>
+                                <td><a href="{% url 'ver-recepcionista' recepcionista.pk %}" class="btn btn-secondary">Ver</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>

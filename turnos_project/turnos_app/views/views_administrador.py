@@ -62,6 +62,7 @@ class LoginAdministradorView(View):
             context['error_message'] = 'Nombre de Usuario o Contraseña Incorrecto'
             return render(request,self.template_name,context)
 
+
 @login_required(login_url='/administrador/login')
 @permission_required('turnos_app.es_administrador')
 # muestra la página de inicio una vez que se loguea el administrador
@@ -217,7 +218,7 @@ class DetailsMedico(PermissionRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        perfil_medico = Medico.objects.get(user=CustomUser.objects.get(dni=context['object'].documento))
+        perfil_medico = Medico.objects.get(user=CustomUser.objects.get(documento=context['object'].documento))
         context['cuil'] = perfil_medico.cuil
         context['especialidad'] = perfil_medico.especialidad
         return context
@@ -240,9 +241,16 @@ class EliminarMedicoView(PermissionRequiredMixin, SuccessMessageMixin, DeleteVie
     model = CustomUser
     permission_required = ('turnos_app.es_administrador')
     template_name = 'administrador/eliminar_usuario.html'
-    success_url = reverse_lazy('menu-medicos')
-    success_message = "Medico eliminado con éxito."
 
+    def delete(self, request, *args, **kwargs):
+        user = self.get_object()
+        perfil = Medico.objects.get(user=user)
+        especialidad = perfil.especialidad
+        especialidad.medicos -= 1
+        especialidad.save()
+        user.delete()
+        messages.info(request, 'Medico eliminado con éxito!')
+        return redirect('menu-medicos')
             
 class SignUpAdministradorView(PermissionRequiredMixin, CustomUserCreateView):
     form_class = CustomUserCreationForm
@@ -319,10 +327,10 @@ class PacienteListView(PermissionRequiredMixin, ListView):
         context['lista_pacientes'] = lista_pacientes
         return context
 
-class PacienteDeleteView(PermissionRequiredMixin, DeleteView):
+class EliminarPacienteView(PermissionRequiredMixin, DeleteView):
     model = CustomUser
     permission_required = ('turnos_app.es_administrador')
-    template_name = 'administrador/eliminar_usuario'
+    template_name = 'administrador/eliminar_usuario.html'
 
     def delete(self, request, *args, **kwargs):
         user = self.get_object()

@@ -23,6 +23,7 @@
                 <table id="tabla-pacientes" class="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Usuario</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
@@ -32,7 +33,8 @@
                     <tbody>
                         {% for paciente in lista_pacientes %}
                             <tr>
-                                <td><a href="{% url 'ver-paciente' paciente.pk %}">{{ paciente.username }}</a></td>
+                                <td>{{ paciente.id }}</td>
+                                <td>{{ paciente.username }}</a></td>
                                 <td>{{ paciente.first_name }}</td>
                                 <td>{{ paciente.last_name }}</td>
                                 <td>{{ paciente.documento }}</td>
@@ -41,22 +43,47 @@
                     </tbody>
                 </table>
             </div>
-        {% comment %}
         </div> 
         <div class="row">
             <div class="col col-md">
                 <button id="btn-eliminar" type="button" class="btn btn-primary">Eliminar Paciente</button>
             </div>
         </div>
-        {% endcomment %}
     </div>
     <script>
         $(document).ready(function(){
             $("#tabla-pacientes").DataTable({
+                select: {
+                    style: 'single'
+                },
                 "language": {
                         "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
                 }
             });
+
+            var tabla = $('#tabla-pacientes').DataTable();
+            var btn = document.getElementById("btn-eliminar");
+            btn.disabled = true;
+            var paciente_id = null;
+
+            tabla.on('select', function(e, dt, type, indexes){
+                if (type === 'row'){
+                    paciente_id = tabla.row().data()[0];
+                    btn.disabled = false;
+                }
+            });
+
+            tabla.on('deselect', function(e, dt, type, indexes){
+                if (type === 'row'){
+                    paciente_id = null;
+                    btn.disabled = true;
+                }
+            });
+
+            btn.onclick = function(){
+                let url = "eliminar-paciente/" + paciente_id + "/" ;
+                window.location.replace(url);
+            };
         });
     </script>
 {% endblock content %}

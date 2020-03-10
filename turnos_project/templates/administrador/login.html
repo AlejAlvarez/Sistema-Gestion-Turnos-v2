@@ -6,7 +6,7 @@
 {% block content %}
 <div class="container">
     <h2>Administrador Login</h2>
-    <form method="POST" action="{% url 'login-admin' %}">
+    <form method="POST" action="{% url 'login-administrador' %}">
         {% csrf_token %}
         <div class="form-group">
             <label for="{{ auth_form.username.id_for_label }}">Usuario</label>            
@@ -17,7 +17,7 @@
             {{ auth_form.password | add_class:'form-control' }}
         </div>
         {% if error_message %}
-            <p class="text-warning">{{ error_message }}</p>
+            <p class="text-danger">{{ error_message }}</p>
         {% endif %}
         <button type="submit" class="btn btn-dark">Login</button>
     </form>

@@ -26,7 +26,7 @@
                             <td>{{ administrador.first_name }}</td>
                             <td>{{ administrador.last_name }}</td>
                             <td>{{ administrador.username }}</td>
-                            <td><a href="{% url 'ver-administrador' user.pk %}" class="btn btn-secondary">Ver</a></td>
+                            <td><a href="{% url 'ver-administrador' administrador.pk %}" class="btn btn-secondary">Ver</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>

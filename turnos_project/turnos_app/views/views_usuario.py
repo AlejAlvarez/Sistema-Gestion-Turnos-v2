@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView 
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth import logout 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Permission
 from django.core.exceptions import PermissionDenied
@@ -43,7 +44,6 @@ class CustomUserCreateView(LoginRequiredMixin, CreateView):
             user.user_permissions.add(user_role_permission)            
 
             user.save()
-            return HttpResponse('Usuario del tipo %s creado con éxito' % user_role_permission.name)
         else:
             return render(request, self.template_name, {'form': form})
     
@@ -62,3 +62,7 @@ class CustomUserUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_form_class(self):
         return self.form_class
+
+def logout_usuario(request):
+    logout(request)
+    return redirect('home')

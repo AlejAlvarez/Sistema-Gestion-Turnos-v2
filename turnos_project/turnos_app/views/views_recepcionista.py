@@ -9,6 +9,7 @@ from ..models import *
 from .views_usuario import *
 from ..forms.user_forms import CustomUserChangeForm
 from ..forms.forms_paciente import PacienteCreationForm
+from ..forms.forms_recepcionista import DocumentoForm
 from ..forms.forms_turno import SeleccionarEspecialidadForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
@@ -150,7 +151,8 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
                 obra_social.save()
                 perfil_paciente = Paciente.objects.create(user=user, genero=genero, obra_social=obra_social)
             perfil_paciente.save()
-            return HttpResponse('Paciente creado con exito')
+            messages.info(request, 'Paciente creado con éxito!')
+            return redirect('registrar-paciente')
         else:
             print('Error de validacion de formulario')
             return super().get(request, *args, **kwargs)

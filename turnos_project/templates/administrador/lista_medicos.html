@@ -26,7 +26,7 @@
                                 <td>{{ medico.first_name }}</td>
                                 <td>{{ medico.last_name }}</td>
                                 <td>{{ medico.username }}</td>
-                                <td><a href="{% url 'ver-medico' user.pk %}" class="btn btn-secondary">Ver</a></td>
+                                <td><a href="{% url 'ver-medico' medico.pk %}" class="btn btn-secondary">Ver</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>

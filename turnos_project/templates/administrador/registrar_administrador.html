@@ -12,17 +12,17 @@
 {% block content %}
     <div class="container">
         <h2>Registrar Administrador</h2>
+        {% if messages %}
+            <div class="alert-success">
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
         <form method="POST">
             {% csrf_token %}
-            {% if messages %}
-                <div class="alert-success">
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
             <div class="form-group">
                 <label for="{{ form.username.id_for_label }}">Nombre de Usuario</label>
                 {{ form.username|add_class:"form-control" }}
