@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views import View
 from django.contrib import messages
@@ -19,6 +19,9 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from datetime import timedelta, datetime, date
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
 class LoginAdministradorView(View):
@@ -109,6 +112,7 @@ class SignUpRecepcionistaView(PermissionRequiredMixin, CustomUserCreateView):
             return redirect('registrar-recepcionista')
         else:
             print('Error de validacion de formulario')
+            messages.warning(request, 'Se ha producido un error, por favor vuelva a intentarlo.')
             return super().get(request, *args, **kwargs)
             
 
@@ -184,6 +188,7 @@ class SignUpMedicoView(PermissionRequiredMixin, CustomUserCreateView):
             return redirect('registrar-medico')
         else:
             print('Error de validacion de formulario')
+            messages.warning(request, 'Se ha producido un error, por favor vuelva a intentarlo.')
             return super().get(request, *args, **kwargs)
             
 @login_required(login_url='/administrador/login')
@@ -270,6 +275,7 @@ class SignUpAdministradorView(PermissionRequiredMixin, CustomUserCreateView):
             return redirect('registrar-administrador')
         else:
             print('Error de validacion de formulario')
+            messages.warning(request, 'Se ha producido un error, por favor vuelva a intentarlo.')
             return super().get(request, *args, **kwargs)
             
 @login_required(login_url='/administrador/login')
@@ -310,8 +316,16 @@ class EliminarAdministradorView(PermissionRequiredMixin, SuccessMessageMixin, De
     model = CustomUser
     permission_required = ('turnos_app.es_administrador')
     template_name = 'administrador/eliminar_usuario.html'
-    success_url = reverse_lazy('menu-administradores')
-    success_message = "Administrador eliminado con éxito."
+
+    def delete(self, request, *args, **kwargs):
+        user = self.get_object()
+        if request.user.username == user.username:
+            messages.warning(request, 'No puede eliminarse a usted mismo.')
+            return redirect('menu-administradores')
+        else:
+            user.delete()
+            messages.info(request, 'Administrador eliminado con éxito!')
+            return redirect('menu-administradores')
 
 class PacienteListView(PermissionRequiredMixin, ListView):
     model = CustomUser
@@ -354,8 +368,16 @@ class EspecialidadDelete(PermissionRequiredMixin, SuccessMessageMixin, DeleteVie
     model = Especialidad
     template_name = 'administrador/eliminar_especialidad.html'
     permission_required = ('turnos_app.es_administrador')
-    success_url = reverse_lazy('menu-especialidades')
-    success_message = "Especialidad eliminada con éxito."
+
+    def delete(self, request, *args, **kwargs):
+        especialidad = self.get_object()
+        if especialidad.medicos > 0:
+            messages.warning(request, 'La especialidad no puede ser eliminada debido a que contiene medicos.')
+            return redirect('menu-especialidades')
+        else:
+            messages.info(request, 'Especialidad eliminada con éxito!')
+            especialidad.delete()
+            return redirect('menu-especialidades')
 
 class EspecialidadListView(PermissionRequiredMixin, ListView):
     model = Especialidad
@@ -374,17 +396,92 @@ class ObraSocialDelete(PermissionRequiredMixin, SuccessMessageMixin, DeleteView)
     model = ObraSocial
     template_name = 'administrador/eliminar_obra_social.html'
     permission_required = ('turnos_app.es_administrador')
-    success_url = reverse_lazy('menu-obras-sociales')
-    success_message = "Obra Social eliminada con éxito."
+
+    
+    def delete(self, request, *args, **kwargs):
+        obra_social = self.get_object()
+        if obra_social.medicos > 0:
+            messages.warning(request, 'La Obra Social no puede ser eliminada debido a que contiene pacientes.')
+            return redirect('menu-obras_sociales')
+        else:
+            messages.info(request, 'Obra Social eliminada con éxito!')
+            obra_social.delete()
+            return redirect('menu-obras_sociales')
     
 class ObraSocialListView(PermissionRequiredMixin, ListView):
     model = ObraSocial
     template_name = 'administrador/lista_obras_sociales.html'
     permission_required = ('turnos_app.es_administrador')
 
+def get_especialidades_data(request, *args, **kwargs):
+    data = {}
+    for especialidad in Especialidad.objects.all():
+        data[especialidad.nombre] = especialidad.medicos
+    return JsonResponse(data)
+
+def get_obras_sociales_data(request, *args, **kwargs):
+    data = {}
+    for obra_social in ObraSocial.objects.all():
+        data[obra_social.nombre] = obra_social.medicos
+    return JsonResponse(data)
+
+class EstadisticasView(PermissionRequiredMixin, View):
+    permission_required = ('turnos_app.es_administrador')
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'administrador/estadisticas.html', {})
+
+class ChartEstadisticas(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=None):
+        especialidades = []
+        obras_sociales = []
+        medicos = []
+        pacientes = []
+        for especialidad in Especialidad.objects.all():
+            especialidades.append(especialidad.nombre)
+            medicos.append(especialidad.medicos)
+        for obra_social in ObraSocial.objects.all():
+            obras_sociales.append(obra_social.nombre)
+            pacientes.append(obra_social.pacientes)            
+        data = {
+            "especialidades": especialidades,
+            "medicos": medicos,
+            "obras_sociales": obras_sociales,
+            "pacientes": pacientes,
+        }
+        return Response(data)
+
+
+'''
+class EstadisticasJSONView(PermissionRequiredMixin, BaseColumnHighChartsView):
+    permission_required = ('turnos_app.es_administrador')
+
+    def get_labels(self):
+        labels = []
+        for especialidad in Especialidad.objects.all():
+            labels.append(especialidad.nombre)
+        return labels
+    
+    def get_data(self):
+        data = []
+        for especialidad in Especialidad.objects.all():
+            data.append(especialidad.medicos)
+        return data
+    
+    def get_yUnit(self):
+        self.yUnit = 'Medicos'
+
+    
+bar_chart = TemplateView.as_view(template_name='estadisticas.html')
+bar_chart_json = BarChartJSONView.as_view()
+'''
+
+'''
 @login_required(login_url='/administrador/login')
 @permission_required('turnos_app.es_administrador')
 def get_estadisticas(request):
     return render(request, 'administrador/estadisticas.html', {})
-
-
+'''

@@ -13,13 +13,21 @@
     <div class="container">
         <h2>Registrar Administrador</h2>
         {% if messages %}
-            <div class="alert-success">
-                <ul class="messages">
-                    {% for message in messages %}
+            {% for message in messages %}
+                {% if message.level_tag == 'info' %}
+                <div class="alert-success">
+                    <ul class="messages">
                         <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
+                    </ul>
+                </div>                    
+                {% elif message.level_tag == 'warning' %}
+                <div class="alert-danger">
+                    <ul class="messages">
+                        <li>{{ message }}</li>
+                    </ul>
+                </div>           
+                {% endif %}
+            {% endfor %}
         {% endif %}
         <form method="POST">
             {% csrf_token %}

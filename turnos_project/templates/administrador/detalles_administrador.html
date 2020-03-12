@@ -3,23 +3,49 @@
 
 {% block content %}
 <div class="container">
-    <h2>Detalles del Administrador</h2>
-    <div class="row justify-content-center">
-        <div class="col">
-            <p>Nombre: {{ object.first_name }}</p>
-            <p>Apellido: {{ object.last_name }}</p>
-            <p>Documento: {{ object.documento }}</p>
-            <p>Usuario: {{ object.username }}</p>
-            <p>Domicilio: {{ object.domicilio }}</p>
-            <p>Telefono: {{ object.telefono }}</p>
-            <p>Nacimiento: {{ object.nacimiento }}</p>
+    <h1>Detalles del Administrador</h1>
+    <hr>
+    <form>
+        <div class="form-row">
+            <div class="form-group col">
+                <label for="id_first_name">Nombre</label>
+                <input class="form-control" type="text" value="{{ object.first_name }}" disabled=true>
+            </div>
+            <div class="form-group col">
+                <label for="id_last_name">Apellido</label>
+                <input class="form-control" type="text" value="{{ object.last_name }}" disabled=true>
+            </div>    
         </div>
-    </div>
+        <div class="form-group">
+            <label for="id_first_name">DNI</label>
+            <input class="form-control" type="text" value="{{ object.documento }}" disabled=true>
+        </div>
+        <div class="form-group">
+            <label for="id_username">Nombre de Usuario</label>
+            <input class="form-control" type="text" value="{{ object.username }}" disabled=true>
+        </div>
+        <div class="form-row">
+            <div class="form-group col">
+                <label for="id_first_name">Domicilio</label>
+                <input class="form-control" type="text" value="{{ object.domicilio }}" disabled=true>
+            </div>
+            <div class="form-group col">
+                <label for="id_last_name">Telefono</label>
+                <input class="form-control" type="text" value="{{ object.telefono }}" disabled=true>
+            </div>    
+        </div>
+        <div class="form-group">
+            <label for="id_last_login">Fecha de Nacimiento</label>
+            <input class="form-control" type="text" value="{{ object.nacimiento }}" disabled=true>
+        </div>
+    </form>
     <div class="row">
+        <div class="col-3"></div>
         <div class="col">
             <a class="btn btn-primary" href="{% url 'editar-administrador' object.pk %}">Editar Administrador</a>
             <a class="btn btn-primary" href="{% url 'eliminar-administrador' object.pk %}">Eliminar Administrador</a>
         </div>
+        <div class="col-3"></div>
     </div>
 </div>
 {% endblock content %}

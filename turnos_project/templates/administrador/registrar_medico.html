@@ -12,17 +12,25 @@
 {% block content %}
     <div class="container">
         <h2>Registrar Medico</h2>
-        <form method="POST">
-            {% csrf_token %}
-            {% if messages %}
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level_tag == 'info' %}
                 <div class="alert-success">
                     <ul class="messages">
-                        {% for message in messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
+                        <li>{{ message }}</li>
                     </ul>
-                </div>
-            {% endif %}
+                </div>                    
+                {% elif message.level_tag == 'warning' %}
+                <div class="alert-danger">
+                    <ul class="messages">
+                        <li>{{ message }}</li>
+                    </ul>
+                </div>           
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
             <div class="form-group">
                 <label for="{{ form.username.id_for_label }}">Nombre de Usuario</label>
                 {{ form.username|add_class:"form-control" }}

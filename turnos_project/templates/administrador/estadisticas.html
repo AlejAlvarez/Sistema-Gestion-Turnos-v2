@@ -1,0 +1,122 @@
+{% extends 'administrador/administrador_layout.html' %}
+
+{% block title %} Estadísticas {% endblock title %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Estadísticas</h1>
+        <div class="row">
+            <div class="col">
+                <canvas id="chartEspecialidad" width="200" height="200"></canvas>
+            </div>
+            <div class="col">
+                <canvas id="chartObraSocial" width="200" height="200"></canvas>                
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+{% endblock %}
+
+{% block jquery %}
+<script>
+    var endpoint = '/administrador/api/estadisticas/'
+    var especialidades = []
+    var medicos = [];
+    $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function(data){
+            //console.log(data)
+            console.log(data)
+            especialidades = data.especialidades
+            medicos = data.medicos
+            obrasSociales = data.obras_sociales
+            pacientes = data.pacientes
+            var ctxEspecialidad = document.getElementById("chartEspecialidad");
+            var ctxObraSocial = document.getElementById("chartObraSocial");
+            var chartEspecialidad = new Chart(ctxEspecialidad, {
+                type: 'bar',
+                data: {
+                    labels: especialidades,
+                    datasets: [{
+                        label: '# de Medicos por Especialidad',
+                        data: medicos,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+            var chartObraSocial = new Chart(ctxObraSocial, {
+                type: 'bar',
+                data: {
+                    labels: obrasSociales,
+                    datasets: [{
+                        label: '# de Pacientes por Obra Social',
+                        data: pacientes,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        },
+        error: function(error_data){
+            console.log("error")
+            console.log(error_data)
+        }
+    })
+</script>
+{% endblock %}

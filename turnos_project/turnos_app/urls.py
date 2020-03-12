@@ -78,5 +78,6 @@ urlpatterns = [
     path('administrador/menu-obras-sociales/', ObraSocialListView.as_view(), name='menu-obras-sociales'),
     path('administrador/crear-obra-social/', ObraSocialCreate.as_view(), name='crear-obra-social'),
     path('administrador/menu-obras-sociales/eliminar-obra-social/<int:pk>/', ObraSocialDelete.as_view(), name='eliminar-obra-social'),
-    path('administrador/ver-estadisticas/', get_estadisticas, name='ver-estadisticas'),
+    path('administrador/ver-estadisticas/', EstadisticasView.as_view(), name='ver-estadisticas'),
+    path('administrador/api/estadisticas/', ChartEstadisticas.as_view(), name='api-estadisticas'),
 ]

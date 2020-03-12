@@ -157,6 +157,7 @@ def buscar_turnos(request):
         medico_form = BuscarTurnosByMedicoForm()
         return render(request, 'paciente/accion_turno.html', {'especialidad_form': especialidad_form,'medico_form':medico_form, 'accion': "Buscar"})
 
+# Es necesario este metodo???
 @login_required(login_url='/paciente/login')
 @permission_required('turnos_app.es_paciente')
 def reservar_turno(request):
