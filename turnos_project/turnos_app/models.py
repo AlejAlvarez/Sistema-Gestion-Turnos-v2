@@ -18,7 +18,10 @@ class CustomUser(AbstractUser):
     nacimiento = models.DateField(null=True)  #Esto hay que ponerlo en la version final. No nos importa la hora en la que nacio la persona, solo el dia.
     
     class Meta:
-        permissions = (('es_recepcionista','Usuario tiene rol de recepcionista'),)
+        permissions = (('es_recepcionista','Usuario tiene rol de recepcionista'),
+                        ('es_administrador','Usuario tiene rol de administrador'),
+                        ('es_paciente', 'Usuario tiene rol de paciente'),
+                        ('es_medico', 'Usuario tiene rol de medico'),)
 
     def str(self):
         return '%s %s' % (self.first_name, self.last_name)
@@ -27,7 +30,8 @@ class CustomUser(AbstractUser):
         return self.str()
 
 class ObraSocial(models.Model):
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, unique=True)
+    pacientes = models.IntegerField(default=0)
 
     def __str__(self):
         return self.nombre
@@ -48,9 +52,6 @@ class Paciente(models.Model):
     def get_genero(self):
         return dict(self.GENERO_CHOICES).get(self.genero)
 
-    class Meta:
-         permissions = (('es_paciente','Usuario tiene rol de paciente'),)
-
     def __str__(self):
         return self.user.__str__()
     
@@ -70,7 +71,8 @@ class Paciente(models.Model):
         return lista_retorno 
 
 class Especialidad(models.Model):
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, unique=True)
+    medicos = models.IntegerField(default=0)
 
     def __str__(self):
         return self.nombre
@@ -80,9 +82,6 @@ class Medico(models.Model):
     # Validator del CUIL, ídem que con el documento: validators=[RegexValidator(regex='[0-9]{2}-[0-9]{8}-[0-9]$', message='La constancia de CUIL introducida debe ser de formato "XX-XXXXXXXX-X".', code='nomatch')], 
     cuil = models.BigIntegerField(unique=True)
     especialidad = models.ForeignKey(Especialidad, on_delete=models.CASCADE)
-
-    class Meta:
-         permissions = (('es_medico','Usuario tiene rol de medico'),)
 
     def __str__(self):
         return self.user.__str__()

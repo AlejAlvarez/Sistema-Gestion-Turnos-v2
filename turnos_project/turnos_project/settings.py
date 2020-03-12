@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'turnos_app',
     'widget_tweaks',
     'flatpickr',
+    'chartjs',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

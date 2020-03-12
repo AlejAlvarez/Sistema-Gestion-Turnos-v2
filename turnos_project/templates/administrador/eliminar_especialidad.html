@@ -1,0 +1,17 @@
+{% extends 'administrador/administrador_layout.html' %}
+{% block title %}Eliminar Especialidad{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h2>Eliminar Especialidad</h2>
+        <div class="row justify-content-center">
+            <div class="col">
+                <form method="post">
+                    {% csrf_token %}
+                    <p>¿Está seguro que quiere eliminar la especialidad {{ object.nombre }}?</p>
+                    <input type="submit" value="Confirm">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

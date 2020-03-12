@@ -1,0 +1,31 @@
+{% extends 'administrador/administrador_layout.html' %}
+
+{% block title %}Index Administrador{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h1>Administrador</h1>
+        <hr>
+        <form>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="id_first_name">Nombre</label>
+                    <input class="form-control" type="text" value="{{ administrador.first_name }}" disabled=true>
+                </div>
+                <div class="form-group col">
+                    <label for="id_last_name">Apellido</label>
+                    <input class="form-control" type="text" value="{{ administrador.last_name }}" disabled=true>
+                </div>    
+            </div>
+            <div class="form-group">
+                <label for="id_username">Nombre de Usuario</label>
+                <input class="form-control" type="text" value="{{ administrador.username }}" disabled=true>
+            </div>
+            <div class="form-group">
+                <label for="id_last_login">Última Conexión</label>
+                <input class="form-control" type="text" value="{{ administrador.last_login }}" disabled=true>
+            </div>
+        </form>
+    </div>
+    <br>
+{% endblock content %}

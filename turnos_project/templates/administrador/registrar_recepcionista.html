@@ -1,0 +1,83 @@
+{% extends 'administrador/administrador_layout.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Registrar Recepcionista{% endblock title %}
+{% block css %}
+    .snps-inline-select {
+        width: auto;
+        margin-left:10px;
+        display: inline-block;
+    }
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2>Registrar Recepcionista</h2>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level_tag == 'info' %}
+                <div class="alert-success">
+                    <ul class="messages">
+                        <li>{{ message }}</li>
+                    </ul>
+                </div>                    
+                {% elif message.level_tag == 'warning' %}
+                <div class="alert-danger">
+                    <ul class="messages">
+                        <li>{{ message }}</li>
+                    </ul>
+                </div>           
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Nombre de Usuario</label>
+                {{ form.username|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label}}">Contraseña</label>
+                {{ form.password1|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirmar Contraseña</label>
+                {{ form.password2|add_class:"form-control" }}
+            </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="{{ form.first_name.id_for_label }}">Nombre</label>
+                    {{ form.first_name|add_class:"form-control" }}
+                </div>
+                <div class="form-group col">
+                    <label for="{{ form.last_name.id_for_label }}">Apellido</label>
+                    {{ form.last_name|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="{{ form.documento.id_for_label }}">Documento</label>
+                    {{ form.documento|add_class:"form-control" }}
+                </div>
+                <div class="form-group col">
+                    <label for="{{ form.domicilio.id_for_label }}">Domicilio</label>
+                    {{ form.domicilio|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="{{ form.telefono.id_for_label }}">Telefono</label>
+                    {{ form.telefono|add_class:"form-control" }}
+                </div>
+                <div class="form-group col">
+                    <label for="{{ form.email.id_for_label }}">E-mail</label>
+                    {{ form.email|add_class:"form-control" }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_nacimiento_day">Nacimiento</label>
+                {{ form.nacimiento|add_class:"form-control snps-inline-select" }}
+            </div>
+            <button class="btn btn-info" type="submit">Registrar</button>
+        </form>
+    </div>
+{% endblock content %}
