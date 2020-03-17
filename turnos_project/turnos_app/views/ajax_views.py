@@ -86,6 +86,7 @@ class ObtenerPacienteAjax(PermissionRequiredMixin,View):
 
     def get(self,request):
         if request.is_ajax():
+            print('REQUEST: ',request.GET)
             if(request.GET['documento']):
                 paciente = get_paciente_by_documento(request.GET['documento'])
                 if paciente is not None:
@@ -97,13 +98,10 @@ class ObtenerPacienteAjax(PermissionRequiredMixin,View):
 
 class ConsultarTurnosEspecialidadAjax(PermissionRequiredMixin,View):
 
-    permission_required = ('turnos_app.es_recepcionista')
+    permission_required = ('turnos_app.es_recepcionista',)
 
     def get(self,request):
         if request.is_ajax():
-            paciente = get_paciente_by_documento(request.GET['documento'])
-            if paciente is None:
-                return render(request,'recepcionista/buscar_turnos.html',{})
             especialidad = request.GET['especialidades']
             # obtener los médicos por especialidad
             medicos_especialidad = Medico.objects.filter(especialidad=especialidad)
@@ -119,11 +117,40 @@ class ConsultarTurnosEspecialidadAjax(PermissionRequiredMixin,View):
             # debería filtrar por fecha en lugar de fecha y hora
             enddate = datetime.datetime.now() + time_dt
             turnos = Turno.objects.filter(medico_id__in=medicos_id,estado=1,fecha__range=[startdate,enddate]).order_by('fecha')
-            turno_form = SeleccionarTurnoForm(turnos=turnos)
+            turno_form = SeleccionarTurnoForm()
+            turno_form.set_turnos(turnos=turnos)
             context = {
                 'turnos_form':turno_form
             }
             return render(request,'recepcionista/buscar_turnos.html',context)
+
+class RealizarReservaAjax(PermissionRequiredMixin, View):
+
+    permission_required = ('turnos_app.es_recepcionista')
+    view_url = 'recepcionista/imprimir-reserva/'
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            turno_seleccionado = Turno.objects.get(pk=request.POST['turnos'])
+            paciente = Paciente.objects.get(user_id=request.POST['paciente'])
+            # Estado 1 = 'Disponible'
+            if turno_seleccionado.estado == 1:
+                # Estado 2 = 'Reservado'
+                turno_seleccionado.estado = 2
+                turno_seleccionado.paciente = paciente
+                turno_seleccionado.save()
+                redirect_url  =  self.view_url + str(paciente.user.documento) + '/' + str(turno_seleccionado.pk) + '/';
+                response_data = {
+                    'redirect_url':redirect_url,
+                    'message':'Turno Reservado con éxito',
+                }
+                return JsonResponse(data=response_data,status=200)
+            else: 
+                response_data = {
+                    'esta_reservado': True,
+                    'message':'El turno seleccionado ya ha sido reservado',
+                }
+                return JsonResponse(data=response_data,status=200)
 
 # MEDICO AJAX VIEWS
 

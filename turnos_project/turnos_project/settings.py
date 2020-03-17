@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     'turnos_app',
     'widget_tweaks',
     'flatpickr',
-    'chartjs',
     'rest_framework',
+    'chartjs',
 ]
 
 MIDDLEWARE = [
@@ -128,5 +128,3 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # APP USER MODEL
 AUTH_USER_MODEL = 'turnos_app.CustomUser'
-
-LOGIN_REDIRECT_URL = 'loguear-usuario'
