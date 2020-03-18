@@ -41,7 +41,7 @@
                     <tbody>
                         {% for administrador in lista_administradores %}
                         <tr>
-                            <td><a href="{% url 'ver-administrador' administrador.pk %}">{{ administrador.id }}</a></td>                                
+                            <td>{{ administrador.id }}</td>  
                             <td>{{ administrador.username }}</td>
                             <td>{{ administrador.first_name }}</td>
                             <td>{{ administrador.last_name }}</td>
@@ -51,18 +51,30 @@
                     </tbody>
                 </table>
         </div>
-        </div class="row">
-            <div class="col col-md">
+        </div>
+        <div class="row">
+            <div class="col-3">
                 <a class="btn btn-primary" href="{% url 'registrar-administrador' %}">Registrar Administrador</a>
+            </div>
+            <div class="col">
+                <p>(Haga doble click en un administrador para ver mas información del mismo)</p>
             </div>
         </div>
     </div>
     <script>
         $(document).ready(function(){
-            $("#table-administradores").DataTable({
+            tabla = $("#table-administradores").DataTable({
                 "language": {
                         "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
                 }
+            });
+            
+            // Haciendo doble click en una fila accedo a los datos de ese administrador
+            $('#table-administradores tbody').on('dblclick', 'tr', function(){
+                let administrador_id = tabla.row(this).data()[0];
+                let base_url = 'http://' + window.location.host + '/';
+                let url = base_url  + 'administrador/ver-administrador/' + administrador_id + '/';
+                window.location.replace(url);
             });
         });
     </script>

@@ -7,6 +7,29 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/sp-1.0.1/sl-1.3.1/datatables.min.js"></script>
 {% endblock %}
 {% block content %}
+<!-- Modal -->
+    <div class="modal fade" id="modalConfirmar" tabindex="-1" role="dialog" aria-labelledby="modalConfirmarLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalConfirmarLabel">Eliminar Paciente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <form method="POST" action="/" id="form-confirmar">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" id="btn-confirmar">Confirmar</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <h1>Lista de Pacientes</h1>
         {% if messages %}
@@ -42,7 +65,7 @@
                         {% for paciente in lista_pacientes %}
                             <tr>
                                 <td>{{ paciente.id }}</td>
-                                <td>{{ paciente.username }}</a></td>
+                                <td>{{ paciente.username }}</td>
                                 <td>{{ paciente.first_name }}</td>
                                 <td>{{ paciente.last_name }}</td>
                                 <td>{{ paciente.documento }}</td>
@@ -54,10 +77,15 @@
         </div> 
         <div class="row">
             <div class="col col-md">
-                <button id="btn-eliminar" type="button" class="btn btn-primary">Eliminar Paciente</button>
+                <!-- Button trigger modal -->
+                <button id="btn-eliminar" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalConfirmar">
+                  Eliminar Paciente
+                </button>
             </div>
         </div>
     </div>
+{% endblock content %}
+{% block jquery %}
     <script>
         $(document).ready(function(){
             $("#tabla-pacientes").DataTable({
@@ -70,28 +98,29 @@
             });
 
             var tabla = $('#tabla-pacientes').DataTable();
-            var btn = document.getElementById("btn-eliminar");
-            btn.disabled = true;
+            var btnEliminar = document.getElementById("btn-eliminar");
+            var btnConfirmar = document.getElementById("btn-confirmar");
             var paciente_id = null;
+            var form = document.getElementById("form-confirmar") || null;
+
+            btnEliminar.disabled = true;
 
             tabla.on('select', function(e, dt, type, indexes){
                 if (type === 'row'){
                     paciente_id = tabla.row().data()[0];
-                    btn.disabled = false;
+                    btnEliminar.disabled = false;
+                    form.action = "eliminar-paciente/" + paciente_id + "/";
                 }
             });
 
             tabla.on('deselect', function(e, dt, type, indexes){
                 if (type === 'row'){
                     paciente_id = null;
-                    btn.disabled = true;
+                    btnEliminar.disabled = true;
+                    form.action = "#";
                 }
             });
 
-            btn.onclick = function(){
-                let url = "eliminar-paciente/" + paciente_id + "/" ;
-                window.location.replace(url);
-            };
         });
     </script>
-{% endblock content %}
+{% endblock %}

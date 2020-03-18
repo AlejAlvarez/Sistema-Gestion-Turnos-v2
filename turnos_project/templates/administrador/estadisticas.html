@@ -19,10 +19,6 @@
     </div>
 {% endblock %}
 
-{% block javascript %}
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-{% endblock %}
-
 {% block jquery %}
 <script>
     var endpoint = '/administrador/api/estadisticas/'
@@ -119,4 +115,8 @@
         }
     })
 </script>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 {% endblock %}

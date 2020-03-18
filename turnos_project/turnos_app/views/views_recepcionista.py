@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView 
 from django.views import View
+from django.contrib import messages
 
 from ..models import *
 from .views_usuario import *
@@ -155,6 +156,7 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
             return redirect('registrar-paciente')
         else:
             print('Error de validacion de formulario')
+            messages.warning(request, 'Se ha producido un error, por favor vuelva a intentarlo.')
             return super().get(request, *args, **kwargs)
 
 @login_required(login_url='/recepcionista/login')

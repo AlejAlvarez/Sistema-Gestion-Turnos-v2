@@ -10,7 +10,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from ..models import *
 from .views_usuario import *
 from ..forms.user_forms import CustomUserChangeForm
-from ..forms.forms_medico import MedicoCreationForm
+from ..forms.forms_medico import MedicoCreationForm, MedicoChangeForm
 from ..forms.forms_paciente import PacienteCreationForm
 from ..forms.forms_turno import SeleccionarEspecialidadForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -127,7 +127,12 @@ def editar_informacion_recepcionista(request, pk):
 
             if form.is_valid():
                 user = form.save()
-                return redirect('home')        
+                messages.info(request, 'Recepcionista editado con éxito!')
+                return redirect('menu-recepcionistas')
+
+            else:
+                messages.warning(request, 'Se ha producido un error, por favor vuelva a intentarlo.')
+                return super().get(request, *args, **kwargs)        
         else:
             form = CustomUserChangeForm(instance=user)
             return render(request, 'administrador/editar_recepcionista.html', {'form':form, 'user':user})
@@ -206,7 +211,12 @@ def editar_informacion_medico(request, pk):
                 medico = medico_form.save(False)
                 medico.user = user
                 medico.save()
-                return redirect('home')        
+                messages.info(request, 'Medico editado con éxito!')
+                return redirect('menu-medicos')
+
+            else:
+                messages.warning(request, 'Se ha producido un error, por favor vuelva a intentarlo.')
+                return super().get(request, *args, **kwargs)
         else:
             form = CustomUserChangeForm(instance=user)
             medico_form = MedicoChangeForm(instance=user.medico)
@@ -288,7 +298,12 @@ def editar_informacion_administrador(request, pk):
 
         if form.is_valid():
             user = form.save()
-            return redirect('home')        
+            messages.info(request, 'Administrador editado con éxito!')
+            return redirect('menu-administradores')
+
+        else:
+            messages.warning(request, 'Se ha producido un error, por favor vuelva a intentarlo.')
+            return super().get(request, *args, **kwargs)    
     else:
         form = CustomUserChangeForm(instance=user)
         return render(request, 'administrador/editar_administrador.html', {'form':form})
@@ -400,13 +415,13 @@ class ObraSocialDelete(PermissionRequiredMixin, SuccessMessageMixin, DeleteView)
     
     def delete(self, request, *args, **kwargs):
         obra_social = self.get_object()
-        if obra_social.medicos > 0:
+        if obra_social.pacientes > 0:
             messages.warning(request, 'La Obra Social no puede ser eliminada debido a que contiene pacientes.')
-            return redirect('menu-obras_sociales')
+            return redirect('menu-obras-sociales')
         else:
             messages.info(request, 'Obra Social eliminada con éxito!')
             obra_social.delete()
-            return redirect('menu-obras_sociales')
+            return redirect('menu-obras-sociales')
     
 class ObraSocialListView(PermissionRequiredMixin, ListView):
     model = ObraSocial
@@ -454,34 +469,3 @@ class ChartEstadisticas(APIView):
         }
         return Response(data)
 
-
-'''
-class EstadisticasJSONView(PermissionRequiredMixin, BaseColumnHighChartsView):
-    permission_required = ('turnos_app.es_administrador')
-
-    def get_labels(self):
-        labels = []
-        for especialidad in Especialidad.objects.all():
-            labels.append(especialidad.nombre)
-        return labels
-    
-    def get_data(self):
-        data = []
-        for especialidad in Especialidad.objects.all():
-            data.append(especialidad.medicos)
-        return data
-    
-    def get_yUnit(self):
-        self.yUnit = 'Medicos'
-
-    
-bar_chart = TemplateView.as_view(template_name='estadisticas.html')
-bar_chart_json = BarChartJSONView.as_view()
-'''
-
-'''
-@login_required(login_url='/administrador/login')
-@permission_required('turnos_app.es_administrador')
-def get_estadisticas(request):
-    return render(request, 'administrador/estadisticas.html', {})
-'''

@@ -8,7 +8,7 @@
         <form method="POST">
             {% csrf_token %}
             {% if messages %}
-                <div class="alert-success">
+                <div class="alert-danger">
                     <ul class="messages">
                         {% for message in messages %}
                             <li>{{ message }}</li>
@@ -55,12 +55,12 @@
                 {{ form.nacimiento|attr:"value: user.nacimiento "|add_class:"form-control snps-inline-select" }}
             </div>
             <div class="form-group">
-                <label for="{{ form.cuil.id_for_label }}"></label>
-                {{ form.cuil|attr:"value: perfil.cuil "|add_class:"form-control" }}
+                <label for="{{ form.cuil.id_for_label }}">CUIL</label>
+                {{ perfil_form.cuil|attr:"value: perfil.cuil "|add_class:"form-control" }}
             </div>
             <div class="form-group">
                 <label for="{{ form.especialidad.id_for_label }}">Especialidad</label>
-                {{ form.especialidad|attr:"value: perfil.especialidad "|add_class:"form-control" }}
+                {{ perfil_form.especialidad|attr:"value: perfil.especialidad "|add_class:"form-control" }}
             </div>
             <button class="btn btn-info" type="submit">Actualizar</button>
         </form>

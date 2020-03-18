@@ -26,6 +26,28 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+        <div class="modal fade" id="modalConfirmar" tabindex="-1" role="dialog" aria-labelledby="modalConfirmarLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalConfirmarLabel">Eliminar Obra Social</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <form method="POST" action="/" id="form-confirmar">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary" id="btn-confirmar">Confirmar</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col">
                 <table id="tabla-obras-sociales" class="table table-striped table-bordered table-hover" style="width: 100%;">
@@ -53,7 +75,9 @@
                 <a class="btn btn-primary" href="{% url 'crear-obra-social' %}">Nueva Obra Social</a>
             </div>
             <div class="col col-md">
-                <button id="btn-eliminar" type="button" class="btn btn-primary">Eliminar Obra Social</button>
+                <button id="btn-eliminar" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalConfirmar">
+                    Eliminar Obra Social
+                </button>
             </div>   
         </div>
     </div>
@@ -75,11 +99,13 @@
             var btn = document.getElementById("btn-eliminar");
             btn.disabled = true;
             var obra_social_id = null;
+            var form = document.getElementById("form-confirmar") || null;
 
             tabla.on('select', function(e, dt, type, indexes){
                 if (type === 'row'){
                     obra_social_id = tabla.row().data()[0];
                     btn.disabled = false;
+                    form.action = "eliminar-obra-social/" + obra_social_id + "/";
                 }
             });
 
@@ -87,13 +113,9 @@
                 if (type === 'row'){
                     obra_social_id = null;
                     btn.disabled = true;
+                    form.action = "eliminar-obra-social/" + obra_social_id + "/";
                 }
             });
-
-            btn.onclick = function(){
-                let url = "eliminar-obra-social/" + obra_social_id + "/" ;
-                window.location.replace(url);
-            };
 
         });
     </script>

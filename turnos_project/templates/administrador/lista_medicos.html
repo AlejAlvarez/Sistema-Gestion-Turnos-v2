@@ -9,6 +9,23 @@
 {% block content %}
     <div class="container">
         <h1>Lista de Medicos</h1>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level_tag == 'info' %}
+                <div class="alert-success">
+                    <ul class="messages">
+                        <li>{{ message }}</li>
+                    </ul>
+                </div>                    
+                {% elif message.level_tag == 'warning' %}
+                <div class="alert-danger">
+                    <ul class="messages">
+                        <li>{{ message }}</li>
+                    </ul>
+                </div>           
+                {% endif %}
+            {% endfor %}
+        {% endif %}
         <div class="row">
             <div class="col">
                 <table id="table-medicos" class="table table-striped table-bordered table-hover">
@@ -24,7 +41,7 @@
                     <tbody>
                         {% for medico in lista_medicos %}
                             <tr>
-                                <td><a href="{% url 'ver-medico' medico.pk %}">{{ medico.id }}</a></td>                                
+                                <td>{{ medico.id }}</td>                                
                                 <td>{{ medico.username }}</td>
                                 <td>{{ medico.first_name }}</td>
                                 <td>{{ medico.last_name }}</td>
@@ -34,18 +51,30 @@
                     </tbody>
                 </table>
         </div>
-        </div class="row">
-            <div class="col">
+        </div>
+        <div class="row">
+            <div class="col-3">
                 <a class="btn btn-primary" href="{% url 'registrar-medico' %}">Registrar Medico</a>                
+            </div>
+            <div class="col">
+                <p>(Haga doble click en un medico para ver mas información del mismo)</p>
             </div>
         </div>
     </div>
     <script>
         $(document).ready(function(){
-            $("#table-medicos").DataTable({
+            tabla = $("#table-medicos").DataTable({
                 "language": {
                         "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
                 }
+            });
+            
+            // Haciendo doble click en una fila accedo a los datos de ese medico
+            $('#table-medicos tbody').on('dblclick', 'tr', function(){
+                let medico_id = tabla.row(this).data()[0];
+                let base_url = 'http://' + window.location.host + '/';
+                let url = base_url  + 'administrador/ver-medico/' + medico_id + '/';
+                window.location.replace(url);
             });
         });
     </script>

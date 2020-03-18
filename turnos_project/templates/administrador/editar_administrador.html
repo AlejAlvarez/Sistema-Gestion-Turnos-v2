@@ -8,7 +8,7 @@
         <form method="POST">
             {% csrf_token %}
             {% if messages %}
-                <div class="alert-success">
+                <div class="alert-danger">
                     <ul class="messages">
                         {% for message in messages %}
                             <li>{{ message }}</li>
