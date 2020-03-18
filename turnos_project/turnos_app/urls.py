@@ -1,6 +1,6 @@
 from django.urls import path,include, re_path
-
 from django.contrib.auth import views as auth_views
+
 from .views.page_views import *
 from .views.views_usuario import *
 from .views.views_paciente import *
@@ -23,6 +23,7 @@ paciente_patterns = [
     path('buscar-turnos',buscar_turnos,name='buscar-turnos'),
     path('ajax/filtrar-medicos',BuscarMedicosAjax.as_view(),name='filtrar-medicos-ajax'),
     path('ajax/buscar-turnos',BuscarTurnosAjax.as_view(),name='buscar-turnos-ajax'),
+    path('ajax/confirmar-reserva/,',ConfirmarReservaAjax.as_view(),name='confirmar-reserva-ajax'),
     #path('paciente/editar/<int:pk>/',editar_paciente, name='editar-paciente'),
 
 ]

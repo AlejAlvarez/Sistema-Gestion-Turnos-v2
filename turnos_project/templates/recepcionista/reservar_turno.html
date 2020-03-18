@@ -149,7 +149,7 @@
                                 let paciente = $("#turnos-form").find("input[name='paciente']").val();
                                 // se declara el pathname del turno
                                 let printUrl ="/recepcionista/imprimir-reserva/" + paciente + "/" + $turnoSeleccionado.val() + "/";
-                                $("#printLink").attr("href",printUrl);
+                                $("#printLink").attr("href",data['redirect_url']);
                                 $("#printLink").prop("hidden",false);
                                 $avisoTurnoModal.modal("show");
                                 //window.location.pathname = data['redirect_url'];

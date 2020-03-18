@@ -6,6 +6,9 @@
 <h1>Gestión de Turnos</h1>
 <h4>Paciente: {{ paciente.user.last_name }} {{ paciente.user.first_name }} </h4>
 <h4>Turnos del Paciente:</h4>
+    <div id="alertMessage" class="alert" role="alert">
+        Alert
+    </div>
     <table class="table table-borderless">
         <thead class="thead">
             <tr>
@@ -14,6 +17,7 @@
                 <th>Medico</th>
                 <th>Fecha</th>
                 <th>Hora</th>
+                <th>Estado</th>
                 <th>Opcion #1</th>
                 <th>Opcion #2</th>
                 <th>Opcion #3</th>
@@ -27,11 +31,89 @@
                 <td>{{ turno.medico }}</td>
                 <td>{{ turno.fecha.date }}</td>
                 <td>{{ turno.fecha.time }}</td>
-                <td><a href="{% url 'imprimir-reserva' paciente.user.pk turno.pk %}" class="btn btn-info">Imprimir</a href=""></td>
-                <td><button type="button" class="btn btn-success">Confirmar</button></td>
-                <td><button type="button" class="btn btn-danger">Cancelar</button></td>
+                <th class="estado">{{ turno.get_estado_display }}</th>
+                <td><a href="{% url 'imprimir-reserva' paciente.user.pk turno.pk %}" class="btn btn-info">Imprimir</a></td>  
+                <td><button name="confirmar" type="button" class="btn btn-success action-button" value="{{ turno.pk }}">Confirmar</button></td>
+                <td><button name="cancelar" type="button" class="btn btn-danger action-button" value="{{ turno.pk }}">Cancelar</button></td>
             </tr>
             {% endfor %}
         </tbody>
-    </table>   
+    </table>
+    
+{% endblock %}
+
+{% block javascript %}
+<script>
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+</script>
+<script>
+
+    $(document).ready(function(e){
+        $(".action-button").on("click",function(event){
+            $callButton = $(this);
+            turnoValue = event.target.value;
+            action = event.target.name;
+            let sendData = {
+                'action':action,
+                'turno':turnoValue,
+            }
+            $.ajax({
+                method:'PUT',
+                url:"{% url 'confirmar-reserva-ajax' %}",
+                data: JSON.stringify(sendData),
+                datatype:'json',
+                success: function(data) {
+                    if (data['confirmado']) {
+                        $callButton.parents("tr").addClass("table-success");
+                        $("#alertMessage").removeClass("alert-danger");
+                        $("#alertMessage").addClass("alert-success");
+                        $("#alertMessage").html("El turno #"+ turnoValue + " ha sido reservado");
+                        $callButton.parents("tr").find("button[name='cancelar']").hide();
+                        $callButton.parents("tr").find(".estado").html("Confirmado");
+                        $callButton.hide();
+                        // por último, cambiar el estado en la tabla
+
+                    } else if (data['cancelado']) {
+                        $callButton.parents("tr").addClass("table-danger");
+                        $("#alertMessage").removeClass("alert-success");
+                        $("#alertMessage").addClass("alert-danger");
+                        $("#alertMessage").html("El turno #"+ turnoValue + " ha sido cancelado");
+                        $callButton.parents("tr").find("button[name='confirmar']").hide();
+                        $callButton.parents("tr").find(".estado").html("Cancelado");
+                        $callButton.hide();
+                    }
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}
