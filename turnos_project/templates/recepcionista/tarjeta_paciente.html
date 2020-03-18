@@ -20,6 +20,10 @@
             </div>
         </div>
     </div>
+    <form method="GET">   
+        <input type="submit" formaction="{% url 'reservar-turno' paciente.user.pk %}" class="btn-block btn-primary" value="Reservar Turno">
+        <input type="submit" formaction="{% url 'gestionar-turnos' paciente.user.pk %}" class="btn-block btn-warning" value="Gestionar Turnos">
+    </form>
 {% else %}
-    <p>No se ha encontrado un paciente con el documento ingresado</p>
+    <p>No, en los menues esoo se ha encontrado un paciente con el documento ingresado</p>
 {% endif %} 

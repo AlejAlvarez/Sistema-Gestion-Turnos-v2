@@ -35,21 +35,21 @@ class SeleccionarEspecialidadForm(forms.Form):
 
 #retorna los turnos ordenados por id/pk
 class SeleccionarTurnoForm(forms.Form):
-
     turnos = forms.ModelChoiceField(
         queryset=Turno.objects.none(),
         empty_label=None,
         widget=forms.RadioSelect(),
     )
     def __init__(self, *args, **kwargs):
-        qs = kwargs.pop('turnos')
         super(SeleccionarTurnoForm, self).__init__(*args, **kwargs)
-        self.fields['turnos'].queryset = qs
-        self.turnos_informacion = list(qs)
-        # según la documentación, la mejor manera de hacerlo es a través de una clase que herede de ésta, y reescribiendo el método
+
+    def set_turnos(self, turnos):
+        self.fields['turnos'].queryset = turnos
+        self.turnos_informacion = list(turnos)
+        # según la documentación, 
+        # la mejor manera de hacerlo es a través de una clase que herede de ésta, 
+        # y reescribiendo el método
         self.fields['turnos'].label_from_instance = lambda obj: obj.fecha.time
-
-
 
 class BuscarEspecialidadForm(forms.Form):
     especialidad = forms.ModelChoiceField(

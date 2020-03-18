@@ -9,11 +9,9 @@ from django.utils import timezone
 
 # USUARIOS MODELS 
   
-class CustomUser(AbstractUser):
-    # Validator del documento, ni idea si funciona: validators=[RegexValidator(regex='[0-9]{8}$', message='El documento introducido debe ser de 8 dígitos', code='nomatch')], 
+class CustomUser(AbstractUser): 
     documento = models.BigIntegerField(unique=True, null=True)
     domicilio = models.CharField(max_length=100, null=True)
-    # Validator del telefono, ídem que con el documento: validators=[RegexValidator(regex='+[0-9]{2,4}-[0-9]{6}$', message='Introduzca un numero de teléfono válido, con la forma "+011-123456", o sea: "+", característica provincial, "-" (guión), y por último número de teléfono. En caso de ser celular, omita el "15".')],
     telefono = models.BigIntegerField(null=True)
     nacimiento = models.DateField(null=True)  #Esto hay que ponerlo en la version final. No nos importa la hora en la que nacio la persona, solo el dia.
     

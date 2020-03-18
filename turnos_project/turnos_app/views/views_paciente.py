@@ -16,6 +16,9 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView
 
 
+PACIENTE_PERMISSION = 'turnos_app.es_paciente' 
+PACIENTE_LOGIN_URL = '/paciente/login/'
+
 class LoginPacienteView(View):
     
     template_name = 'paciente/login.html'
@@ -23,7 +26,8 @@ class LoginPacienteView(View):
     
     # loguea al paciente
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
+        # el error estaría en si contiene o no el permiso
+        if request.user.is_authenticated and request.user.has_perm(PACIENTE_PERMISSION):
             return redirect(self.success_url)
         else:
             auth_form = AuthenticationForm()
@@ -63,17 +67,18 @@ class LoginPacienteView(View):
             return render(request,self.template_name,context)
 
 # va a retornar el user que está logueado, aún así debe ser un paciente
-@login_required(login_url='/paciente/login')
+@login_required(login_url=PACIENTE_LOGIN_URL)
 @permission_required('turnos_app.es_paciente')
 def index_paciente(request):
-    user_pk = request.user.pk
-    logged_user = get_object_or_404(CustomUser,pk=user_pk) 
-    lista_turnos = Turno.historial(Paciente.objects.get(user=logged_user))
-    args = {'logged_user': logged_user, 'lista_turnos':lista_turnos}
-    return render(request, 'paciente/index.html', args)
+    if request.method == 'GET':
+        user_pk = request.user.pk
+        logged_user = get_object_or_404(CustomUser,pk=user_pk) 
+        lista_turnos = Turno.historial(Paciente.objects.get(user=logged_user))
+        args = {'logged_user': logged_user, 'lista_turnos':lista_turnos}
+        return render(request, 'paciente/index.html', args)
 
 
-@login_required(login_url='/paciente/login')
+@login_required(login_url=PACIENTE_LOGIN_URL)
 @permission_required('turnos_app.es_paciente')
 def reservar_turno_paciente(request,pk):
 
@@ -115,7 +120,7 @@ class VerTurno(PermissionRequiredMixin, DetailView):
     model = Turno
     template_name = 'paciente/informacion_turno.html'
 
-@login_required(login_url='/paciente/login')
+@login_required(login_url=PACIENTE_LOGIN_URL)
 @permission_required('turnos_app.es_paciente')
 def buscar_turnos(request):
 
@@ -158,7 +163,7 @@ def buscar_turnos(request):
         return render(request, 'paciente/accion_turno.html', {'especialidad_form': especialidad_form,'medico_form':medico_form, 'accion': "Buscar"})
 
 # Es necesario este metodo???
-@login_required(login_url='/paciente/login')
+@login_required(login_url=PACIENTE_LOGIN_URL)
 @permission_required('turnos_app.es_paciente')
 def reservar_turno(request):
 
@@ -199,7 +204,7 @@ def reservar_turno(request):
         form = SeleccionarTurnoForm(turnos=turnos)
         return render(request, 'paciente/accion_turno.html', {'form':form, 'accion': "Reservar"})
 
-@login_required(login_url='/paciente/login')
+@login_required(login_url=PACIENTE_LOGIN_URL)
 @permission_required('turnos_app.es_paciente')
 def cancelar_turno(request, pk):
     
@@ -223,7 +228,7 @@ def cancelar_turno(request, pk):
     return redirect('mis-turnos')
 
 
-@login_required(login_url='/paciente/login')
+@login_required(login_url=PACIENTE_LOGIN_URL)
 @permission_required('turnos_app.es_paciente')
 def ver_historial(request):
 

@@ -1,0 +1,9 @@
+{% extends "recepcionista/recepcionista_layout.html" %}
+{% block title %} Gestión de Turnos {% endblock title %}
+
+{% block content %}
+        <p>Numero de Turno: {{ turno.id }}</p>
+        <p>Paciente: {{ paciente.user.first_name }} {{ paciente.user.last_name }}</p>
+        <p>Especialidad: {{ turno.medico.especialidad }}</p>
+        <p>Médico: {{ turno.medico }}</p>
+{% endblock %}
