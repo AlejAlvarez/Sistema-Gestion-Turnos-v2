@@ -104,6 +104,7 @@ def reservar_turno_paciente(request,pk):
 class ListarTurnos(PermissionRequiredMixin, ListView):
     permission_required = ('turnos_app.es_paciente')
     model = Turno
+    paginate_by = 5
     template_name = 'paciente/turnos_pendientes.html'
     context_object_name = 'lista_turnos'
 
@@ -114,6 +115,7 @@ class ListarTurnos(PermissionRequiredMixin, ListView):
         # se filtran los turnos reservados por el usuario pendientes de atención
         lista_turnos = paciente.get_turnos_pendientes()
         return lista_turnos
+
 
 class VerTurno(PermissionRequiredMixin, DetailView):
     permission_required = ('turnos_app.es_paciente')
@@ -227,12 +229,14 @@ def cancelar_turno(request, pk):
 
     return redirect('mis-turnos')
 
+class HistorialPacienteView(PermissionRequiredMixin, ListView):
 
-@login_required(login_url=PACIENTE_LOGIN_URL)
-@permission_required('turnos_app.es_paciente')
-def ver_historial(request):
+    permission_required = ('turnos_app.es_paciente',)
+    model = Turno
+    paginate_by = 10
+    context_object_name = 'lista_turnos'
+    template_name = 'paciente/historial_paciente.html'
 
-    paciente = Paciente.objects.get(pk=request.user.pk)
-    turnos = Turno.historial(paciente=paciente)
-
-    return render(request, 'paciente/historial_paciente.html', {'lista_turnos':turnos})
+    def get_queryset(self):
+        self.paciente = get_object_or_404(Paciente,pk=self.request.user.pk)
+        return Turno.historial(paciente=self.paciente)

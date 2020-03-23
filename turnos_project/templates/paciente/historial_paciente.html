@@ -5,23 +5,21 @@
     .table-scroll thead > tr > th {
         border: none;
     }
-    .well {
-        background: none;
-        height: 320px;
-    }
 {% endblock %}
 {% block content %}
-    <div class="container">
+    <div class="p-0 container mt-5 info-container shadow mb-4 bg-white rounded">
     {% if lista_turnos %}
-        <h1>Historial</h1>
-        <div class="well">
+        <div class="form-header pl-5 py-3">
+            <h2>Historial</h2>
+        </div>
+        <div class="py-3 px-3">
             <table class="table table-scroll table-striped table-hover">
                 <thead class="thead-dark">
                     <tr>
                     <th scope="col">Fecha</th>
                     <th scope="col">Especialidad</th>
-                    <th scope="col">Estado</th>
                     <th scope="col">Información</th>
+                    <th scope="col">Estado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,6 +39,21 @@
                 {% endfor %}
                 </tbody>
             </table>
+            <nav aria-label="Turnos Pagination">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="">Primera</a></li>
+                    {% endif %}
+                        <li class="page-item active"><a class="page-link" href="">{{ page_obj.number }}<span class="sr-only">(current)</span></a></li>
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="">Última</a></li>       
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
     {% else %}
     <h1>Aún no tiene turnos registrados en el historial</h1>

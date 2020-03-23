@@ -7,7 +7,6 @@
 <h4>Paciente: {{ paciente.user.last_name }} {{ paciente.user.first_name }} </h4>
 <h4>Turnos del Paciente:</h4>
     <div id="alertMessage" class="alert" role="alert">
-        Alert
     </div>
     <table class="table table-borderless">
         <thead class="thead">
@@ -44,13 +43,12 @@
 
 {% block javascript %}
 <script>
-    // using jQuery
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             var cookies = document.cookie.split(';');
             for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
+                var cookie = cookies[i].trim();
                 // Does this cookie string begin with the name we want?
                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
@@ -60,7 +58,6 @@
         }
         return cookieValue;
     }
-
     var csrftoken = getCookie('csrftoken');
 
     function csrfSafeMethod(method) {
@@ -76,21 +73,21 @@
     });
 </script>
 <script>
-
     $(document).ready(function(e){
         $(".action-button").on("click",function(event){
             $callButton = $(this);
             turnoValue = event.target.value;
             action = event.target.name;
             let sendData = {
-                'action':action,
-                'turno':turnoValue,
+                action:action,
+                turno:turnoValue,
             }
             $.ajax({
                 method:'PUT',
                 url:"{% url 'confirmar-reserva-ajax' %}",
-                data: JSON.stringify(sendData),
+                contentType: 'application/json',
                 datatype:'json',
+                data: JSON.stringify(sendData),
                 success: function(data) {
                     if (data['confirmado']) {
                         $callButton.parents("tr").addClass("table-success");
@@ -100,8 +97,6 @@
                         $callButton.parents("tr").find("button[name='cancelar']").hide();
                         $callButton.parents("tr").find(".estado").html("Confirmado");
                         $callButton.hide();
-                        // por último, cambiar el estado en la tabla
-
                     } else if (data['cancelado']) {
                         $callButton.parents("tr").addClass("table-danger");
                         $("#alertMessage").removeClass("alert-success");

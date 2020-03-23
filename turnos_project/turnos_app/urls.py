@@ -15,15 +15,14 @@ paciente_patterns = [
     path('logout/',auth_views.LogoutView.as_view(template_name='paciente/logout.html'),name='logout-paciente'),
     path('index/',index_paciente,name='index-paciente'),
     path('buscar-turnos/',buscar_turnos,name='hacer-reserva'),
-    path('confirmar-reserva/<int:pk>',reservar_turno_paciente,name='confirmar-reserva'),
-    path('ver-turno/<int:pk>',VerTurno.as_view(),name='ver-turno'),
+    path('confirmar-reserva/<int:pk>/',reservar_turno_paciente,name='confirmar-reserva'),
+    path('ver-turno/<int:pk>/',VerTurno.as_view(),name='ver-turno'),
     path('cancelar-turno/<int:pk>',cancelar_turno,name='cancelar-turno'),
-    path('historial',ver_historial,name='ver-historial'),
-    path('mis-turnos',ListarTurnos.as_view(),name='mis-turnos'),
-    path('buscar-turnos',buscar_turnos,name='buscar-turnos'),
-    path('ajax/filtrar-medicos',BuscarMedicosAjax.as_view(),name='filtrar-medicos-ajax'),
-    path('ajax/buscar-turnos',BuscarTurnosAjax.as_view(),name='buscar-turnos-ajax'),
-    path('ajax/confirmar-reserva/,',ConfirmarReservaAjax.as_view(),name='confirmar-reserva-ajax'),
+    path('historial/',HistorialPacienteView.as_view(),name='ver-historial'),
+    path('mis-turnos/',ListarTurnos.as_view(),name='mis-turnos'),
+    path('buscar-turnos/',buscar_turnos,name='buscar-turnos'),
+    path('ajax/filtrar-medicos/',BuscarMedicosAjax.as_view(),name='filtrar-medicos-ajax'),
+    path('ajax/buscar-turnos/',BuscarTurnosAjax.as_view(),name='buscar-turnos-ajax'),
     #path('paciente/editar/<int:pk>/',editar_paciente, name='editar-paciente'),
 
 ]
@@ -41,6 +40,7 @@ recepcionista_patterns = [
     path('ajax/buscar-turnos',ConsultarTurnosEspecialidadAjax.as_view(),name='consultar-turnos-especialidad-ajax'),
     path('ajax/obtener-paciente',ObtenerPacienteAjax.as_view(),name='obtener-paciente-ajax'),
     path('ajax/realizar-reserva/',RealizarReservaAjax.as_view(),name='realizar-reserva-ajax'),
+    path('ajax/confirmar-reserva/',ConfirmarReservaAjax.as_view(),name='confirmar-reserva-ajax'),
 ]
 
 #medico_patterns = [

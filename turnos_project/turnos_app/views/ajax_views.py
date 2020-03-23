@@ -73,7 +73,8 @@ class BuscarTurnosAjax(PermissionRequiredMixin,View):
             turnos = Turno.objects.filter(id__in=lista_turnos_id)
 
             # retorna el template
-            turnos_form = SeleccionarTurnoForm(turnos=turnos)
+            turnos_form = SeleccionarTurnoForm()
+            turnos_form.set_turnos(turnos=turnos)
             context = {'turnos_form':turnos_form}
             return render(request,'paciente/tabla_turnos_form.html',context)
 # MEDICO AJAX VIEWS
