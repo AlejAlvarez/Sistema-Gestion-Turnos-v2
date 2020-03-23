@@ -1,27 +1,33 @@
 {% if turnos_form.turnos.field.queryset %}
-    <table id="tabla-turnos" class="table table-hover text-center">
-        <thead class="thead-turnos">
-            <tr>
-                <th scope="col">MÉDICO</th>
-                <th scope="col">HORA DE ATENCIÓN</th>
-                <th scope="col">SELECCIONAR</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for turno in turnos_form.turnos %}
-            <tr>
-                {% for t_info in turnos_form.turnos_informacion %}
-                    {% if forloop.counter == forloop.parentloop.counter %}
-                        <td>{{ t_info.medico }}</td>
-                        <td>{{ t_info.fecha.time }}</td>
-                    {% endif %}  
-                {% endfor %}
-                <td><span class="reserva-radio-button">{{ turno.tag }}</span></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <button type="submit" id="btn-reservar" class="btn btn-danger" name="Reservar">Reservar</button>
+    <h2 class="text-primary">Turnos Disponibles</h2>
+    <form id="form-reserva" method="POST">
+        {% csrf_token %}
+            <table id="tabla-turnos" class="table table-bordered table-hover text-center">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">ESPECIALISTA</th>
+                        <th scope="col">HORA DE ATENCIÓN</th>
+                        <th scope="col">SELECCIONAR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for turno in turnos_form.turnos %}
+                    <tr>
+                        {% for t_info in turnos_form.turnos_informacion %}
+                            {% if forloop.counter == forloop.parentloop.counter %}
+                                <td>{{ t_info.medico|upper }}</td>
+                                <td>{{ t_info.fecha.time }}</td>
+                            {% endif %}  
+                        {% endfor %}
+                        <td><span class="reserva-radio-button">{{ turno.tag }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        <div class="form-row justify-content-center">
+            <button type="submit" class="btn btn-primary py-2 px-5 m-1"><strong>RESERVAR</strong></button>
+        </div>
+    </form>
 {% else %}
     <h4>No se han encontrado turnos para el médico y fecha seleccionados</h4>
 {% endif %}

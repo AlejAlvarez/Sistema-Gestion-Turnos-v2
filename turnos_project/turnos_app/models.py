@@ -120,7 +120,7 @@ class Turno(models.Model):
     @staticmethod
     def historial(paciente):
         try:
-            turnos = Turno.objects.get(Q(paciente=paciente),Q(estado=4)|Q(estado=5)).order_by('-fecha', 'medico')
+            turnos = Turno.objects.filter(Q(paciente=paciente),Q(estado=4)|Q(estado=5)).order_by('-fecha', 'medico')
         except Turno.DoesNotExist:
             turnos = None
         return turnos

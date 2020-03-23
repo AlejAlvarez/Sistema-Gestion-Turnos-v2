@@ -2,86 +2,70 @@
 {% load static %}
 {% block title %}Informacion Paciente{% endblock title %}
 {% block css %}
-.main-container{
-    margin-top: 20px;
-}
-.card {
-    max-width: 300px;
-    text-align: center;
-  }
-.title {
-  background-color: #06b2b6; 
-  color: #fffefe;
-  font-weight:500;
-  font-size: 15px;
-  padding:15px 0px;
-  border-top: 1px solid #FFF;
-}
-.profile-img {
-    margin:20px auto auto auto;
-}
-.color-text {
-  color: #06b2b6;
-}
 .info-table {
     font-family:'Montserrat',sans-serif;
     font-size: 14px;
 }
-.info-td {
-    color: #888;
-}
 {% endblock %}
 {% block content %}  
-    <div class="container main-container">
+    <div class="container mt-5">
         <div class="row">
-            <div class="col-md-3">
-                <div class="card">
-                    <img class="profile-img" src="{% static "images/002-user.png" %}" alt="Usuario" style="width:50%">
-                    <br>
-                    <h3><strong>{{ user.first_name }} {{ user.last_name }}</strong></h3>
-                    <span class="title">Última Conexión: {{ user.last_login }}</span>
+            <div class="col-md-3 col-sm-5">
+                <div class="info-container text-center shadow mb-4 bg-white rounded">
+                    <div class="py-3 px-2">
+                    {% if user.paciente.genero == 1 %}
+                        <img class="mb-3 profile-img" src="{% static "icons/essential-set/user-3.svg" %}" alt="Usuario" style="width:50%">
+                    {% elif user.paciente.genero == 2 %}
+                        <img class="mb-3 profile-img" src="{% static "icons/essential-set/user-2.svg" %}" alt="Usuario" style="width:50%">
+                    {% endif %}
+                        <br>
+                        <h3><strong>{{ user.first_name }} {{ user.last_name }}</strong></h3>
+                    </div>
+                    <p class="py-2 m-0 info-fill">Última Conexión: {{ user.last_login }}</p>
                 </div>
             </div>
-            <div class="col-md-5">
-                <table class="table table-borderless info-table">
-                    <tbody>
-                        <tr>
-                            <th class="color-text info-th">APELLIDO:</th>
-                            <td class="info-td">{{ user.last_name }}</td>
-                        </tr> 
-                        <tr>
-                            <th class="color-text info-th">NOMBRE:</th>
-                            <td class="info-td">{{ user.first_name }}</td>
-                        </tr> 
-                        <tr>
-                            <th class="color-text info-th">FECHA DE NACIMIENTO:</th>
-                            <td class="info-td">{{ user.nacimiento }}</td>
-                        </tr> 
-                        <tr>
-                            <th class="color-text info-th">DOCUMENTO:</th>
-                            <td class="info-td">{{ user.documento }}</td>
-                        </tr> 
-                        <tr>
-                            <th class="color-text info-th">DOMICILIO:</th>
-                            <td class="info-td">{{ user.domicilio }}</td>
-                        </tr>
-                        <tr>
-                            <th class="color-text">TELEFONO:</th>
-                            <td class="info-td">{{ user.telefono }}</td>
-                        </tr> 
-                        <tr>
-                            <th class="color-text">GENERO:</th>
-                            <td class="info-td">{{ user.paciente.get_genero }}</td>
-                        </tr>
-                        <tr>
-                            <th class="color-text">OBRA SOCIAL:</th>
-                            <td class="info-td">{{ user.paciente.obra_social }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col">
-
+            <div class="col-md-9 col-sm-7">
+                <div class="info-container shadow mb-4 bg-white rounded">
+                    <div class="px-2 py-1 info-fill">
+                        <h2>Datos de Paciente</h2>
+                    </div>
+                    <table class="table table-borderless info-table">
+                        <tbody>
+                            <tr>
+                                <th class="text-info info-th">APELLIDO:</th>
+                                <td>{{ user.last_name }}</td>
+                            </tr> 
+                            <tr>
+                                <th class="text-info info-th">NOMBRE:</th>
+                                <td>{{ user.first_name }}</td>
+                            </tr> 
+                            <tr>
+                                <th class="text-info info-th">FECHA DE NACIMIENTO:</th>
+                                <td>{{ user.nacimiento }}</td>
+                            </tr> 
+                            <tr>
+                                <th class="text-info info-th">DOCUMENTO:</th>
+                                <td>{{ user.documento }}</td>
+                            </tr> 
+                            <tr>
+                                <th class="text-info info-th">DOMICILIO:</th>
+                                <td>{{ user.domicilio }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-info">TELEFONO:</th>
+                                <td>{{ user.telefono }}</td>
+                            </tr> 
+                            <tr>
+                                <th class="text-info">GENERO:</th>
+                                <td>{{ user.paciente.get_genero }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-info">OBRA SOCIAL:</th>
+                                <td>{{ user.paciente.obra_social }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

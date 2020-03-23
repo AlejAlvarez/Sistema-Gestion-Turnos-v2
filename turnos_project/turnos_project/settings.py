@@ -75,8 +75,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'turnos_project.wsgi.application'
 
 # Cookies
-CSRF_USE_SESSIONS = True
-CSRF_COOKIE_HTTPONLY = True
+#CSRF_USE_SESSIONS = True
+#CSRF_COOKIE_HTTPONLY = True
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases

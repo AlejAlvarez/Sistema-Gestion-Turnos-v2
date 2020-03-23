@@ -8,6 +8,7 @@ from django.views import View
 from django.contrib import messages
 from django.http import JsonResponse
 import json 
+from django.utils.decorators import method_decorator
 
 from ..models import *
 from .views_usuario import *
@@ -286,7 +287,6 @@ class ObtenerPacienteAjax(PermissionRequiredMixin,View):
 
     def get(self,request):
         if request.is_ajax():
-            print('REQUEST: ',request.GET)
             if(request.GET['documento']):
                 paciente = get_paciente_by_documento(request.GET['documento'])
                 if paciente is not None:

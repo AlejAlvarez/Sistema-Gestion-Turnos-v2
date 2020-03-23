@@ -8,26 +8,49 @@
     }
 {% endblock %}
 {% block content %}  
-    <div class="container">
-        <h1>Turnos Pendientes</h1>
-        {% for turno in lista_turnos %}
-        <div class="card turno-card">
-            <div class="row no-gutters">
-                <div class="col-md-2 m-auto">
-                    <img class="card-img" src="{% static "images/stethoscope-GerdAltmann.png" %}" alt="Image by Gerd Altmann from Pixabay">
-                </div>
-                <div class="col">
-                    <div class="card-header"><span class="featured">Turno #{{ turno.id }}</span></div>
-                    <div class="card-body">
-                        <p class="card-text">Fecha y Hora de Atención: {{ turno.fecha.date }}, {{ turno.fecha.time }} </p>
-                        <p class="card-text">Médico: {{ turno.medico }}</p>
-                        <p class="card-text">Especialidad: {{ turno.medico.especialidad }}</p>
-                    </div>
-                </div>    
-            </div>
+    <div class="p-0 container mt-5 info-container shadow mb-4 bg-white rounded">
+        <div class="form-header pl-5 py-3">
+            <h2>Turnos Pendientes</h2>
         </div>
-        {% endfor %}
+        <div class="py-3 px-5">
+            {% for turno in lista_turnos %}
+            <div class="card turno-card">
+                <div class="row no-gutters">
+                    <div class="col-md-2 m-auto">
+                        <img class="card-img" src="{% static "images/stethoscope-GerdAltmann.png" %}" alt="Image by Gerd Altmann from Pixabay">
+                    </div>
+                    <div class="col">
+                        <div class="card-header"><span class="featured">Turno #{{ turno.id }}</span></div>
+                        <div class="card-body">
+                            <p class="card-text">Fecha y Hora de Atención: {{ turno.fecha.date }}, {{ turno.fecha.time }} </p>
+                            <p class="card-text">Especialidad: {{ turno.medico.especialidad }}</p>
+                            <p class="card-text">Médico: {{ turno.medico }}</p> 
+                            <p class="card-text text-right"><button class="btn btn-lg btn-danger">Cancelar</button></p>
+                        </div>
+                    </div>
+                </div>   
+            </div>
+            <nav aria-label="Turnos Pagination">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="">Primera</a></li>
+                    {% endif %}
+                        <li class="page-item active"><a class="page-link" href="">{{ page_obj.number }}<span class="sr-only">(current)</span></a></li>
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="">Última</a></li>       
+                    {% endif %}
+                </ul>
+            </nav>
+            {% empty %}
+            <p>Actualmente no tiene turnos pendientes</p>
+            {% endfor %}
+        </div>
     </div>
+
 {% endblock content %}
 {% block javascript %}
 {% endblock  %}
