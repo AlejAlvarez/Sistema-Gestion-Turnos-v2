@@ -10,8 +10,8 @@
     }
 {% endblock %}
 {% block content %}
-    <div class="container">
-        <h2>Registrar Paciente</h2>
+    <div class="container shadow bg-white rounded p-5">
+        <h2 class="text-primary">Registrar Paciente</h2>
         {% if messages %}
             {% for message in messages %}
                 {% if message.level_tag == 'info' %}
@@ -31,51 +31,53 @@
         {% endif %}
         <form method="POST">
             {% csrf_token %}
+            <h4 class="text-success">Datos de Usuario</h4>
             <div class="form-group">
                 <label for="{{ form.username.id_for_label }}">Nombre de Usuario</label>
-                {{ form.username|add_class:"form-control" }}
+                {% render_field form.username class="form-control" placeholder="Ingrese un nombre de usuario" %}
             </div>
             <div class="form-group">
                 <label for="{{ form.password1.id_for_label}}">Contraseña</label>
-                {{ form.password1|add_class:"form-control" }}
+                {% render_field form.password1 class="form-control" placeholder="Ingrese la contraseña" %}
             </div>
             <div class="form-group">
                 <label for="{{ form.password2.id_for_label }}">Confirmar Contraseña</label>
-                {{ form.password2|add_class:"form-control" }}
+                {% render_field form.password2 class="form-control" placeholder="Confirmar constraseña" %}
             </div>
+            <h4 class="text-success">Datos de Perfil</h4>
             <div class="form-row">
                 <div class="form-group col">
                     <label for="{{ form.first_name.id_for_label }}">Nombre</label>
-                    {{ form.first_name|add_class:"form-control" }}
+                    {% render_field form.first_name class="form-control" placeholder="Nombre" %}
                 </div>
                 <div class="form-group col">
                     <label for="{{ form.last_name.id_for_label }}">Apellido</label>
-                    {{ form.last_name|add_class:"form-control" }}
+                    {% render_field form.last_name class="form-control" placeholder="Apellido" %}
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col">
                     <label for="{{ form.documento.id_for_label }}">Documento</label>
-                    {{ form.documento|add_class:"form-control" }}
+                    {% render_field form.documento class="form-control" placeholder="Documento" %}
                 </div>
                 <div class="form-group col">
                     <label for="{{ form.domicilio.id_for_label }}">Domicilio</label>
-                    {{ form.domicilio|add_class:"form-control" }}
+                    {% render_field form.domicilio class="form-control" placeholder="Domicilio" %}
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col">
                     <label for="{{ form.telefono.id_for_label }}">Telefono</label>
-                    {{ form.telefono|add_class:"form-control" }}
+                    {% render_field form.telefono class="form-control" placeholder="Telefono" %}
                 </div>
                 <div class="form-group col">
                     <label for="{{ form.email.id_for_label }}">E-mail</label>
-                    {{ form.email|add_class:"form-control" }}
+                    {% render_field form.email class="form-control" placeholder="Correo electrónico" %}
                 </div>
             </div>
             <div class="form-group">
                 <label for="id_nacimiento_day">Nacimiento</label>
-                {{ form.nacimiento|add_class:"form-control snps-inline-select" }}
+                {% render_field form.nacimiento class="form-control snps-inline-select" placeholder="Nombre de Usuario" %}
             </div>
             <fieldset class="form-group">
                 <label for="{{ form.genero.id_for_label }}">Genero</label>

@@ -1,44 +1,45 @@
 {% extends "recepcionista/recepcionista_layout.html" %}
 {% load widget_tweaks %}
 {% block title %}Gestionar Turnos{% endblock %}
-{% block content %}
 
-<h1>Gestión de Turnos</h1>
-<h4>Paciente: {{ paciente.user.last_name }} {{ paciente.user.first_name }} </h4>
-<h4>Turnos del Paciente:</h4>
-    <div id="alertMessage" class="alert" role="alert">
-    </div>
-    <table class="table table-borderless">
-        <thead class="thead">
-            <tr>
-                <th>Nro Turno</th>
-                <th>Especialidad</th>
-                <th>Medico</th>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Estado</th>
-                <th>Opcion #1</th>
-                <th>Opcion #2</th>
-                <th>Opcion #3</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for turno in turnos %}
-            <tr>
-                <td>{{ turno.pk }}</td>
-                <td>{{ turno.medico.especialidad }}</td>
-                <td>{{ turno.medico }}</td>
-                <td>{{ turno.fecha.date }}</td>
-                <td>{{ turno.fecha.time }}</td>
-                <th class="estado">{{ turno.get_estado_display }}</th>
-                <td><a href="{% url 'imprimir-reserva' paciente.user.pk turno.pk %}" class="btn btn-info">Imprimir</a></td>  
-                <td><button name="confirmar" type="button" class="btn btn-success action-button" value="{{ turno.pk }}">Confirmar</button></td>
-                <td><button name="cancelar" type="button" class="btn btn-danger action-button" value="{{ turno.pk }}">Cancelar</button></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    
+{% block content %}
+<div class="container shadow bg-white rounded p-5">
+    <h1 class="text-primary">Gestión de Turnos</h1>
+    <h4>Paciente: {{ paciente.user.last_name }} {{ paciente.user.first_name }} </h4>
+    <h4>Turnos del Paciente:</h4>
+        <div id="alertMessage" class="alert" role="alert">
+        </div>
+        <table class="table table-borderless">
+            <thead class="thead">
+                <tr>
+                    <th>Nro Turno</th>
+                    <th>Especialidad</th>
+                    <th>Medico</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th>Opcion #1</th>
+                    <th>Opcion #2</th>
+                    <th>Opcion #3</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for turno in turnos %}
+                <tr>
+                    <td>{{ turno.pk }}</td>
+                    <td>{{ turno.medico.especialidad }}</td>
+                    <td>{{ turno.medico }}</td>
+                    <td>{{ turno.fecha.date }}</td>
+                    <td>{{ turno.fecha.time }}</td>
+                    <th class="estado">{{ turno.get_estado_display }}</th>
+                    <td><a href="{% url 'imprimir-reserva' paciente.user.pk turno.pk %}" class="btn btn-info">Imprimir</a></td>  
+                    <td><button name="confirmar" type="button" class="btn btn-success action-button" value="{{ turno.pk }}">Confirmar</button></td>
+                    <td><button name="cancelar" type="button" class="btn btn-danger action-button" value="{{ turno.pk }}">Cancelar</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+</div>
 {% endblock %}
 
 {% block javascript %}

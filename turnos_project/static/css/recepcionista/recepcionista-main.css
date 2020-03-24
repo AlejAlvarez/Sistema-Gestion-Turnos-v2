@@ -1,0 +1,22 @@
+body {
+  background-color: #f8f8f8;
+}
+/* -------------------- */
+/*        NAVBAR        */
+/* -------------------- */
+
+.main-navbar {
+  background-color:var(--dark-gunmetal);
+}
+.main-navbar .nav-item .nav-link{
+  color: white;
+}
+
+/* -------------------- */
+/*        BUTTONS       */
+/* -------------------- */
+.btn-persian-green {
+  background-color: var(--persian-green);
+  color: white;
+}
+

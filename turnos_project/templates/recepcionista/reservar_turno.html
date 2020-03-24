@@ -16,21 +16,19 @@
     }   
 {% endblock %}
 {% block content %}
-    <div class="container">
-        <h2>MENÚ DE RESERVA DE TURNOS</h2>
+    <div class="container shadow bg-white rounded p-5">
+        <h2 class="text-primary">RESERVAR TURNO</h2>
         <input name="paciente" type="number" value={{ paciente.user.pk }} hidden>
-    </div>
-    <div class="container">
         <p>Reservando turnos para: {{ paciente.user.first_name }} </p>
         <form id="especialidad-form" method="GET">
             <div class="form-group">
                 <label for="{{ especialidad_form.especialidades.id_for_label }}">Especialidad</label>
                 {{ especialidad_form.especialidades|add_class:"form-control"  }}     
             </div>  
-            <input type="submit" class="btn btn-primary pl-4 pr-4" value="Buscar Turnos" />  
+            <input type="submit" class="btn btn-persian-green pl-4 pr-4" value="Buscar Turnos" />  
         </form>
+        <div id="container-turnos" class="mt-5"></div>
     </div>
-    <div id="container-turnos"></div>
     <!-- Modal -->
     <div class="modal fade" id="avisoTurnoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">

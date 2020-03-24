@@ -1,38 +1,89 @@
 {% load static %}
-<html>
-    <head>
-        <link href="{% static "css/bootstrap/bootstrap_pulse.css" %}" rel="stylesheet" />
-        <link href="{% static "css/bootstrap/bootstrap_pulse.min.css" %}" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet"> 
-        <link rel="stylesheet" type="text/css" href="{% static "css/recepcionista/recepcionista_main.css" %}" />
-        {% block import_links %}{% endblock %}
-        <title>{% block title %}Recepcionista Layout{% endblock %}</title>
-        <style>
-        {% block css %}
-        {% endblock %}
-        </style>
-    </head>
-    <body>
-        <!-- El layout va a consistir de una sidebar, una navbar principal y el contenido -->
+<!DOCTYPE html>
 
-            {% include "recepcionista/recepcionista_navbar.html" %}
+<head>
 
-        <div class="container-fluid">
-            <div class="row">
-                <nav class="col-md-2 sidebar flex-shrink-1 bg-light pt-3" id="Navbar">
-                    {% include "recepcionista/sidebar.html" %}
-                </nav>
-                <div class="col-md-10">
-                        {% block content %}
-                        {% endblock %}           
-                </div>
-            </div>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>{% block title %}Recepcionista Layout{% endblock %}</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static "css/bootstrap/bootstrap-pulse.min.css" %}" rel="stylesheet">
+  <link href="{% static "icons/essential-icon-set-fill/flaticon.css" %}" rel="stylesheet" >
+  <!-- Custom styles for this template -->
+  <link href="{% static "css/recepcionista/recepcionista-main.css" %}" rel="stylesheet">
+  <link href="{% static "css/recepcionista/simple-sidebar.css" %}" rel="stylesheet">
+  {% block import_links %}{% endblock %}
+  <style>
+    {% block css %}
+    {% endblock %}
+  </style>
+</head>
+
+<body>
+
+  <div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="border-right border-light" id="sidebar-wrapper">
+      <div class="sidebar-heading text-white border-bottom border-light py-4">Start Bootstrap</div>
+      <div class="list-group list-group-flush">
+        <a href="{% url 'index-recepcionista' %}" class="sidebar-item list-group-item list-group-item-action"><i class="flaticon-television-1"><span class="ml-2">Inicio</span></i></a>
+        <a href="{% url 'atender-usuario' %}" class="sidebar-item list-group-item list-group-item-action"><i class="flaticon-notepad-1"><span class="ml-2">Gestionar Turnos</span></i></a>
+        <a href="{% url 'registrar-paciente' %}" class="sidebar-item list-group-item list-group-item-action"><i class="flaticon-id-card-4"><span class="ml-2">Registrar Paciente</span></i></a>
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+      <nav class="navbar main-navbar navbar-expand-lg">
+        <button class="btn btn-light" id="menu-toggle"><i class="flaticon-back"><span class="ml-1">Ocultar</span></i></button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'home' %}"><i class="flaticon-home-1"><span class="ml-1">Home</span></i><span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="flaticon-alarm"><span class="ml-1">Notificaciones</span></i></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="flaticon-user-3"><span class="ml-1">Cuenta</span></i> 
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{% url 'logout-recepcionista' %}">Cerrar Sesión<i class="flaticon-exit-1 ml-2"></i></a>
+              </div>
+            </li>
+          </ul>
         </div>
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-        <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.js"></script>
-        <script src="{% static "js/bootstrap/bootstrap.min.js" %}"></script>
-        <script src="https://kit.fontawesome.com/6cc7af1c63.js" crossorigin="anonymous"></script>
-        {% block javascript %}
-        {% endblock %}
-    </body>
+      </nav>
+      <div class="container mt-3 py-2 px-4">
+            {% block content %}
+            {% endblock content %}
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static "js/jquery-3.4.1.min.js" %}"></script>
+  <script src="{% static "js/bootstrap/bootstrap.min.js" %}"></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+  </script>
+  {% block javascript %}{% endblock %}
+</body>
+
 </html>

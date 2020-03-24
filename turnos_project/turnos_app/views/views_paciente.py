@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView 
 from django.views import View
+from django.core.exceptions import PermissionDenied
+from django.http import Http404
 
 from ..models import *
 from ..forms.forms_paciente import PacienteChangeForm
@@ -205,6 +207,55 @@ def reservar_turno(request):
         # Renderizo la datatable con los datos de los turnos        
         form = SeleccionarTurnoForm(turnos=turnos)
         return render(request, 'paciente/accion_turno.html', {'form':form, 'accion': "Reservar"})
+
+class CancelarTurnoView(PermissionRequiredMixin, View):
+    
+    permission_required = ('turnos_app.es_paciente')
+    template_name = 'paciente/cancelar_turno.html'
+
+    def get(self, request, *args, **kwargs):
+        turno = Turno.objects.get(pk=kwargs['pk'])
+        paciente = Paciente.objects.get(user_id=request.user.pk)
+        if turno.paciente == paciente:
+            context = {
+                'turno':turno,
+            }
+            return render(request,self.template_name,context)
+        else:
+            raise PermissionDenied
+
+    def post(self,request, *args, **kwargs):
+        turno = Turno.objects.get(pk=kwargs['pk'])
+        hora_actual = timezone.now()
+        # Si cancela menos de 2 horas antes
+        if hora_actual + timedelta(hours=2) >= turno.fecha:
+            turno.estado = 5 # Estado cancelado
+            turno.save()
+            turno_cancelado = TurnoCancelado.objects.create(turno=turno, fecha_cancelado=hora_actual)
+            turno_cancelado.save()
+            paciente.penalizado = True
+            paciente.fecha_despenalizacion = timezone.now() + timedelta(days=2) # Lo penalizo por 2 días nomas porque fue copado y avisó
+            paciente.save()
+        else:
+            turno.estado = 1 # Estado disponible
+            turno.paciente = None
+            turno.save()
+        return redirect('turno-cancelado',pk=turno.pk)
+
+class TurnoCanceladoView(PermissionRequiredMixin, View):
+    
+    permission_required = ('turnos_app.es_paciente')
+    template_name = 'paciente/turno_cancelado.html'
+
+    def get(self, request, *args ,**kwargs):
+        turno_cancelado = Turno.objects.get(pk=kwargs['pk'])
+        if turno_cancelado.estado == 1  or turno_cancelado.estado == 5:
+            context = {
+                'turno':turno_cancelado,
+            }
+            return render(request,self.template_name,context)
+        else:
+            raise Http404()
 
 @login_required(login_url=PACIENTE_LOGIN_URL)
 @permission_required('turnos_app.es_paciente')

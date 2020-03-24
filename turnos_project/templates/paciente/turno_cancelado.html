@@ -1,0 +1,17 @@
+{% extends 'paciente/paciente_layout.html' %}
+
+{% block title %}Turno{% endblock title %}
+
+{% block content %}
+    <div class="p-0 container mt-5 info-container shadow mb-4 bg-white rounded">
+        <div class="pl-5 py-3">
+            <h2 class="text-warning">Cancelar Turno</h2>
+        </div>
+        <div class="px-5 py-3">
+            <h4>Turno Cancelado</h4>
+            <a href="{% url 'mis-turnos' %}">Turnos Pendientes</a>
+        </div>
+    {% comment %}<a href="{% url 'cancelar-turno' turno.pk %}">- Cancelar Turno</a>{% endcomment %}
+{% endblock content %}
+{% block javascript %}
+{% endblock %}

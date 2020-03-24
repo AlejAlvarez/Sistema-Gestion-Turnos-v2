@@ -1,0 +1,30 @@
+{% extends 'paciente/paciente_layout.html' %}
+
+{% block title %}Turno{% endblock title %}
+
+{% block content %}
+    <div class="p-0 container mt-5 info-container shadow mb-4 bg-white rounded">
+        <div class="pl-5 py-3">
+            <h2 class="text-danger">Cancelar Turno</h2>
+        </div>
+        <div class="px-5 py-3">
+            <h4>¿Desea cancelar el siguiente turno?</h4>
+            <p class="pl-3"> - <strong>Número de Turno:</strong> {{ turno.pk }}</p>
+            <p class="pl-3"> - <strong>Medico:</strong> {{ turno.medico }}</p>
+            <p class="pl-3"> - <strong>Fecha:</strong> {{ turno.fecha.date }}</p>
+            <p class="pl-3"> - <strong>Hora:</strong> {{ turno.fecha.time }}</p>
+            <p class="pl-3"> - <strong>Estado:</strong> {{ turno.get_estado_display }}</p>
+            <div class="pl-3">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{ turno.pk }}">
+                    <a class="btn btn-secondary btn-lg mr-3" href="{% url 'mis-turnos' %}"><span class="px-3">Atrás</span></a>
+                    <input class="btn btn-danger btn-lg" name="turno" value="Cancelar" type="submit" >
+                </form>
+            </div>
+        </div>
+    </div>
+    {% comment %}<a href="{% url 'cancelar-turno' turno.pk %}">- Cancelar Turno</a>{% endcomment %}
+{% endblock content %}
+{% block javascript %}
+{% endblock %}
