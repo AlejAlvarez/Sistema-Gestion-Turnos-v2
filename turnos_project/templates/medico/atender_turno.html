@@ -1,0 +1,27 @@
+{% extends 'medico/medico_layout.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <div class="container">
+        <h2>Atender Turno</h2>
+        <h4>Paciente:</h4>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="id_first_name">Nombre</label>
+                    <input class="form-control" type="text" value="{{ paciente.first_name }}" disabled=true>
+                </div>
+                <div class="form-group col">
+                    <label for="id_last_name">Apellido</label>
+                    <input class="form-control" type="text" value="{{ paciente.last_name }}" disabled=true>
+                </div>    
+            </div>
+            <div class="form-group">
+                <label for="{{ form.diagnostico.id_for_label }}">Diagnóstico de turno</label>
+                {{ form.diagnostico|add_class:"form-control" }}
+            </div>
+            <button class="btn btn-info" type="submit">Registrar Diagnóstico</button>
+        </form>
+    </div>
+{% endblock %}

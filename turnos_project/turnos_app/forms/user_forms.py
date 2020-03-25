@@ -4,7 +4,7 @@ from django.forms import models
 
 from ..models import CustomUser
 
-ANOS_NACIMIENTO_CHOICES = range(1920, 2030)
+ANOS_NACIMIENTO_CHOICES = range(1920, 2020)
 
 class CustomUserCreationForm(UserCreationForm):
 

@@ -107,7 +107,8 @@
 
             tabla.on('select', function(e, dt, type, indexes){
                 if (type === 'row'){
-                    paciente_id = tabla.row().data()[0];
+                    paciente_id = tabla.row({selected: true}).data()[0];
+                    console.log(paciente_id);
                     btnEliminar.disabled = false;
                     form.action = "eliminar-paciente/" + paciente_id + "/";
                 }

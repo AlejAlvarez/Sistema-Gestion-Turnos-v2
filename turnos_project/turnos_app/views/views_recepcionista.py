@@ -147,7 +147,7 @@ class AtenderUsuarioView(PermissionRequiredMixin, View):
 
 class GestionarTurnosView(PermissionRequiredMixin, View):
     permission_required = ('turnos_app.es_recepcionista',)
-    template_name = 'recepcionista/gestionar_turnos.html'
+    template_name = 'recepcionista/confirmar_turnos.html'
 
     def get(self,request,*args,**kwargs):
         paciente = get_object_or_404(Paciente,pk=kwargs['pk'])

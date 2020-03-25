@@ -1,0 +1,202 @@
+{% extends 'medico/medico_layout.html' %}
+{% block title %} Atender Turnos {% endblock %}
+{% block import_css %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/sp-1.0.1/sl-1.3.1/datatables.min.css"/>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/sp-1.0.1/sl-1.3.1/datatables.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Modal -->
+    <div class="modal fade" id="modalCancelar" tabindex="-1" role="dialog" aria-labelledby="modalCancelarLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalCancelarLabel">Cancelar Turno</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <form method="POST" action="/" id="form-cancelar">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" id="btn-confirmar-cancel">Confirmar</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <h1>Listado de Turnos Confirmados</h1>
+        <br>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level_tag == 'info' %}
+                <div class="alert-success">
+                    <ul class="messages">
+                        <li>{{ message }}</li>
+                    </ul>
+                </div>                    
+                {% elif message.level_tag == 'warning' %}
+                <div class="alert-danger">
+                    <ul class="messages">
+                        <li>{{ message }}</li>
+                    </ul>
+                </div>           
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <div class="row">
+            <div class="col justify-content-center">
+                <table id="tabla-turnos" class="table table-bordered table-striped table-hover" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Paciente</th>
+                            <th>Hora</th>
+                            <th>Medic</th>
+                        </tr>
+                    </thead>
+                    <tbody id="updatableBody">
+                        {% for turno in turnos_confirmados %}
+                            <tr>
+                                <td>{{ turno.id }}</td>
+                                <td>{{ turno.paciente }}</td>
+                                <td>{{ turno.fecha.time }}</td>
+                                <th>{{ medico.pk }}</th>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button id="btn-cancelar" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCancelar" disabled>
+                    Cancelar
+                </button>
+            </div>
+            <div class="col">
+                <button id="btn-actualizar" type="button" class="btn btn-primary">Actualizar Lista</button>
+            </div>
+            <div class="col">
+                <button id="btn-atender" type="button" class="btn btn-primary" disabled>Atender</button>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var medicoId = "{{ medico.pk }}"
+    </script>
+
+    {% comment %}
+    // Codigo de js que django intenta seguir ejecutando
+    /*
+    $('#btn-actualizar').on('click', function(){
+        $.ajax({
+            type: "GET",
+            url: `{% url 'actualizar-turnos-confirmados' ${medicoId} %}`,  // URL to your view that serves new info
+            success: function(response){
+                console.log(response);
+                aca empieza coment
+                tabla.clear();
+                $('#updatableBody').html(response);
+                tabla.draw();
+                let tbody = document.getElementById("updatableBody");
+                console.log(tbody);
+                aca termina coment
+            }
+        })
+    });
+    */
+
+    // Esto va fuera del $(document).ready
+    /*
+    setInterval(function() {
+        $.ajax({
+            type: "GET",
+            url: "{% url 'actualizar-turnos-confirmados' %}",  // URL to your view that serves new info
+            success: function(response){
+                $('#tabla-turnos').html('<table id="tabla-turnos" class="table table-bordered table-striped table-hover" style="width: 100%;">');
+                // table_config.columns = response.columns;
+
+                var table = $('#tabla-turnos').DataTable();
+                table.clear();
+                console.log()
+                table.rows.add(response.data);
+                table.draw();
+            }
+        })
+    }, 5000);
+    */
+    {% endcomment %}
+
+{% endblock %}
+{% block jquery %}
+<script>
+    var tabla
+    $(document).ready(function(){
+        tabla = $("#tabla-turnos").DataTable({
+            select: {
+                style: 'single'
+            },
+            "language": {
+                    "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+            }
+        });
+
+        var btnCancelar = document.getElementById("btn-cancelar");
+        var btnActualizar = document.getElementById("btn-actualizar");
+        var btnAtender =  document.getElementById("btn-atender");
+        var btnConfirmarCancel = document.getElementById("btn-confirmar-cancel");
+        var turnoId = null;
+        var formCancelar =  document.getElementById("form-cancelar") || null;
+        var baseUrl = 'http://' + window.location.host + '/';
+
+        btnCancelar.disabled = true;
+        btnAtender.disabled = true;
+        
+        tabla.on('select', function(e, dt, type, indexes){
+            if (type === 'row'){
+                turnoId = tabla.row({selected: true}).data()[0];
+                btnCancelar.disabled = false;
+                btnAtender.disabled = false;
+                formCancelar.action = baseUrl + 'cancelar-turno-medico/' + turnoId + '/';
+            }
+        });
+
+        tabla.on('deselect', function(e, dt, type, indexes){
+            if (type === 'row'){
+                turnoId = null;
+                btnCancelar.disabled = true;
+                btnAtender.disabled = true;
+                formCancelar.action = "#";
+            }
+        });
+
+        $('#btn-atender').on('click', function(){
+            let endUrl = 'medico/atender-turno/' + turnoId + '/';
+            let url =  baseUrl + endUrl;
+            window.location.replace(url);
+        });
+
+        $('#btn-actualizar').on('click', function(){
+            document.location.reload(true);
+        })
+
+    });
+    
+    setInterval(function(){
+        document.location.reload(true);
+    }, 10000);
+
+
+</script>
+{% endblock %}
+
+{% comment %}
+{% endcomment %}
