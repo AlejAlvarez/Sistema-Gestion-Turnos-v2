@@ -1,0 +1,8 @@
+
+{% for turno in turnos_confirmados %}
+        <tr>
+            <td>{{ turno.id }}</td>
+            <td>{{ turno.paciente }}</td>
+            <td>{{ turno.fecha.time }}</td>
+        </tr>
+{% endfor %}

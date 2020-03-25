@@ -103,7 +103,7 @@
 
             tabla.on('select', function(e, dt, type, indexes){
                 if (type === 'row'){
-                    obra_social_id = tabla.row().data()[0];
+                    obra_social_id = tabla.row({selected: true}).data()[0];
                     btn.disabled = false;
                     form.action = "eliminar-obra-social/" + obra_social_id + "/";
                 }

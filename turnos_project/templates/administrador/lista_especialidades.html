@@ -100,7 +100,7 @@
 
             tabla.on('select', function(e, dt, type, indexes){
                 if (type === 'row'){
-                    especialidad_id = tabla.row().data()[0];
+                    especialidad_id = tabla.row({selected: true}).data()[0];
                     btn.disabled = false;
                     form.action = "eliminar-especialidad/" + especialidad_id + "/";
                 }

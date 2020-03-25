@@ -9,6 +9,7 @@ from .views.views_medico import *
 from .views.views_administrador import *
 from .views.ajax_views import *
 
+
 paciente_patterns = [
 
     path('login/',LoginPacienteView.as_view(),name='login-paciente'),
@@ -30,8 +31,8 @@ paciente_patterns = [
 recepcionista_patterns = [
 
     path('login/',LoginRecepcionistaView.as_view(),name='login-recepcionista'),
-    path('logout/',auth_views.LogoutView.as_view(template_name='recepcionista/logout.html'),name='logout-recepcionista'),
-    path('index/',index_recepcionista,name='index-recepcionista'),
+    path('logout/',logout_usuario,name='logout-recepcionista'),
+    path('',index_recepcionista,name='index-recepcionista'),
     path('gestionar-turnos/<int:pk>',GestionarTurnosView.as_view(),name='gestionar-turnos'),
     path('atender-usuario/',AtenderUsuarioView.as_view(),name='atender-usuario'),
     path('registrar-paciente/',SignUpPacienteView.as_view(),name='registrar-paciente'),
@@ -43,13 +44,20 @@ recepcionista_patterns = [
     path('ajax/confirmar-reserva/',ConfirmarReservaAjax.as_view(),name='confirmar-reserva-ajax'),
 ]
 
-#medico_patterns = [
-    #path('medico/index',index_medico,'index-medico'),
-    #path('medico/ver-turnos',ver_turnos,'ver-turnos'),
-    #path('medico/atender-turno/<int:pk>',atender_turno,'atender-turno'),
-    #path('medico/actualizar-horarios',actualizar_horarios,'actualizar-horarios'),
+medico_patterns = [
+
+    path('login/', LoginMedicoView.as_view(), name='login-medico'),
+    path('logout/', logout_usuario, name='logout-medico'),
+    path('', index_medico, name='index-medico'),
+    path('lista-turnos-confirmados/', ListarTurnosConfirmadosView.as_view(), name='lista-turnos-confirmados'),
+    path('atender-turno/<int:pk>/', atender_turno, name='atender-turno'),
+    path('cancelar-turno-medico/<int:pk>/', cancelar_turno_medico, name='cancelar-turno-medico'),
+    path('actualizar-turnos-confirmados/<int:medicopk>/', get_more_turnos_confirmados, name='actualizar-turnos-confirmados'),
+    #path('medico/actualizar-horarios', actualizar_horarios, name='actualizar-horarios'),
     #path('medico/crear-turnos')
-#]
+
+]
+
 administrador_patterns = [
 
     path('login/', LoginAdministradorView.as_view(), name='login-administrador'),
@@ -81,13 +89,15 @@ administrador_patterns = [
     path('ver-estadisticas/', EstadisticasView.as_view(), name='ver-estadisticas'),
     path('api/estadisticas/', ChartEstadisticas.as_view(), name='api-estadisticas'),
 ]
+
 urlpatterns = [
 
     # general
 
-    path('',home,name='home'),
-    path('paciente/',include(paciente_patterns)),
-    path('recepcionista/',include(recepcionista_patterns)),
-    path('administrador/',include(administrador_patterns)),
+    path('', home, name='home'),
+    path('paciente/', include(paciente_patterns)),
+    path('recepcionista/', include(recepcionista_patterns)),
+    path('medico/', include(medico_patterns)),
+    path('administrador/', include(administrador_patterns)),
 
 ]
