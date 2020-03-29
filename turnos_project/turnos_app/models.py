@@ -116,6 +116,16 @@ class Turno(models.Model):
                 lista_turnos.append(turno)
         return lista_turnos
     
+    def is_disponible(self):
+        return self.estado == 1
+
+    def reservar(self,paciente=None):
+        if paciente != None:
+            self.paciente = paciente
+            self.estado = 2    
+        else:
+            raise ValidationError("Un turno reservado no puede tener un paciente null")  
+
     # va a retornar sólamente los turnos cancelados y atendidos
     @staticmethod
     def historial(paciente):
@@ -123,16 +133,8 @@ class Turno(models.Model):
             turnos = Turno.objects.filter(Q(paciente=paciente),Q(estado=4)|Q(estado=5)).order_by('-fecha', 'medico')
         except Turno.DoesNotExist:
             turnos = None
-        return turnos
+        return turnos  
 
-    # por defecto va a retornar dos semanas
-    @staticmethod 
-    def get_turnos_weeks_ahead(number_of_weeks=2):
-        time_dt = timedelta(weeks=number_of_weeks)
-        startdate = datetime.datetime.now()
-        enddate = datetime.datetime.now() + time_dt 
-        lista_turnos = Turno.objects.filter(fecha__range=[startdate,enddate])
-        return lista_turnos
 
 class TurnoCancelado(models.Model):
     turno = models.OneToOneField(Turno, on_delete=models.CASCADE, primary_key=True)

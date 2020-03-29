@@ -6,6 +6,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views import View
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
+from django.db import transaction, DatabaseError
+from django.http import JsonResponse
 
 from ..models import *
 from ..forms.forms_paciente import PacienteChangeForm
@@ -227,19 +229,20 @@ class CancelarTurnoView(PermissionRequiredMixin, View):
     def post(self,request, *args, **kwargs):
         turno = Turno.objects.get(pk=kwargs['pk'])
         hora_actual = timezone.now()
+        turno.estado = 5 # Estado cancelado
+        turno.save()
+        turno_cancelado = TurnoCancelado.objects.create(turno=turno, fecha_cancelado=hora_actual)
+        turno_cancelado.save()
         # Si cancela menos de 2 horas antes
         if hora_actual + timedelta(hours=2) >= turno.fecha:
-            turno.estado = 5 # Estado cancelado
-            turno.save()
-            turno_cancelado = TurnoCancelado.objects.create(turno=turno, fecha_cancelado=hora_actual)
-            turno_cancelado.save()
+            paciente = Paciente.objects.get(pk=request.user.pk)
             paciente.penalizado = True
-            paciente.fecha_despenalizacion = timezone.now() + timedelta(days=2) # Lo penalizo por 2 días nomas porque fue copado y avisó
+            # Lo penalizo por 2 días nomas porque fue copado y avisó
+            paciente.fecha_despenalizacion = timezone.now() + timedelta(days=2) 
             paciente.save()
-        else:
-            turno.estado = 1 # Estado disponible
-            turno.paciente = None
-            turno.save()
+        # Se crea un nuevo turno disponible con los datos del turno cancelado
+        nuevo_turno_disponible = Turno.objects.create(estado=1,fecha=turno.fecha,medico=turno.medico)
+        nuevo_turno_disponible.save()
         return redirect('turno-cancelado',pk=turno.pk)
 
 class TurnoCanceladoView(PermissionRequiredMixin, View):
@@ -291,3 +294,30 @@ class HistorialPacienteView(PermissionRequiredMixin, ListView):
     def get_queryset(self):
         self.paciente = get_object_or_404(Paciente,pk=self.request.user.pk)
         return Turno.historial(paciente=self.paciente)
+
+class ReservarTurnoAjax(PermissionRequiredMixin, View):
+
+    permission_required = ('turnos_app.es_paciente',)
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():    
+            # turno_ocupado retornará True si ya fue ocupado por otro paciente antes de consultar la reserva
+            response_data = {
+                'turno_ocupado':None,
+            }
+            paciente = Paciente.objects.get(pk=request.user.pk)
+            turno_seleccionado = Turno.objects.select_for_update(nowait=True).get(pk=request.POST['turnos'])
+            try:
+                with transaction.atomic():
+                    if turno_seleccionado.is_disponible():
+                        turno_seleccionado.reservar(paciente=paciente)
+                        turno_seleccionado.save()
+                        response_data['turno_ocupado'] = False
+                        return JsonResponse(data=response_data)
+                    else:
+                        response_data['turno_ocupado'] = True
+                        return JsonResponse(data=response_data)
+            # DatabaseError will be thrown because the turno object call is non-blocking
+            except DatabaseError:
+                response_data['turno_ocupado'] = True
+                return JsonResponse(data=response_data)

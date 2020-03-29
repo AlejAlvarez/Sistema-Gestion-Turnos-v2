@@ -52,8 +52,12 @@
             </nav>
         </div>
     {% else %}
-    <h1>Aún no tiene turnos registrados en el historial</h1>
+        <div class="form-header pl-5 py-3">
+            <h2>Historial</h2>
+        </div>
+        <div class="py-3 px-5">
+            <p>No se han encontrado turnos registrados en el historial.</p>
+        </div>
     {% endif %}
 </div>
-{% comment %}<button type="submit" onclick="location.href='{% url 'buscar-turnos' %}'">Cancelar Turnos</button>{% endcomment %}
 {% endblock content %}

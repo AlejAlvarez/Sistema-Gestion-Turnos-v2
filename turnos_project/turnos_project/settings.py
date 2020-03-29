@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'turnos_app',
     'widget_tweaks',
+    'crispy_forms',
     'flatpickr',
     'rest_framework',
     'chartjs',
@@ -127,3 +128,5 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # APP USER MODEL
 AUTH_USER_MODEL = 'turnos_app.CustomUser'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

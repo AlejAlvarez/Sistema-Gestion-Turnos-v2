@@ -2,9 +2,8 @@
 {% load static %}
 {% block title %}Informacion Paciente{% endblock title %}
 {% block css %}
-    .turno-card {
-        border-color:grey;
-        margin: 10px 0px;
+    .especialidad-text {
+        font-size:1.1em;
     }
 {% endblock %}
 {% block content %}  
@@ -13,39 +12,41 @@
             <h2>Turnos Pendientes</h2>
         </div>
         <div class="py-3 px-5">
+            {% if lista_turnos %}
+            <div class="px-1">
             {% for turno in lista_turnos %}
-            <div class="card turno-card">
-                <div class="card-header"><span class="featured">Turno #{{ turno.id }}</span></div>
-                <div class="row no-gutters">
-                    <div class="col">
-                        <div class="card-body">
-                            <p class="card-text">Fecha y Hora de Atención: {{ turno.fecha.date }}, {{ turno.fecha.time }} </p>
-                            <p class="card-text">Especialidad: {{ turno.medico.especialidad }}</p>
-                            <p class="card-text">Médico: {{ turno.medico }}</p> 
-                        </div>
+                <div class="row border-top border-bottom border-light mb-3">
+                    <div class="col-lg-4 col-md-5 col-sm-4 bg-info text-center py-2 text-white">
+                        <strong><i class="flaticon-045-stethoscope"><span class="ml-1 especialidad-text">{{ turno.medico.especialidad }}</span></i></strong>
                     </div>
-                        <a href="{% url 'cancelar-turno' turno.pk %}" class="btn btn-lg btn-danger">Cancelar</a>
-                </div>   
-            </div>
-            <nav aria-label="Turnos Pagination">
-                <ul class="pagination justify-content-center">
-                    {% if page_obj.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
-                    {% else %}
-                    <li class="page-item disabled"><a class="page-link" href="">Primera</a></li>
-                    {% endif %}
-                        <li class="page-item active"><a class="page-link" href="">{{ page_obj.number }}<span class="sr-only">(current)</span></a></li>
-                    {% if page_obj.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
-                    {% else %}
-                    <li class="page-item disabled"><a class="page-link" href="">Última</a></li>       
-                    {% endif %}
-                </ul>
-            </nav>
-            {% empty %}
-            <p>Actualmente no tiene turnos pendientes</p>
+                    <div class="col-lg-6 col-md-5 col-sm-4 text-center text-lg-left py-2">
+                        <p class="text-sm-center"><strong>Fecha y Hora:</strong> {{ turno.fecha }}</p>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-1 text-center py-2 pr-0">
+                        <a href="{% url 'cancelar-turno' turno.pk %}" class="btn btn-danger">Cancelar</a>
+                    </div>
+                </div>
             {% endfor %}
-        </div>
+            </div>
+        </div>   
+        <nav aria-label="Turnos Pagination">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+                {% else %}
+                <li class="page-item disabled"><a class="page-link" href="">Primera</a></li>
+                {% endif %}
+                    <li class="page-item active"><a class="page-link" href="">{{ page_obj.number }}<span class="sr-only">(current)</span></a></li>
+                {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
+                {% else %}
+                <li class="page-item disabled"><a class="page-link" href="">Última</a></li>       
+                {% endif %}
+            </ul>
+        </nav>
+        {% else %}
+        <p>Actualmente no tiene turnos pendientes</p>
+        {% endif %}
     </div>
 
 {% endblock content %}

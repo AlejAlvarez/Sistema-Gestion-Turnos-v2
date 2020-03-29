@@ -16,7 +16,6 @@ paciente_patterns = [
     path('logout/',auth_views.LogoutView.as_view(template_name='paciente/logout.html'),name='logout-paciente'),
     path('index/',index_paciente,name='index-paciente'),
     path('buscar-turnos/',buscar_turnos,name='hacer-reserva'),
-    path('confirmar-reserva/<int:pk>/',reservar_turno_paciente,name='confirmar-reserva'),
     path('ver-turno/<int:pk>/',VerTurno.as_view(),name='ver-turno'),
     path('cancelar-turno/<int:pk>',CancelarTurnoView.as_view(),name='cancelar-turno'),
     path('cancelar-turno/<int:pk>/cancelado/',TurnoCanceladoView.as_view(),name='turno-cancelado'),
@@ -25,6 +24,7 @@ paciente_patterns = [
     path('buscar-turnos/',buscar_turnos,name='buscar-turnos'),
     path('ajax/filtrar-medicos/',BuscarMedicosAjax.as_view(),name='filtrar-medicos-ajax'),
     path('ajax/buscar-turnos/',BuscarTurnosAjax.as_view(),name='buscar-turnos-ajax'),
+    path('ajax/realizar-reserva/',ReservarTurnoAjax.as_view(),name='reservar-turno-ajax'),
     #path('paciente/editar/<int:pk>/',editar_paciente, name='editar-paciente'),
 
 ]
