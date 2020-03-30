@@ -136,7 +136,7 @@ def cancelar_turno_medico(request, pk):
     
     if request.method == 'POST':
         turno = Turno.objects.get(pk=pk)
-        turno.estado=5
+        turno.estado = 5
         turno.save()
         turno_cancelado = TurnoCancelado.objects.create(turno=turno)
         turno_cancelado.save()

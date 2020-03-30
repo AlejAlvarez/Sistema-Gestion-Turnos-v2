@@ -1,8 +1,8 @@
 {% if turnos_form.turnos.field.queryset %}
 <form id="turnos-form" method="POST">
     {% csrf_token %}
-    <table id="table-turnos" class="table text-center" style="width:100%">
-        <thead class="thead-light">
+    <table id="table-turnos" class="table text-center table-bordered" style="width:100%">
+        <thead class="persian-green">
             <tr>
                 <th scope="col">Fecha</th>
                 <th scope="col">Hora</th>
@@ -25,10 +25,12 @@
             {% endfor %}
         </tbody>
     </table>
+    <div class="text-center">
     <!-- Button trigger modal -->
-    <button id="boton-reservar" type="submit" class="btn btn-primary">
-      Reservar
-    </button>
+        <button id="boton-reservar" type="submit" class="btn btn-persian-green px-4 py-2">
+            RESERVAR
+        </button>
+    </div>
 </form>
 {% else %}
 <h4>No se han encontrado turnos para la especialidad</h4>

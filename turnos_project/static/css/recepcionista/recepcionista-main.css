@@ -12,11 +12,21 @@ body {
   color: white;
 }
 
+.persian-green {
+  background-color: var(--persian-green);
+  color: white;
+} 
+
+
 /* -------------------- */
 /*        BUTTONS       */
 /* -------------------- */
 .btn-persian-green {
   background-color: var(--persian-green);
+  color: white;
+}
+.btn-persian-green:hover {
+  background-color: #119586;
   color: white;
 }
 

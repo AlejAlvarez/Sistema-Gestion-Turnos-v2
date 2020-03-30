@@ -1,5 +1,5 @@
 {% extends "recepcionista/recepcionista_layout.html" %}
-{% load widget_tweaks %}
+{% load crispy_forms_tags %}
 
 {% block import_links %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
@@ -19,11 +19,17 @@
     <div class="container shadow bg-white rounded p-5">
         <h2 class="text-primary">RESERVAR TURNO</h2>
         <input name="paciente" type="number" value={{ paciente.user.pk }} hidden>
-        <p>Reservando turnos para: {{ paciente.user.first_name }} </p>
+        <div class="form-row mb-1">
+            <div class="col-lg-8 col-md-8">
+                <label for="pacienteData">Paciente:</label>
+                <input name="pacienteData" type="text" class="form-control" value="{{ paciente.user.documento }} - {{ paciente.user.first_name }} {{ paciente.user.last_name }}" disabled>
+            </div>
+        </div>
         <form id="especialidad-form" method="GET">
-            <div class="form-group">
-                <label for="{{ especialidad_form.especialidades.id_for_label }}">Especialidad</label>
-                {{ especialidad_form.especialidades|add_class:"form-control"  }}     
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">
+                    {{ especialidad_form|crispy }} 
+                </div>   
             </div>  
             <input type="submit" class="btn btn-persian-green pl-4 pr-4" value="Buscar Turnos" />  
         </form>
@@ -84,27 +90,6 @@
     });
 </script>
 <script>
-    $("input[name='documento']").keypress(function(event){  
-        // se presiona la tecla "Enter"
-        if(event.which == 13) {
-            event.preventDefault();
-            // llamada ajax para obtener el paciente
-            documento = $(this).val();
-            $sendData = {
-                'documento': documento,
-            }
-            $.ajax({
-                method: "GET",
-                url: "{% url 'obtener-paciente-ajax' %}",
-                data: $sendData,
-                success: function(data) {
-                    $("#paciente-card").empty();
-                    $("#paciente-card").append(data);
-                }   
-            });
-        }
-    });
-
     $("#especialidad-form").on("submit",function(event){
         event.preventDefault();
         $targetURL = "{% url 'consultar-turnos-especialidad-ajax' %}";
@@ -119,11 +104,6 @@
                 $containerTurnos.html(data);
                 $paciente = $("input[name='paciente']");
                 $("#turnos-form").append($paciente);
-                $('#table-turnos').DataTable({
-                    "language": {
-                        "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
-                }
-                });
                 $containerTurnos.prop("hidden",false);
                 $("#turnos-form").on('submit',function(event){
                     event.preventDefault();

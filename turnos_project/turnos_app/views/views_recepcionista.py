@@ -101,7 +101,7 @@ class AtenderUsuarioView(PermissionRequiredMixin, View):
 
 class GestionarTurnosView(PermissionRequiredMixin, View):
     permission_required = ('turnos_app.es_recepcionista',)
-    template_name = 'recepcionista/confirmar_turnos.html'
+    template_name = 'recepcionista/gestionar_turnos.html'
 
     def get(self,request,*args,**kwargs):
         paciente = get_object_or_404(Paciente,pk=kwargs['pk'])
@@ -116,7 +116,6 @@ class GestionarTurnosView(PermissionRequiredMixin, View):
     # tal vez este método no sea necesario, ya que se hacen llamadas ajax
     def post(self,request,*args,**kwargs): 
         pass
-
 
 class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
     form_class = PacienteCreationForm
@@ -146,12 +145,47 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
                 obra_social.save()
                 perfil_paciente = Paciente.objects.create(user=user, genero=genero, obra_social=obra_social)
             perfil_paciente.save()
-            messages.info(request, 'Paciente creado con éxito!')
             return redirect('registrar-paciente')
         else:
             print('Error de validacion de formulario')
-            messages.warning(request, 'Se ha producido un error, por favor vuelva a intentarlo.')
-            return super().get(request, *args, **kwargs)
+            return render(request,self.template_name,{'form':form})
+
+class PacienteUpdateView(PermissionRequiredMixin, CustomUserUpdateView):
+
+    template_name = 'recepcionista/actualizar_paciente.html'
+    # being an admin, you have all permissions required to access every url in the system
+    permission_required = ('turnos_app.es_recepcionista',)
+
+    def get(self, request, *args, **kwargs):
+        user = get_object_or_404(CustomUser, pk=kwargs['pk']) 
+        user_form = CustomUserChangeForm(instance=user)
+        paciente_form = PacienteChangeForm(instance=user.paciente)
+        context = {
+            'user_form':user_form,
+            'paciente_form':paciente_form,
+        }
+        return render(request,self.template_name,context)
+
+    def post(self, request, *args, **kwargs):
+        user = get_object_or_404(CustomUser, pk=kwargs['pk'])
+        if user.has_perm('turnos_app.es_paciente'):
+            user_form = CustomUserChangeForm(request.POST,instance=user)
+            paciente_form = PacienteChangeForm(request.POST,instance=user.paciente)
+            context = {
+                'user_form':user_form,
+                'paciente_form':paciente_form,
+            }
+            if user_form.is_valid() and paciente_form.is_valid():
+                user = user_form.save()
+                paciente = paciente_form.save(False)
+                paciente.user = user
+                paciente.save()
+                messages.info(request, 'Paciente actualizado con éxito!')
+                return render(request,self.template_name,context)
+            else:
+                return render(request,self.template_name,context)
+        else:
+            raise PermissionDenied
 
 @login_required(login_url='/recepcionista/login')
 @permission_required('turnos_app.es_recepcionista')

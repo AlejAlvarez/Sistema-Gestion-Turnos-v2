@@ -1,13 +1,11 @@
 {% extends "recepcionista/recepcionista_layout.html" %}
-{% load widget_tweaks %}
 {% load crispy_forms_tags %}
 
 {% block title %}Registrar Paciente{% endblock title %}
 {% block css %}
-    .snps-inline-select {
-        width: auto;
-        margin-left:10px;
+    .nacimiento-form {
         display: inline-block;
+        width: 33%;
     }
 {% endblock %}
 {% block content %}
@@ -31,10 +29,47 @@
             {% endfor %}
         {% endif %}
 
-        <form method="POST" novalidate>
+        <form method="POST">
             {% csrf_token %}
-            {{ form|crispy }}
-            <button class="btn btn-info" type="submit">Registrar</button>
+            <h4>Datos de Usuario</h4>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.username|as_crispy_field }}</div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.password1|as_crispy_field }}</div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.password2|as_crispy_field }}</div>
+            </div>
+            <h4>Datos de Paciente</h4>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.first_name|as_crispy_field }}</div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.last_name|as_crispy_field }}</div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.documento|as_crispy_field }}</div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.nacimiento|as_crispy_field }}</div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.domicilio|as_crispy_field }}</div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.telefono|as_crispy_field }}</div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.email|as_crispy_field }}</div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.genero|as_crispy_field }}</div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ form.obra_social|as_crispy_field }}</div>
+            </div>
+            <button class="btn btn-info px-4 py-2" type="submit">Registrar</button>
         </form>
     </div>
 {% endblock content %}

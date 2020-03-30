@@ -31,10 +31,11 @@ recepcionista_patterns = [
 
     path('login/',LoginRecepcionistaView.as_view(),name='login-recepcionista'),
     path('logout/',logout_usuario,name='logout-recepcionista'),
-    path('',index_recepcionista,name='index-recepcionista'),
+    path('index/',index_recepcionista,name='index-recepcionista'),
     path('gestionar-turnos/<int:pk>',GestionarTurnosView.as_view(),name='gestionar-turnos'),
     path('atender-usuario/',AtenderUsuarioView.as_view(),name='atender-usuario'),
     path('registrar-paciente/',SignUpPacienteView.as_view(),name='registrar-paciente'),
+    path('editar-paciente/<int:pk>/',PacienteUpdateView.as_view(),name='editar-paciente'),
     path('reservar-turno/<int:pk>/',ReservarTurnoView.as_view(),name='reservar-turno'),
     path('imprimir-reserva/<int:pacientepk>/<int:pk>/',ImprimirReservaView.as_view(),name='imprimir-reserva'),
     path('ajax/buscar-turnos',ConsultarTurnosEspecialidadAjax.as_view(),name='consultar-turnos-especialidad-ajax'),

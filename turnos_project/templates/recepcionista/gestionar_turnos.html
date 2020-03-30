@@ -1,16 +1,18 @@
 {% extends "recepcionista/recepcionista_layout.html" %}
 {% load widget_tweaks %}
 {% block title %}Gestionar Turnos{% endblock %}
-
+{% block css %}
+{% endblock %}
 {% block content %}
 <div class="container shadow bg-white rounded p-5">
     <h1 class="text-primary">Gestión de Turnos</h1>
-    <h4>Paciente: {{ paciente.user.last_name }} {{ paciente.user.first_name }} </h4>
-    <h4>Turnos del Paciente:</h4>
+    <h3><strong>Paciente:</strong> {{ paciente.user.documento }} - {{ paciente.user.last_name }} {{ paciente.user.first_name }} </h3>
+    <div class="mt-4">
+    {% if turnos %}
         <div id="alertMessage" class="alert" role="alert">
         </div>
-        <table class="table table-borderless">
-            <thead class="thead">
+        <table class="table table-hover table-bordered">
+            <thead class="persian-green">
                 <tr>
                     <th>Nro Turno</th>
                     <th>Especialidad</th>
@@ -32,13 +34,17 @@
                     <td>{{ turno.fecha.date }}</td>
                     <td>{{ turno.fecha.time }}</td>
                     <th class="estado">{{ turno.get_estado_display }}</th>
-                    <td><a href="{% url 'imprimir-reserva' paciente.user.pk turno.pk %}" class="btn btn-info">Imprimir</a></td>  
-                    <td><button name="confirmar" type="button" class="btn btn-success action-button" value="{{ turno.pk }}">Confirmar</button></td>
-                    <td><button name="cancelar" type="button" class="btn btn-danger action-button" value="{{ turno.pk }}">Cancelar</button></td>
+                    <td><a href="{% url 'imprimir-reserva' paciente.user.pk turno.pk %}" class="btn btn-outline-info"><i class="flaticon-print"> Imprimir</i></a></td>  
+                    <td><button name="confirmar" type="button" class="btn btn-outline-success py-2" value="{{ turno.pk }}">Confirmar</button></td>
+                    <td><button name="cancelar" type="button" class="btn btn-outline-danger py-2" value="{{ turno.pk }}">Cancelar</button></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+    {% else %}
+    <h4>No se han encontrado turnos pendientes para el paciente</h4>
+    {% endif %}
+    </div>
 </div>
 {% endblock %}
 

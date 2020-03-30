@@ -1,5 +1,5 @@
 {% extends "recepcionista/recepcionista_layout.html" %}
-{% load widget_tweaks %}
+{% load crispy_forms_tags %}
 {% block import_links %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.js"></script>
@@ -15,10 +15,10 @@
 {% block content %}
     <div class="container shadow bg-white rounded p-5">
         <h2 class="text-primary">Gestión de Turnos</h2>
-            <div class="form-group">
-                <label for="{{ documento_form.documento.id_for_label }}">Documento</label>
-                {% render_field documento_form.documento class="form-control" placeholder="Ingrese un documento" %}
-                
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">
+                    {{ documento_form|crispy }}
+                </div>
             </div>
     <div id="paciente-card"></div>
     </div>

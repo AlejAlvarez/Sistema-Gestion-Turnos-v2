@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.forms import models
+from crispy_forms.helper import FormHelper
 
 from ..models import CustomUser
 
@@ -26,13 +27,18 @@ class CustomUserCreationForm(UserCreationForm):
             'first_name': 'Nombre',
             'last_name': 'Apellido',
             'username': 'Usuario',
+            'email': 'Correo Electrónico',
         }
         widgets = {
             'nacimiento': forms.SelectDateWidget(
                 years=ANOS_NACIMIENTO_CHOICES,
-                attrs={'class':"snps-inline-select"})
+                attrs={'class':'nacimiento-form'})
         }
     
+    def __init__(self, *args, **kwargs):
+        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+
 class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
@@ -51,7 +57,10 @@ class CustomUserChangeForm(UserChangeForm):
             'first_name': 'Nombre',
             'last_name': 'Apellido',
             'username': 'Usuario',
+            'email': 'Correo Electrónico',
         }
         widgets = {
-            'nacimiento': forms.SelectDateWidget(years=ANOS_NACIMIENTO_CHOICES)
+            'nacimiento': forms.SelectDateWidget(
+                years=ANOS_NACIMIENTO_CHOICES,
+                attrs={'class':'nacimiento-form'})
         }

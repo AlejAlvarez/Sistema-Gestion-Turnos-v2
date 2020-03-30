@@ -1,0 +1,73 @@
+{% extends "recepcionista/recepcionista_layout.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Actualizar Paciente{% endblock %}
+{% block css %}
+    .nacimiento-form {
+        display: inline-block;
+        width: 33%;
+    }
+{% endblock %}
+{% block content %}
+<div class="container shadow bg-white rounded p-5">
+    <h2 class="text-primary">Actualizar Paciente</h2>
+    {% if messages %}
+            {% for message in messages %}
+                {% if message.level_tag == 'info' %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>                   
+                {% elif message.level_tag == 'warning' %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>           
+                {% endif %}
+            {% endfor %}
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        <h4>Datos de Usuario</h4>
+        <div class="form-row">
+            <div class="col-lg-8 col-md-8">{{ user_form.username|as_crispy_field }}</div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-8 col-md-8">{{ user_form.password|as_crispy_field }}</div>
+        </div>
+        <h4>Datos de Paciente</h4>
+        <div class="form-row">
+            <div class="col-lg-8 col-md-8">{{ user_form.first_name|as_crispy_field }}</div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-8 col-md-8">{{ user_form.last_name|as_crispy_field }}</div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-8 col-md-8">{{ user_form.documento|as_crispy_field }}</div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-8 col-md-8">{{ user_form.nacimiento|as_crispy_field }}</div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-8 col-md-8">{{ user_form.domicilio|as_crispy_field }}</div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-8 col-md-8">{{ user_form.telefono|as_crispy_field }}</div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-8 col-md-8">{{ user_form.email|as_crispy_field }}</div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-8 col-md-8">{{ paciente_form.genero|as_crispy_field }}</div>
+        </div>
+        <div class="form-row">
+            <div class="col-lg-8 col-md-8">{{ paciente_form.obra_social|as_crispy_field }}</div>
+        </div>
+        <button class="btn btn-info px-4 py-2" type="submit">Actualizar</button>
+    </form>
+</div>
+{% endblock %}
