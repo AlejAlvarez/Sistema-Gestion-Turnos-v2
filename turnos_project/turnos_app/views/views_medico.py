@@ -22,6 +22,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+MEDICO_PERMISSION = 'turnos_app.es_medico' 
 
 class LoginMedicoView(View):
 
@@ -30,7 +31,7 @@ class LoginMedicoView(View):
     
     # loguea al medico
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and request.user.has_perm(MEDICO_PERMISSION):
             return redirect(self.success_url)
         else:
             auth_form = AuthenticationForm()

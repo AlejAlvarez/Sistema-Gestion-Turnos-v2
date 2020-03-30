@@ -34,6 +34,9 @@ class LoginPacienteView(View):
         if request.user.is_authenticated and request.user.has_perm(PACIENTE_PERMISSION):
             return redirect(self.success_url)
         else:
+            next = request.GET.get('next', None)
+            if next:
+                request.session['next'] = next
             auth_form = AuthenticationForm()
             context = {
                 'auth_form':auth_form,
@@ -50,7 +53,10 @@ class LoginPacienteView(View):
             if user is not None:
                 # se comprueba que tenga el permiso necesario para ingresar
                 if (user.has_perm('turnos_app.es_paciente')):
-                    login(request,user)    
+                    login(request,user) 
+                    next = request.session.get('next', None)
+                    if next:
+                        return redirect(next)    
                     return redirect(self.success_url)
                 else:
                     context = {
@@ -103,7 +109,19 @@ def reservar_turno_paciente(request,pk):
         turno.save()
         return render(request,'paciente/turno_reservado_aviso.html')
             
-            
+class BuscarTurnosView(PermissionRequiredMixin, View):
+
+    permission_required = ('turnos_app.es_paciente',) 
+    template_name = 'paciente/reservar_turno.html'
+
+    def get(self, request, *args, **kwargs): 
+        especialidad_form = BuscarEspecialidadForm()
+        medico_form = BuscarTurnosByMedicoForm()
+        context = {
+            'especialidad_form': especialidad_form,
+            'medico_form':medico_form,
+        }       
+        return render(request, self.template_name, context) 
 
 class ListarTurnos(PermissionRequiredMixin, ListView):
     permission_required = ('turnos_app.es_paciente')

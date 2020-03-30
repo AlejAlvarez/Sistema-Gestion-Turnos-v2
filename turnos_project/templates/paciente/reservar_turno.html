@@ -1,0 +1,178 @@
+{% extends "paciente/paciente_layout.html" %}
+{% load widget_tweaks %}
+{% block title %}Reservar Turno {% endblock title %}
+{% block import_links %}
+    {# Adds all flatpickr JS/CSS files from CDN #}
+    {{ especialidad_form.media.css }} 
+    <link href="https://unpkg.com/flatpickr@4.6.3/dist/themes/light.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.1/b-colvis-1.6.1/b-flash-1.6.1/b-html5-1.6.1/cr-1.5.2/fc-3.3.0/fh-3.1.6/kt-2.5.1/r-2.2.3/rg-1.1.1/rr-1.2.6/sc-2.0.1/sl-1.3.1/datatables.css"/>
+{% endblock %}
+{% block css %}
+    .form-card {
+        background-color: #06b2b6;
+        color: #fffefe;
+    }
+    .reserva-radio-button input[type=radio] {
+        transform:scale(1.4);
+    }
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="p-0 form-container container mt-5 shadow mb-4 bg-white rounded">
+                <div class="form-header pl-5 py-3">
+                    <h2>Reservar Turno</h2>
+                </div>
+                <div class="py-3 px-5">
+                    <form id="form-buscar-turnos" method="GET" data-url='/paciente/ajax/buscar-turnos'>
+                        <div class="form-row">
+                            <div class="col-7">
+                                <label for="{{ especialidad_form.especialidad.id_for_label }}">Especialidad</label>
+                                {{ especialidad_form.especialidad|add_class:"form-control" }}
+                            </div>
+                            <div class="col-5">
+                                <label for="{{ especialidad_form.fecha.id_for_label }}">Fecha</label>
+                                {% render_field especialidad_form.fecha id="form-datepicker" %}
+                            </div>
+                        </div>
+                        <div class="form-group pt-1">
+                                <label for="{{ medico_form.medico.id_for_label }}">Medico</label>
+                                {{ medico_form.medico|add_class:"form-control" }}
+                        </div>
+                        <div class="form-row justify-content-center">
+                            <button type="submit" class="btn btn-primary py-2 px-5"><strong>BUSCAR</strong></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="containerTurnos" class="px-5 py-4 form-container container shadow mb-5 bg-white rounded" hidden>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="turnoOcupadoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="turnoOcupadoModalTitle">Turno Reservado</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="turnoOcupadoModalBody">
+            Su turno ha sido reservado con éxito.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    {{ especialidad_form.media.js }}
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/af-2.3.4/b-1.6.1/b-colvis-1.6.1/b-flash-1.6.1/b-html5-1.6.1/cr-1.5.2/fc-3.3.0/fh-3.1.6/kt-2.5.1/r-2.2.3/rg-1.1.1/rr-1.2.6/sc-2.0.1/sl-1.3.1/datatables.js"></script>
+    <!-- AJAX CALLS CODE -->
+<script>
+    $(document).ready(function(e){
+        $(".flatpickr-input").prop("disabled",true);
+        $("#id_medico").prop("disabled",true);
+        $(".btn-paciente[type=submit]").prop("disabled",true);
+    });
+    // el formulario de input se va a habilitar una vez que se seleccione una especialidad válida
+    $("#id_especialidad").on("change",function(event){
+        if ($(this).val() > 0) {
+            $(".flatpickr-input").prop("disabled",false);
+        } else {
+            $(".flatpickr-input").prop("disabled",true);
+        }
+    });
+    // cuando cambia, seleccionando una fecha, se realiza un llamado AJAX
+    $("#form-datepicker").on("change",function(event){
+        let especialidadForm = $("#form-buscar-turnos");
+        let $thisURL = "/paciente/ajax/filtrar-medicos";
+        console.log($thisURL);
+        let $formData = especialidadForm.serialize();
+        console.log($thisURL);
+        console.log($formData);
+        $.ajax({
+            method: "GET",
+            url: $thisURL,
+            data: $formData,
+            success: function(data) {
+                console.log(data);
+                $("#id_medico").find("option").remove();
+                $("#id_medico").append($('<option>').text("Seleccione un medico").prop("selected",true));
+                $("#id_medico").prop("disabled",false);
+                for (item in data) {
+                    $('#id_medico').append($('<option>').val(data[item]['id']).text(data[item]['nombre']));
+                }
+            },
+            error: function(data){
+                console.log("error");
+                console.log(data);
+            },
+        });
+    });
+    $("#id_medico").on("change",function(event) {
+        if ($(this).val() > 0) {
+            $(".btn-paciente[type=submit]").prop("disabled",false);
+        } else {
+            $(".btn-paciente[type=submit]").prop("disabled",true);
+        }
+    });
+    $("#form-buscar-turnos").on("submit",function(event){
+        event.preventDefault();
+        /* $.(this) references the object which is "listening" to a event, in this case, it will be the form */
+        let $thisURL = $(this).attr('data-url');
+        let $formData = $(this).serialize();
+        $.ajax({
+            method: "GET",
+            url: $thisURL,
+            data: $formData,
+            success: function(data) {
+                let $containerTurnos = $("#containerTurnos");
+                $containerTurnos.empty();
+                $containerTurnos.append(data);
+                $("#tabla-turnos").DataTable({
+                    searching:false,
+                    lengthChange:false,
+                    ordering:false,
+                });
+                $containerTurnos.prop("hidden",false);
+                $("#form-reserva").on("submit",function(event){
+                    event.preventDefault();
+                    let targetURL = "{% url 'reservar-turno-ajax' %}";
+                    let $formData = $(this).serialize();
+                    $.post(targetURL,$formData)
+                     .done(function(data){
+                        if (data['turno_ocupado']) {
+                            $("#turnoOcupadoModalTitle").html("Lo sentimos...");
+                            $("#turnoOcupadoModalBody").html("El turno seleccionado se encuentra ocupado");
+                            $("#turnoOcupadoModal").modal("show");
+                            // se elimina el turno ocupado
+                            $("#form-reserva table tr").has('input[name="turnos"]:checked').remove();
+                        } else {
+                            $("#turnoOcupadoModalTitle").html("Reserva realizada");
+                            $("#turnoOcupadoModalBody").html("Su turno ha sido reservado exitosamente");
+                            $("#turnoOcupadoModal").modal("show");
+                            // luego se limpian los formularios
+                            $("#containerTurnos").empty();
+                            $("#containerTurnos").prop("hidden",true);
+                            $("#form-buscar-turnos").reset();
+                        }
+                     })   
+                     .fail(function(){
+                         alert("Ha ocurrido un error");
+                     });
+                });
+            },
+            error: function(data){
+                console.log("error");
+                console.log(data);
+            },
+        });
+    });
+</script>
+{% endblock %}

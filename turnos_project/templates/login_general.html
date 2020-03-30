@@ -1,0 +1,60 @@
+{% extends "main_layout.html" %}
+{% load static %}
+{% block title %}Staff Login{% endblock %}
+{% block css %}
+    #loginContainer {
+        padding:170px 75px 150px;
+        background-image:url("{% static "images/photo-background-2.jpg" %}");
+        background-position:center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+{% endblock %}
+{% block content %}
+<div class="container-fluid" id="loginContainer">
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 p-4 text-white" style="background-color:#1a2830;">
+                <div class="row py-4">
+                    <div class="col-4 border-right text-center">
+                        <img src="{% static "images/essential-set-lineal/svg/user-6.svg" %}" width="85%" height="85%" />
+                    </div>
+                    <div class="col-8">
+                        <h5>Recepcionista</h5>
+                        <p>Ingresar como Recepcionista</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <a class="text-white" href="{% url 'login-recepcionista' %}">Ingresar</a>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 bg-info text-white p-4">
+                <div class="row text-center py-4">
+                    <div class="col-4 border-right">
+                        <img src="{% static "images/essential-set-lineal/svg/doctor.svg" %}" width="85%" height="85%" />
+                    </div>
+                    <div class="col-8">
+                        <h5>Medico</h5>
+                        <p>Ingresar como Medico</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <a class="btn btn-outline-secondary" href="{% url 'login-medico' %}">Ingresar</a>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 p-4 bg-light">
+                <div class="row text-center py-4">
+                    <div class="col-8 border-right">
+                        <h5>Administrador</h5>
+                        <p>Ingresar como Administrador</p>
+                    </div>
+                    <div class="col-4">
+                        <img src="{% static "images/essential-set-lineal/svg/engineer.svg" %}" width="85%" height="85%" />
+                    </div>
+                </div>
+                <div class="text-right">
+                    <a class="btn btn-outline-info" href="{% url 'login-administrador' %}">Ingresar</a>
+                </div>
+            </div>      
+    </div>
+</div>
+{% endblock %}

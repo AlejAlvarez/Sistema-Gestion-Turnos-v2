@@ -25,6 +25,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
+ADMINISTRADOR_PERMISSION = 'turnos_app.es_administrador'
+
 class LoginAdministradorView(View):
 
     template_name = 'administrador/login.html'
@@ -32,7 +34,7 @@ class LoginAdministradorView(View):
     
     # loguea al administrador
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and request.user.has_perm(ADMINISTRADOR_PERMISSION):
             return redirect(self.success_url)
         else:
             auth_form = AuthenticationForm()

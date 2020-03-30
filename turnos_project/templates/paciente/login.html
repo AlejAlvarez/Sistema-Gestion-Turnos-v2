@@ -1,29 +1,48 @@
 {% extends "main_layout.html" %}
-{% load widget_tweaks %}
+{% load static %}
+{% load crispy_forms_tags %}
 {% block title %}Login Paciente{% endblock %}
 {% block importlinks %}
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 {% endblock %}
 {% block css %}
+    #loginBackground{
+        height: 30rem;
+        background-image:url("{% static "images/waiting-room-2.jpg" %}");
+        background-position:center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    @media (min-width: 992px), @media (min-width: 1200px){
+        .login-page{
+            width:475px;
+        }
+    }
 {% endblock %}
 {% block content %}
-<div class="container">
-    <h2>Paciente Login</h2>
-    <form method="POST" action="{% url 'login-paciente' %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="{{ auth_form.username.id_for_label }}">Usuario</label>            
-            {{ auth_form.username | add_class:'form-control' }}
-        </div>
-        <div class="form-group">
-            <label for="{{ auth_form.password.id_for_label }}">Contraseña</label> 
-            {{ auth_form.password | add_class:'form-control' }}
-        </div>
-        {% if error_message %}
-            <p class="text-danger">{{ error_message }}</p>
-        {% endif %}
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
+<div class="container-fluid py-5" id="loginBackground">
+    <div class="login-page p-5 mx-auto shadow-lg bg-white rounded">
+        <h2 class="text-center mb-5">Paciente Login</h2>
+        <form method="POST" action="{% url 'login-paciente' %}">
+            {% csrf_token %}
+            <div class="form-group">          
+                {{ auth_form.username|as_crispy_field }}
+            </div>
+            <div class="form-group"> 
+                {{ auth_form.password|as_crispy_field }}
+            </div>
+            <div class="custom-control custom-checkbox mr-sm-2 my-3">
+                <input type="checkbox" class="custom-control-input" id="rememberMe">
+                <label class="custom-control-label" for="rememberMe">Recordarme</label>
+              </div>
+            {% if error_message %}
+                <p class="text-danger text-center">{{ error_message }}</p>
+            {% endif %}
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-block">LOGIN</button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}
 

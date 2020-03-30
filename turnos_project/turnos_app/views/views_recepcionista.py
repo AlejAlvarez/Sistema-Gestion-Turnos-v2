@@ -23,6 +23,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 
 
+RECEPCIONISTA_PERMISSION = 'turnos_app.es_recepcionista' 
+RECEPCIONISTA_LOGIN_URL = '/recepcionista/login/'
+
 def get_paciente_by_documento(documento):
     try:
         user = CustomUser.objects.get(documento=documento)
@@ -42,9 +45,12 @@ class LoginRecepcionistaView(View):
     
     # loguea al recepcionista
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and request.user.has_perm(RECEPCIONISTA_PERMISSION):
             return redirect(self.success_url)
         else:
+            next = request.GET.get('next', None)
+            if next:
+                request.session['next'] = next
             auth_form = AuthenticationForm()
             context = {
                 'auth_form':auth_form,
@@ -65,7 +71,10 @@ class LoginRecepcionistaView(View):
             if user is not None:
                 # se comprueba que tenga el permiso necesario para ingresar
                 if (user.has_perm('turnos_app.es_recepcionista')):
-                    login(request,user)    
+                    login(request,user)  
+                    next = request.session.get('next', None)
+                    if next:
+                        return redirect(next)  
                     return redirect(self.success_url)
                 else:
                     context['error_message'] = 'No tiene permiso para acceder'
@@ -89,6 +98,7 @@ def index_recepcionista(request):
 
 
 class AtenderUsuarioView(PermissionRequiredMixin, View):
+    login_url = RECEPCIONISTA_LOGIN_URL
     permission_required = ('turnos_app.es_recepcionista',)
     template_name = 'recepcionista/atender_usuario.html'
 
@@ -100,6 +110,7 @@ class AtenderUsuarioView(PermissionRequiredMixin, View):
         return render(request, self.template_name,context)
 
 class GestionarTurnosView(PermissionRequiredMixin, View):
+    login_url = RECEPCIONISTA_LOGIN_URL
     permission_required = ('turnos_app.es_recepcionista',)
     template_name = 'recepcionista/gestionar_turnos.html'
 
@@ -118,6 +129,7 @@ class GestionarTurnosView(PermissionRequiredMixin, View):
         pass
 
 class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
+    login_url = RECEPCIONISTA_LOGIN_URL
     form_class = PacienteCreationForm
     # debería retornar un mensaje que diga que lo registró, y luego la posibilidad de poder seguir creando
     #success_url = reverse_lazy('login')
@@ -151,7 +163,7 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
             return render(request,self.template_name,{'form':form})
 
 class PacienteUpdateView(PermissionRequiredMixin, CustomUserUpdateView):
-
+    login_url = RECEPCIONISTA_LOGIN_URL
     template_name = 'recepcionista/actualizar_paciente.html'
     # being an admin, you have all permissions required to access every url in the system
     permission_required = ('turnos_app.es_recepcionista',)
@@ -210,6 +222,7 @@ def editar_informacion_paciente(request, pk):
 
 class ReservarTurnoView(PermissionRequiredMixin,View):
 
+    login_url = RECEPCIONISTA_LOGIN_URL
     template_name = 'recepcionista/reservar_turno.html'
     permission_required = ('turnos_app.es_recepcionista',)
 
@@ -243,6 +256,7 @@ class ReservarTurnoView(PermissionRequiredMixin,View):
 
 class ImprimirReservaView(PermissionRequiredMixin,View):
 
+    login_url = RECEPCIONISTA_LOGIN_URL
     template_name = 'recepcionista/imprimir_reserva.html'
     permission_required = ('turnos_app.es_recepcionista',)
 

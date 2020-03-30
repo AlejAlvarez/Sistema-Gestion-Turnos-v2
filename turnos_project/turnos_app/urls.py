@@ -20,6 +20,7 @@ paciente_patterns = [
     path('cancelar-turno/<int:pk>/cancelado/',TurnoCanceladoView.as_view(),name='turno-cancelado'),
     path('historial/',HistorialPacienteView.as_view(),name='ver-historial'),
     path('mis-turnos/',ListarTurnos.as_view(),name='mis-turnos'),
+    path('buscar-turnos/',BuscarTurnosView.as_view(),name='hacer-reserva'),
     path('ajax/filtrar-medicos/',BuscarMedicosAjax.as_view(),name='filtrar-medicos-ajax'),
     path('ajax/buscar-turnos/',BuscarTurnosAjax.as_view(),name='buscar-turnos-ajax'),
     path('ajax/realizar-reserva/',ReservarTurnoAjax.as_view(),name='reservar-turno-ajax'),
@@ -95,6 +96,7 @@ urlpatterns = [
     # general
 
     path('', home, name='home'),
+    path('login/',login_general,name='login-general'),
     path('paciente/', include(paciente_patterns)),
     path('recepcionista/', include(recepcionista_patterns)),
     path('medico/', include(medico_patterns)),

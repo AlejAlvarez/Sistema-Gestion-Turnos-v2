@@ -19,6 +19,7 @@
         {% if error_message %}
             <p class="text-danger">{{ error_message }}</p>
         {% endif %}
+        {{ request.next }}
         <button type="submit" class="btn btn-dark">Login</button>
     </form>
 </div>
