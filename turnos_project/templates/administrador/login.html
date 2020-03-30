@@ -1,26 +1,43 @@
 {% extends "main_layout.html" %}
+{% load static %}
 {% load widget_tweaks %}
 {% block title %}Login Administrador{% endblock %}
 {% block css %}
+    body {
+        background-color: var(--info);
+        color: white;
+    }
+    @media (min-width: 992px), @media (min-width: 1200px){
+        .login-page{
+            margin-top: 80px;
+            margin-bottom:120px;
+            width:475px;
+        }
+    }
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h2>Administrador Login</h2>
-    <form method="POST" action="{% url 'login-administrador' %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="{{ auth_form.username.id_for_label }}">Usuario</label>            
-            {{ auth_form.username | add_class:'form-control' }}
+    <div class="mx-auto login-page px-2">
+        <div class="text-center pb-3 mb-3">
+            <img src="{% static "images/essential-set-lineal/svg/engineer.svg" %}" height="120" width="120" />
+            <h2 class="text-center mt-1">Ingresar como Administrador</h2>
         </div>
-        <div class="form-group">
-            <label for="{{ auth_form.password.id_for_label }}">Contraseña</label> 
-            {{ auth_form.password | add_class:'form-control' }}
-        </div>
-        {% if error_message %}
-            <p class="text-danger">{{ error_message }}</p>
-        {% endif %}
-        <button type="submit" class="btn btn-dark">Login</button>
-    </form>
+        <form method="POST" action="{% url 'login-administrador' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ auth_form.username.id_for_label }}"><strong>Usuario</strong></label>            
+                {{ auth_form.username | add_class:'form-control' }}
+            </div>
+            <div class="form-group">
+                <label for="{{ auth_form.password.id_for_label }}"><strong>Contraseña</strong></label> 
+                {{ auth_form.password | add_class:'form-control' }}
+            </div>
+            {% if error_message %}
+                <p class="text-center text-white"><strong>{{ error_message }}</strong></p>
+            {% endif %}
+            <button type="submit" class="btn btn-secondary btn-block">Login</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
 {% block javascript %}

@@ -1,26 +1,44 @@
 {% extends "main_layout.html" %}
-{% load widget_tweaks %}
+{% load static %}
+{% load crispy_forms_tags %}
 {% block title %}Login Medico{% endblock %}
 {% block css %}
+    #background-column {
+        padding:170px 75px 150px;
+        background-image:url("{% static "images/photo-background-3.jpg" %}");
+        background-position:center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .login-box {
+        padding:100px 50px 100px;
+    }
 {% endblock %}
 {% block content %}
-<div class="container">
-    <h2>Medico Login</h2>
-    <form method="POST" action="{% url 'login-medico' %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="{{ auth_form.username.id_for_label }}">Usuario</label>            
-            {{ auth_form.username | add_class:'form-control' }}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-7 col-md-5 col-sm-4" id="background-column">
         </div>
-        <div class="form-group">
-            <label for="{{ auth_form.password.id_for_label }}">Contraseña</label> 
-            {{ auth_form.password | add_class:'form-control' }}
+        <div class="col-lg-5 col-md-7 col-sm-8 login-box shadow-lg bg-white rounded">
+            <div class="text-center border-bottom pb-3 mb-3">
+                <img src="{% static "images/essential-set-lineal/svg/doctor.svg" %}" height="120" width="120" />
+                <h2 class="text-center mt-1">Ingresar como Médico</h2>
+            </div>
+            <form method="POST" action="{% url 'login-medico' %}">
+                {% csrf_token %}
+                <div class="form-group">            
+                    {{ auth_form.username|as_crispy_field }}
+                </div>
+                <div class="form-group">
+                    {{ auth_form.password|as_crispy_field }}
+                </div>
+                {% if error_message %}
+                    <p class="text-danger text-center">{{ error_message }}</p>
+                {% endif %}
+                <button type="submit" class="btn btn-outline-info btn-block">Login</button>
+            </form>
         </div>
-        {% if error_message %}
-            <p class="text-warning">{{ error_message }}</p>
-        {% endif %}
-        <button type="submit" class="btn btn-dark">Login</button>
-    </form>
+    </div>
 </div>
 {% endblock %}
 {% block javascript %}
