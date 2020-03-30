@@ -41,7 +41,6 @@ class Paciente(models.Model):
         (1, "Masculino"),
         (2, "Femenino"),
     )
-
     genero = models.PositiveSmallIntegerField(choices=GENERO_CHOICES)
     penalizado = models.BooleanField(default=False)
     fecha_despenalizacion = models.DateTimeField(verbose_name="fecha de despenalización", blank=True, null=True)

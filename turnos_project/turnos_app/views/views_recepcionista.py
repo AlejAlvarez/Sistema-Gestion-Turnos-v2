@@ -98,52 +98,6 @@ class AtenderUsuarioView(PermissionRequiredMixin, View):
             'documento_form':documento_form,
         }
         return render(request, self.template_name,context)
-#
-    #def post(self,request,*args,**kwargs):
-#
-    #lista_turnos = Turno.get_turnos_fecha(Turno.objects.filter(estado=2), date.today())
-    #if lista_turnos:
-    #    lista_turnos_id = [turno.id for turno in lista_turnos]
-    #    # turnos están ordenados por id/pk
-    #    turnos = Turno.objects.filter(id__in=lista_turnos_id)
-    #else: 
-    #    return render(request, 'recepcionista/gestionar_turnos.html')
-#
-    #if request.method == 'POST':
-    #    form = SeleccionarTurnoForm(turnos=turnos, data=request.POST)
-    #    print('Entro al if POST')
-    #    print(form)
-    #    if form.is_valid():
-    #        print("El form es valido")
-    #        if 'confirmar' in request.POST:
-    #            print("Entro al confirmar")
-    #            turno = form.cleaned_data.get('turno')
-    #            turno.estado = 3 # Cambio el estado a 'Confirmado'
-    #            turno.save()
-    #            
-    #        elif 'cancelar' in request.POST:
-    #            print("Entro al cancelar")
-    #            turno = form.cleaned_data.get('turno')
-    #            print(turno)
-    #            hora_actual = timezone.now()
-#
-    #            # Si cancela menos de 2 horas antes
-    #            if hora_actual + timedelta(hours=2) >= turno.fecha:
-    #                turno.estado = 5 # Estado cancelado
-    #                turno.save()
-    #                turno_cancelado = TurnoCancelado.objects.create(turno=turno, fecha_cancelado=hora_actual)
-    #                turno_cancelado.save()
-    #                paciente.penalizado = True
-    #                paciente.fecha_despenalizacion = timezone.now() + timedelta(days=2) # Lo penalizo por 2 días nomas porque fue copado y avisó
-    #                paciente.save()
-    #            else:
-    #                turno.estado = 1 # Estado disponible
-    #                turno.paciente = None
-    #                turno.save()
-    #        
-    #    form = SeleccionarTurnoForm(turnos=turnos)
-    #    return render(request, 'recepcionista/gestionar_turnos.html', {'form':form})
-#
 
 class GestionarTurnosView(PermissionRequiredMixin, View):
     permission_required = ('turnos_app.es_recepcionista',)
