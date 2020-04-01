@@ -1,0 +1,133 @@
+{% extends 'medico/medico_layout.html' %}
+
+{% block title %}Horario Laboral{% endblock title %}
+
+{% block css %}
+table.formatHTML5 tr.selected {
+    background-color: #0099ff !important;
+    color:#fff;
+    vertical-align: middle;
+    padding: 1.5em;
+}
+{% endblock %}
+
+{% block content %}
+<!-- Modal -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminarLabel">Eliminar Horario Laboral</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <form method="POST" action="/" id="form-eliminar">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" id="btn-eliminar">Eliminar</button>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <h1>Horarios y Días Laborales</h1>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level_tag == 'info' %}
+                <div class="alert-success">
+                    <ul class="messages">
+                        <li>{{ message }}</li>
+                    </ul>
+                </div>                    
+                {% elif message.level_tag == 'warning' %}
+                <div class="alert-danger">
+                    <ul class="messages">
+                        <li>{{ message }}</li>
+                    </ul>
+                </div>           
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <div class="row">
+            <div class="col">
+                {% if horarios_laborales %}
+                <table class="formatHTML5 table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Lunes</th>
+                            <th>Martes</th>
+                            <th>Miércoles</th>
+                            <th>Jueves</th>
+                            <th>Viernes</th>
+                            <th>Sábado</th>
+                            <th>Domingo</th>
+                            <th hidden>PK</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for horario in horarios_laborales %}
+                        <tr>
+                            {% for dia in dias %}
+                                {% if dia in horario.dias.all %}
+                                <td>
+                                    {{horario.hora_inicio}} - 
+                                    {{horario.hora_fin}}
+                                </td>
+                                {% else %}
+                                <td>
+                                    -
+                                    -
+                                </td>
+                                {% endif %}
+                                <td hidden class="horario-pk">{{ horario.pk }}</td>
+                            {% endfor %}
+                        </tr>   
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <h2>Usted no registra días laborales por el momento.</h2>
+                <h5>Puede crearlos presionando el botón de abajo</h5>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="{% url 'crear-turnos' %}" class="btn btn-primary">Nuevo Horario Laboral</a>
+            </div>
+            <div class="col">
+                <button id="btn-eliminar" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEliminar">
+                    Eliminar Horario Laboral
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block jquery %}
+    <script>
+        $(document).ready(function(){
+            var btnEliminar = document.getElementById("btn-eliminar");
+            var formEliminar =  document.getElementById("form-eliminar") || null;
+            var baseUrl = 'http://' + window.location.host + '/';
+            var horarioPk;
+
+            btnEliminar.disabled = true;
+            console.log(btnEliminar);
+            
+            $("tbody tr").click(function () {
+                $('.selected').removeClass('selected');
+                $(this).addClass("selected");
+                horarioPk = $('.horario-pk',this).html();
+                btnEliminar.disabled = false;
+                console.log(btnEliminar);
+                formEliminar.action = baseUrl + 'medico/eliminar-horario/' + horarioPk + '/';
+            });
+        });
+    </script>
+{% endblock %}

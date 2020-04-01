@@ -159,24 +159,24 @@ DIA_CHOICES = [
 ]
 
 class DiaLaboral(models.Model):
-    dia    = models.PositiveSmallIntegerField(choices=DIA_CHOICES)
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
+    dia = models.PositiveSmallIntegerField(choices=DIA_CHOICES, unique=True)
 
     def get_dia(self):
         return dict(DIA_CHOICES).get(self.dia)
 
     def __str__(self):
-        return '%s, %s' % (self.get_dia(), self.medico)
-
+        return dict(DIA_CHOICES).get(self.dia)
 
 class HorarioLaboral(models.Model):
-    dia_laboral = models.ForeignKey(DiaLaboral, on_delete=models.CASCADE)
+    dias = models.ManyToManyField(DiaLaboral)
     hora_inicio = models.TimeField()
     hora_fin    = models.TimeField()
     sobreturnos = models.BooleanField(default=False)
+    medico      = models.ForeignKey(Medico, on_delete=models.CASCADE)
+    intervalo   = models.PositiveSmallIntegerField(default=0)
 
     def acepta_sobreturnos(self):
         return sobreturnos
     
     def __str__(self):
-        return '%s, %s, %s' % (self.dia_laboral, self.hora_inicio, self.hora_fin)
+        return '%s, %s' % (self.hora_inicio, self.hora_fin)
