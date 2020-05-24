@@ -102,7 +102,7 @@ table.formatHTML5 tr.selected {
         var btnActualizar = document.getElementById("btn-actualizar");
         var btnAtender =  document.getElementById("btn-atender");
         var btnConfirmarCancel = document.getElementById("btn-confirmar-cancel");
-        var turnoId = null;
+        var turnoId;
         var formCancelar =  document.getElementById("form-cancelar") || null;
         var baseUrl = 'http://' + window.location.host + '/';
 
@@ -111,7 +111,7 @@ table.formatHTML5 tr.selected {
         btnCancelar.disabled = true;
         btnAtender.disabled = true;
         
-        $("tbody tr").click(function () {
+        $("#updatableBody tr").click(function () {
             $('.selected').removeClass('selected');
             $(this).addClass("selected");
             turnoId = $('.turno-id',this).html();
@@ -137,11 +137,10 @@ table.formatHTML5 tr.selected {
                 success: function(response){
                     tBodyU.empty();
                     tBodyU.append(response);
-                    $("tbody tr").click(function () {
+                    $("#updatableBody tr").click(function () {
                         $('.selected').removeClass('selected');
                         $(this).addClass("selected");
                         turnoId = $('.turno-id',this).html();
-                        console.log(turnoId);
                         btnCancelar.disabled = false;
                         btnAtender.disabled = false;
                         formCancelar.action = baseUrl + 'cancelar-turno-medico/' + turnoId + '/';
@@ -163,16 +162,15 @@ table.formatHTML5 tr.selected {
             success: function(response){
                 tBodyU.empty();
                 tBodyU.append(response);
+                $("#updatableBody tr").click(function () {
+                    $('.selected').removeClass('selected');
+                    $(this).addClass("selected");
+                    turnoId = $('.turno-id',this).html();
+                    btnCancelar.disabled = false;
+                    btnAtender.disabled = false;
+                    formCancelar.action = baseUrl + 'cancelar-turno-medico/' + turnoId + '/';
+                });
             }
-        })
-        $("tbody tr").click(function () {
-            $('.selected').removeClass('selected');
-            $(this).addClass("selected");
-            turnoId = $('.turno-id',this).html();
-            console.log(turnoId);
-            btnCancelar.disabled = false;
-            btnAtender.disabled = false;
-            formCancelar.action = baseUrl + 'cancelar-turno-medico/' + turnoId + '/';
         });
     }, 30000);
 

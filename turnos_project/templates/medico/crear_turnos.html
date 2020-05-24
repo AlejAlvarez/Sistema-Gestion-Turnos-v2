@@ -1,12 +1,69 @@
 {% extends 'medico/medico_layout.html' %}
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
 
-{% block title %}Crear Turnos{% endblock title %}
+{% block title %}Nuevo Horario Laboral{% endblock title %}
+
+{% block import_links %}
+    {{ form.media.css }}
+    <link href="https://unpkg.com/flatpickr@4.6.3/dist/themes/light.css" rel="stylesheet" type="text/css" />
+{% endblock %}
 
 {% block content %}
-<h2>Crear Turnos</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Generar</button>
-</form>
+<div class="container">
+    <h2>Crear Horario Laboral</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit">Crear Horario</button>
+    </form>
+</div>
 {% endblock content %}
+
+{% block javascript %}
+    {{ form.media.js }}
+{% endblock %}
+
+{% comment %}
+<div class="form-group">
+    <label for="{{ form.dias_atencion.id_for_label }}">Días de atención</label>
+    {{ form.dias_atencion|add_class:"form-control" }}
+</div>
+<div class="form-row">
+    <div class="form-group col">
+        <label for="{{ form.hora_inicio.id_for_label }}">Hora de inicio</label>
+        {% render_field form.hora_inicio id="form-timepicker" %}
+    </div>
+    <div class="form-group col">
+        <label for="{{ form.hora_fin.id_for_label }}">Hora de fin</label>
+        {% render_field form.hora_fin id="form-timepicker" %}
+    </div>    
+</div>
+<div class="form-group">
+    <label for="{{ form.duracion_turno.id_for_label }}">Duración de cada turno</label>
+    {{ form.duracion_turno|add_class:"form-control" }}
+</div>
+<div class="form-group">
+    <label for="{{ form.sobreturnos.id_for_label }}">¿Acepta sobreturnos?</label>
+    {{ form.sobreturnos|add_class:"form-control" }}
+</div>
+{% endcomment %}
+
+{% comment %}
+<div class="well">
+    <div id="datetimepicker3" class="input-append">
+      <input data-format="hh:mm:ss" type="text"></input>
+      <span class="add-on">
+        <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+        </i>
+      </span>
+    </div>
+</div>
+<script type="text/javascript">
+$(function() {
+    $('#datetimepicker3').datetimepicker({
+    pickDate: false
+    });
+});
+</script>
+{% endcomment %}

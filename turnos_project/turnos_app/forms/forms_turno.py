@@ -12,8 +12,22 @@ class TurnoForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
         choices=DIA_CHOICES,
     )
-    hora_inicio = forms.TimeField(label="Hora de inicio")
-    hora_fin = forms.TimeField(label="Hora de finalización")
+    hora_inicio = forms.TimeField(label="Hora de inicio", widget=TimePickerInput(
+        options = {
+            # flatpickr options
+            "enableTime": "true",
+            "noCalendar": "true",
+            "dateFormat": "H:i"
+        }
+    ))
+    hora_fin = forms.TimeField(label="Hora de finalización", widget=TimePickerInput(
+        options = {
+            # flatpickr options
+            "enableTime": "true",
+            "noCalendar": "true",
+            "dateFormat": "H:i"
+        }
+    ))
     duracion_turno = forms.IntegerField()
     sobreturnos = forms.BooleanField(label="Acepta sobreturnos?", required=False)
 

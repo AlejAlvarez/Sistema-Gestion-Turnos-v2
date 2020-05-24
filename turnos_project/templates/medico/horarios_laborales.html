@@ -112,19 +112,20 @@ table.formatHTML5 tr.selected {
 {% block jquery %}
     <script>
         $(document).ready(function(){
-            var btnEliminar = document.getElementById("btn-eliminar");
+            let btnEliminar = $("#btn-eliminar");
+            btnEliminar.prop("disabled", true);
+            console.log(btnEliminar);
+            // var btnEliminar = document.getElementById("btn-eliminar");
             var formEliminar =  document.getElementById("form-eliminar") || null;
             var baseUrl = 'http://' + window.location.host + '/';
             var horarioPk;
-
-            btnEliminar.disabled = true;
-            console.log(btnEliminar);
             
             $("tbody tr").click(function () {
                 $('.selected').removeClass('selected');
                 $(this).addClass("selected");
                 horarioPk = $('.horario-pk',this).html();
-                btnEliminar.disabled = false;
+                console.log("toy ejecutan2")
+                btnEliminar.prop("disabled", false);
                 console.log(btnEliminar);
                 formEliminar.action = baseUrl + 'medico/eliminar-horario/' + horarioPk + '/';
             });

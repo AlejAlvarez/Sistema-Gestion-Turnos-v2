@@ -246,15 +246,21 @@ def eliminar_horario_laboral(request, pk):
         horario_laboral = HorarioLaboral.objects.get(pk=pk)
         medico = request.user.medico
         for dia in horario_laboral.dias.all():
-            fecha_laboral = onDay(date.today(), int(dia))
+            fecha_laboral = onDay(date.today().replace(day=1), int(dia.dia))
             while fecha_laboral.month == mes_actual:
                 hora_turno = datetime.combine(fecha_laboral, horario_laboral.hora_inicio)
                 while hora_turno.time() <= horario_laboral.hora_fin:
-                    fecha_atencion = datetime.combine(fecha_laboral, hora_turno.time())
-                    turno = Turno.objects.get(medico=medico, estado=1, fecha=fecha_atencion)
-                    turno.delete()
+                    print(hora_turno)
+                    fecha_atencion = datetime.combine(fecha_laboral, hora_turno.time()) 
+                    try:
+                        turno = Turno.objects.get(medico=medico, estado=1, fecha=fecha_atencion)
+                        turno.delete()
+                    except Turno.DoesNotExist:
+                        print("Turno para el día %s no existe!" % (fecha_atencion))
                     hora_turno = hora_turno + timedelta(minutes=horario_laboral.intervalo)
                 print("Salió del loop de hora_turno")
+                fecha_laboral = onDay(fecha_laboral + timedelta(days=7), 1)
+            print("Salió del mes")
         horario_laboral.delete()
         messages.info(request, 'Horario Laboral eliminado con éxito!')
         return redirect('horario-laboral')
