@@ -360,28 +360,30 @@ class ConfirmarReservaAjax(PermissionRequiredMixin, View):
         if request.is_ajax():
             received_data = json.loads(request.body)
             print(received_data)
-            action = received_data['action']
             turno_pk = received_data['turno']  
             turno_a_modificar = get_object_or_404(Turno,pk=turno_pk)
-            data = {}
-            print('ACTION METHOD: ' + action)
-            print('TURNO PK: ' + turno_pk)
-            if (action == 'confirmar'):
-                # Estado 3 = 'Confirmado'
-                turno_a_modificar.estado = 3
-                turno_a_modificar.save()
-                data = {
-                    'estado_turno':turno_a_modificar.get_estado_display(),
-                    'confirmado':True,
-                }
-                return JsonResponse(data,status=200)
-            elif (action == 'cancelar'):
-                # Estado 5 = 'Cancelado'
-                turno_a_modificar.estado = 5
-                turno_a_modificar.save()
-                turno_cancelado = TurnoCancelado.objects.create(turno=turno_a_modificar,fecha_cancelado=datetime.date.today())
-                data = {
-                    'estado_turno':turno_a_modificar.get_estado_display(),
-                    'cancelado':True,
-                }
-                return JsonResponse(data,status=200)
+            # Estado 3 = 'Confirmado'
+            turno_a_modificar.estado = 3
+            turno_a_modificar.save()
+            data = {
+                'estado_turno':turno_a_modificar.get_estado_display(),
+            }
+            return JsonResponse(data,status=200)
+
+class CancelarReservaAjax(PermissionRequiredMixin, View):
+
+    permission_required = ('turnos_app.es_recepcionista',)
+
+    def put(self, request, *args, **kwargs):
+        if request.is_ajax():
+            received_data = json.loads(request.body)
+            turno_pk = received_data['turno']
+            turno_a_modificar = get_object_or_404(Turno,pk=turno_pk)
+            # Estado 5 = 'Cancelado'
+            turno_a_modificar.estado = 5
+            turno_a_modificar.save()
+            turno_cancelado = TurnoCancelado.objects.create(turno=turno_a_modificar,fecha_cancelado=datetime.date.today())
+            data = {
+                'estado_turno':turno_a_modificar.get_estado_display(),
+            }
+            return JsonResponse(data,status=200)

@@ -34,6 +34,10 @@ class CustomUserCreationForm(UserCreationForm):
                 years=ANOS_NACIMIENTO_CHOICES,
                 attrs={'class':'nacimiento-form'})
         }
+        help_texts = {
+            'documento': 'Número de documento de 8 dígitos',
+            'nacimiento': 'Fecha de nacimiento. Formato MM/DD/AAAA'
+        }
     
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)

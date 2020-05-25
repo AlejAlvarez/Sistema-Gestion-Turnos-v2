@@ -31,8 +31,8 @@ body {
   color: white;
 }
 #sidebar-wrapper .list-group-item:hover {
-  background-color: var(--white);
-  color: var(--persian-green);
+  background-color: #f8f8f8;
+  color: var(--dark-gunmetal);
   transition: 0.5s;
 }
 

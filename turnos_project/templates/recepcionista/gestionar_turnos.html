@@ -4,46 +4,55 @@
 {% block css %}
 {% endblock %}
 {% block content %}
-<div class="container shadow bg-white rounded p-5">
-    <h1 class="text-primary">Gestión de Turnos</h1>
-    <h3><strong>Paciente:</strong> {{ paciente.user.documento }} - {{ paciente.user.last_name }} {{ paciente.user.first_name }} </h3>
-    <div class="mt-4">
-    {% if turnos %}
-        <div id="alertMessage" class="alert" role="alert">
-        </div>
-        <table class="table table-hover table-bordered">
-            <thead class="persian-green">
-                <tr>
-                    <th>Nro Turno</th>
-                    <th>Especialidad</th>
-                    <th>Medico</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Estado</th>
-                    <th>Opcion #1</th>
-                    <th>Opcion #2</th>
-                    <th>Opcion #3</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for turno in turnos %}
-                <tr>
-                    <td>{{ turno.pk }}</td>
-                    <td>{{ turno.medico.especialidad }}</td>
-                    <td>{{ turno.medico }}</td>
-                    <td>{{ turno.fecha.date }}</td>
-                    <td>{{ turno.fecha.time }}</td>
-                    <th class="estado">{{ turno.get_estado_display }}</th>
-                    <td><a href="{% url 'imprimir-reserva' paciente.user.pk turno.pk %}" class="btn btn-outline-info"><i class="flaticon-print"> Imprimir</i></a></td>  
-                    <td><button name="confirmar" type="button" class="btn btn-outline-success py-2" value="{{ turno.pk }}">Confirmar</button></td>
-                    <td><button name="cancelar" type="button" class="btn btn-outline-danger py-2" value="{{ turno.pk }}">Cancelar</button></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-    <h4>No se han encontrado turnos pendientes para el paciente</h4>
-    {% endif %}
+<div class="p-0 container shadow bg-white rounded">
+    <div class="title-header py-3 px-5 my-1">
+        <h2>Gestionar Turnos</h2>
+    </div>
+    <div class="py-3 px-5 content-box">
+            <h3><strong>Paciente:</strong> {{ paciente.user.documento }} - {{ paciente.user.last_name }} {{ paciente.user.first_name }} </h3>
+            <div>
+            {% if turnos %}
+                <div id="alertMessage" class="alert" role="alert">
+                </div>
+                <table class="table table-responsive table-bordered table-hover">
+                    <thead class="persian-green">
+                        <tr>
+                            <th>Nro Turno</th>
+                            <th>Especialidad</th>
+                            <th>Medico</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Estado</th>
+                            <th>Opcion #1</th>
+                            <th>Opcion #2</th>
+                            <th>Opcion #3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for turno in turnos %}
+                        <tr>
+                            <td class="table-light">{{ turno.pk }}</td>
+                            <td class="table-light">{{ turno.medico.especialidad }}</td>
+                            <td class="table-light">{{ turno.medico }}</td>
+                            <td class="table-light">{{ turno.fecha.date }}</td>
+                            <td class="table-light">{{ turno.fecha.time }}</td>
+                            <td class="table-light"><strong>{{ turno.get_estado_display|upper }}</strong></td>
+                            <td class="table-light"><a href="{% url 'imprimir-reserva' paciente.user.pk turno.pk %}" class="btn btn-outline-info"><i class="flaticon-print">Imprimir</i></a></td> 
+                            {% if turno.estado == 2 %} 
+                            <td class="table-light"><button name="confirmar" type="button" class="btn btn-outline-success py-2" value="{{ turno.pk }}">Confirmar</button></td>
+                            <td class="table-light"><button name="cancelar" type="button" class="btn btn-outline-danger py-2" value="{{ turno.pk }}">Cancelar</button></td>
+                            {% else %}
+                            <td class="table-light"><button name="confirmar" type="button" class="btn btn-outline-success py-2" value="{{ turno.pk }}" disabled>Confirmar</button></td>
+                            <td class="table-light"><button name="cancelar" type="button" class="btn btn-outline-danger py-2" value="{{ turno.pk }}" disabled>Cancelar</button></td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+            <h4>No se han encontrado turnos pendientes para el paciente</h4>
+            {% endif %}
+            </div>
     </div>
 </div>
 {% endblock %}
@@ -81,13 +90,12 @@
 </script>
 <script>
     $(document).ready(function(e){
-        $(".action-button").on("click",function(event){
-            $callButton = $(this);
-            turnoValue = event.target.value;
-            action = event.target.name;
+
+        $("button[name='confirmar']").on("click", function(event){
+            const $callButton = $(this);
+            const nroTurno = this.value;
             let sendData = {
-                action:action,
-                turno:turnoValue,
+                turno: nroTurno,
             }
             $.ajax({
                 method:'PUT',
@@ -96,23 +104,38 @@
                 datatype:'json',
                 data: JSON.stringify(sendData),
                 success: function(data) {
-                    if (data['confirmado']) {
-                        $callButton.parents("tr").addClass("table-success");
-                        $("#alertMessage").removeClass("alert-danger");
-                        $("#alertMessage").addClass("alert-success");
-                        $("#alertMessage").html("El turno #"+ turnoValue + " ha sido reservado");
-                        $callButton.parents("tr").find("button[name='cancelar']").hide();
-                        $callButton.parents("tr").find(".estado").html("Confirmado");
-                        $callButton.hide();
-                    } else if (data['cancelado']) {
-                        $callButton.parents("tr").addClass("table-danger");
-                        $("#alertMessage").removeClass("alert-success");
-                        $("#alertMessage").addClass("alert-danger");
-                        $("#alertMessage").html("El turno #"+ turnoValue + " ha sido cancelado");
-                        $callButton.parents("tr").find("button[name='confirmar']").hide();
-                        $callButton.parents("tr").find(".estado").html("Cancelado");
-                        $callButton.hide();
-                    }
+                    $callButton.parents("tr").addClass("table-secondary");
+                    $("#alertMessage").removeClass("alert-danger");
+                    $("#alertMessage").addClass("alert-success");
+                    $("#alertMessage").html("El turno #"+ nroTurno + " ha sido confirmado");
+                    $callButton.parents("tr").find("button[name='cancelar']").prop("disabled",true);
+                    $callButton.parents("tr").find(".estado").html("Confirmado");
+                    $callButton.prop("disabled",true);
+                }
+            });
+        });
+
+        $("button[name='cancelar']").on("click", function(event){
+            console.log("BOTON");
+            const $callButton = $(this);
+            const nroTurno = this.value;
+            let sendData = {
+                turno: nroTurno,
+            }
+            $.ajax({
+                method:'PUT',
+                url:"{% url 'cancelar-reserva-ajax' %}",
+                contentType: 'application/json',
+                datatype:'json',
+                data: JSON.stringify(sendData),
+                success: function(data) {
+                    $callButton.parents("tr").addClass("table-secondary");
+                    $("#alertMessage").removeClass("alert-success");
+                    $("#alertMessage").addClass("alert-danger");
+                    $("#alertMessage").html("El turno #"+ nroTurno + " ha sido cancelado");
+                    $callButton.parents("tr").find("button[name='cancelar']").prop("disabled",true);
+                    $callButton.parents("tr").find(".estado").html("Cancelado");
+                    $callButton.prop("disabled",true);
                 }
             });
         });

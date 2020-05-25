@@ -43,6 +43,7 @@ recepcionista_patterns = [
     path('ajax/obtener-paciente',ObtenerPacienteAjax.as_view(),name='obtener-paciente-ajax'),
     path('ajax/realizar-reserva/',RealizarReservaAjax.as_view(),name='realizar-reserva-ajax'),
     path('ajax/confirmar-reserva/',ConfirmarReservaAjax.as_view(),name='confirmar-reserva-ajax'),
+    path('ajax/cancelar-reserva/',CancelarReservaAjax.as_view(),name='cancelar-reserva-ajax'),
 ]
 
 medico_patterns = [

@@ -1,6 +1,6 @@
 {% load static %}
 {% if paciente %}
-    <div class="card">
+    <div class="card" style="border: 1px solid; border-color: #777777">
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-8 text-center">
@@ -35,5 +35,5 @@
         </div>
     </div>    
 {% else %}
-    <p>No, en los menues esoo se ha encontrado un paciente con el documento ingresado</p>
+    <p><i class="flaticon-error pr-1 text-danger"></i>No se ha encontrado un paciente con el documento ingresado</p>
 {% endif %} 

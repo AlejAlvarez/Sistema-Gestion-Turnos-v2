@@ -29,4 +29,11 @@ body {
   background-color: #119586;
   color: white;
 }
+.title-header {
+  background-color: var(--dark-gunmetal);
+  color: white;
+}
+.content-box {
+  background-color:#f6f6f6;
+}
 

@@ -16,24 +16,28 @@
     }   
 {% endblock %}
 {% block content %}
-    <div class="container shadow bg-white rounded p-5">
-        <h2 class="text-primary">RESERVAR TURNO</h2>
-        <input name="paciente" type="number" value={{ paciente.user.pk }} hidden>
-        <div class="form-row mb-1">
-            <div class="col-lg-8 col-md-8">
-                <label for="pacienteData">Paciente:</label>
-                <input name="pacienteData" type="text" class="form-control" value="{{ paciente.user.documento }} - {{ paciente.user.first_name }} {{ paciente.user.last_name }}" disabled>
-            </div>
+    <div class="container shadow bg-white rounded p-0">
+        <div class="title-header py-3 px-5 my-1">
+            <h2>Reservar Turno</h2>
         </div>
-        <form id="especialidad-form" method="GET">
-            <div class="form-row">
+        <div class="py-3 px-5 content-box">
+            <input name="paciente" type="number" value={{ paciente.user.pk }} hidden>
+            <div class="form-row mb-1">
                 <div class="col-lg-8 col-md-8">
-                    {{ especialidad_form|crispy }} 
-                </div>   
-            </div>  
-            <input type="submit" class="btn btn-persian-green pl-4 pr-4" value="Buscar Turnos" />  
-        </form>
-        <div id="container-turnos" class="mt-5"></div>
+                    <label for="pacienteData">Paciente:</label>
+                    <input name="pacienteData" type="text" class="form-control" value="{{ paciente.user.documento }} - {{ paciente.user.first_name }} {{ paciente.user.last_name }}" disabled>
+                </div>
+            </div>
+            <form id="especialidad-form" method="GET">
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">
+                        {{ especialidad_form|crispy }} 
+                    </div>   
+                </div>  
+                <input type="submit" class="btn btn-persian-green pl-4 pr-4" value="Buscar Turnos" />  
+            </form>
+            <div id="container-turnos" class="mt-5"></div>
+        </div>
     </div>
     <!-- Modal -->
     <div class="modal fade" id="avisoTurnoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

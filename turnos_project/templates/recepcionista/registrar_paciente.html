@@ -9,25 +9,28 @@
     }
 {% endblock %}
 {% block content %}
-    <div class="container shadow bg-white rounded p-5">
-        <h2 class="text-primary">Registrar Paciente</h2>
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.level_tag == 'success' %}
-                <div class="alert alert-success">
-                    {{ message }}
-                </div>                    
-                {% elif message.level_tag == 'warning' %}
-                <div class="alert-danger">
-                    <div class="alert alert-danger">
+    <div class="p-0 container shadow bg-white rounded">
+        <div class="title-header py-3 px-5 my-1">
+            <h2>Registrar Paciente</h2>
+        </div>
+        <div class="py-3 px-5 content-box">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.level_tag == 'success' %}
+                    <div class="alert alert-success">
                         {{ message }}
-                    </div>   
-                </div>       
-                {% endif %}
-            {% endfor %}
-        {% endif %}
+                    </div>                    
+                    {% elif message.level_tag == 'warning' %}
+                    <div class="alert-danger">
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>   
+                    </div>       
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
 
-        <form method="POST">
+            <form method="POST">
             {% csrf_token %}
             <h4>Datos de Usuario</h4>
             <div class="form-row">
@@ -68,6 +71,7 @@
                 <div class="col-lg-8 col-md-8">{{ form.obra_social|as_crispy_field }}</div>
             </div>
             <button class="btn btn-info px-4 py-2" type="submit">Registrar</button>
-        </form>
+            </form>
+        </div>
     </div>
 {% endblock content %}
