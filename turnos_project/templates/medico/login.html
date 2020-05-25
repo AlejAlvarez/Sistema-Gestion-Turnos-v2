@@ -32,8 +32,18 @@
                 <div class="form-group">
                     {{ auth_form.password|as_crispy_field }}
                 </div>
-                {% if error_message %}
-                    <p class="text-danger text-center">{{ error_message }}</p>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.level_tag == 'info' %}
+                        <div class="alert alert-info">
+                            {{ message }}
+                        </div>
+                        {% elif message.level_tag == 'error' %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
                 <button type="submit" class="btn btn-outline-info btn-block">Login</button>
             </form>

@@ -35,8 +35,18 @@
                 <input type="checkbox" class="custom-control-input" id="rememberMe">
                 <label class="custom-control-label" for="rememberMe">Recordarme</label>
             </div>
-            {% if error_message %}
-                <p class="text-danger text-center">{{ error_message }}</p>
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.level_tag == 'info' %}
+                    <div class="alert alert-info">
+                        {{ message }}
+                    </div>
+                    {% elif message.level_tag == 'error' %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
             <div class="text-center">
                 <button type="submit" class="btn btn-primary btn-block">LOGIN</button>

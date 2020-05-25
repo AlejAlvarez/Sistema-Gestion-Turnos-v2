@@ -5,6 +5,7 @@ from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView 
 from django.views import View
 from django.core.exceptions import PermissionDenied
+from django.contrib import messages
 from django.http import Http404
 from django.db import transaction, DatabaseError
 from django.http import JsonResponse
@@ -52,7 +53,7 @@ class LoginPacienteView(View):
             user = authenticate(username=username,password=password)
             if user is not None:
                 # se comprueba que tenga el permiso necesario para ingresar
-                if (user.has_perm('turnos_app.es_paciente')):
+                if (user.has_perm('turnos_app.es_paciente') and not(user.has_perm('turnos_app.is_staff'))):
                     login(request,user) 
                     next = request.session.get('next', None)
                     if next:
@@ -61,19 +62,19 @@ class LoginPacienteView(View):
                 else:
                     context = {
                         'auth_form':auth_form,
-                        'error_message':'No tiene permiso para acceder a esta página', 
                     }
+                    messages.info(request,'No tiene permiso para acceder a esta página')
                     return render(request,self.template_name,context)
             context = {
                 'auth_form':auth_form,
-                'error_message':'No tiene permiso para acceder a esta página',
             }
+            messages.info(request,'No tiene permiso para acceder a esta página')
             return render(request,self.template_name,context)
         else:
             context = {
                 'auth_form':auth_form,                
-                'error_message':'Nombre de Usuario o Contraseña Incorrecto',
             }
+            messages.error(request,'Nombre de usuario o contraseña incorrecto')
             return render(request,self.template_name,context)
 
 # va a retornar el user que está logueado, aún así debe ser un paciente
@@ -110,7 +111,7 @@ def reservar_turno_paciente(request,pk):
         return render(request,'paciente/turno_reservado_aviso.html')
             
 class BuscarTurnosView(PermissionRequiredMixin, View):
-
+    login_url = PACIENTE_LOGIN_URL
     permission_required = ('turnos_app.es_paciente',) 
     template_name = 'paciente/reservar_turno.html'
 
@@ -124,6 +125,7 @@ class BuscarTurnosView(PermissionRequiredMixin, View):
         return render(request, self.template_name, context) 
 
 class ListarTurnos(PermissionRequiredMixin, ListView):
+    login_url = PACIENTE_LOGIN_URL
     permission_required = ('turnos_app.es_paciente')
     model = Turno
     paginate_by = 5
@@ -140,12 +142,13 @@ class ListarTurnos(PermissionRequiredMixin, ListView):
 
 
 class VerTurno(PermissionRequiredMixin, DetailView):
+    login_url = PACIENTE_LOGIN_URL
     permission_required = ('turnos_app.es_paciente')
     model = Turno
     template_name = 'paciente/informacion_turno.html'
 
 class CancelarTurnoView(PermissionRequiredMixin, View):
-    
+    login_url = PACIENTE_LOGIN_URL
     permission_required = ('turnos_app.es_paciente')
     template_name = 'paciente/cancelar_turno.html'
 
@@ -153,10 +156,13 @@ class CancelarTurnoView(PermissionRequiredMixin, View):
         turno = Turno.objects.get(pk=kwargs['pk'])
         paciente = Paciente.objects.get(user_id=request.user.pk)
         if turno.paciente == paciente:
-            context = {
-                'turno':turno,
-            }
-            return render(request,self.template_name,context)
+            if turno.estado != 5: # estado cancelado
+                context = {
+                    'turno':turno,
+                }
+                return render(request,self.template_name,context)
+            else: 
+                return render(request,self.template_name,{})
         else:
             raise PermissionDenied
 
@@ -180,7 +186,7 @@ class CancelarTurnoView(PermissionRequiredMixin, View):
         return redirect('turno-cancelado',pk=turno.pk)
 
 class TurnoCanceladoView(PermissionRequiredMixin, View):
-    
+    login_url = PACIENTE_LOGIN_URL
     permission_required = ('turnos_app.es_paciente')
     template_name = 'paciente/turno_cancelado.html'
 

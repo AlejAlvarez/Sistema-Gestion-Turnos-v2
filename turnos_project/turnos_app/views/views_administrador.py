@@ -26,6 +26,7 @@ from rest_framework.response import Response
 
 
 ADMINISTRADOR_PERMISSION = 'turnos_app.es_administrador'
+ADMINISTRADOR_LOGIN_URL = '/administrador/login/'
 
 class LoginAdministradorView(View):
 
@@ -37,6 +38,9 @@ class LoginAdministradorView(View):
         if request.user.is_authenticated and request.user.has_perm(ADMINISTRADOR_PERMISSION):
             return redirect(self.success_url)
         else:
+            next = request.GET.get('next', None)
+            if next:
+                request.session['next'] = next
             auth_form = AuthenticationForm()
             context = {
                 'auth_form':auth_form,
@@ -48,7 +52,6 @@ class LoginAdministradorView(View):
         auth_form = AuthenticationForm(data=request.POST)
         context = {
             'auth_form': auth_form,
-            'error_message':'',
         }        
         if auth_form.is_valid():
             username = auth_form.cleaned_data['username']
@@ -56,16 +59,19 @@ class LoginAdministradorView(View):
             user = authenticate(username=username,password=password)
             if user is not None:
                 # se comprueba que tenga el permiso necesario para ingresar
-                if (user.has_perm('turnos_app.es_administrador')):
-                    login(request,user)    
+                if (user.has_perm('turnos_app.es_administrador') and not(user.has_perm('turnos_app.is_staff'))):
+                    login(request,user) 
+                    next = request.session.get('next', None)
+                    if next:
+                        return redirect(next)   
                     return redirect(self.success_url)
                 else:
-                    context['error_message'] = 'No tiene permiso para acceder'
+                    messages.info(request,'No tiene permiso para acceder')
                     return render(request,self.template_name,context)
-            context['error_message'] = 'No tiene permiso para acceder'
+            messages.info(request,'No tiene permiso para acceder')
             return render(request,self.template_name,context)
         else:
-            context['error_message'] = 'Nombre de Usuario o Contraseña Incorrecto'
+            messages.error(request,'Nombre de Usuario o Contraseña Incorrecto') 
             return render(request,self.template_name,context)
 
 
@@ -97,6 +103,8 @@ def index_administrador(request):
 
 
 class SignUpRecepcionistaView(PermissionRequiredMixin, CustomUserCreateView):
+
+    login_url = ADMINISTRADOR_LOGIN_URL
     form_class = CustomUserCreationForm
     template_name = 'administrador/registrar_recepcionista.html'
     permission_required = ('turnos_app.es_administrador')
@@ -145,11 +153,15 @@ def editar_informacion_recepcionista(request, pk):
         
 
 class DetailsRecepcionista(PermissionRequiredMixin, DetailView):
+
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = CustomUser
     template_name = 'administrador/detalles_recepcionista.html'
     permission_required = ('turnos_app.es_administrador')
 
 class RecepcionistaListView(PermissionRequiredMixin, ListView):
+
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = CustomUser
     template_name = 'administrador/lista_recepcionistas.html'
     permission_required = ('turnos_app.es_administrador')
@@ -164,6 +176,8 @@ class RecepcionistaListView(PermissionRequiredMixin, ListView):
         return context
 
 class EliminarRecepcionistaView(PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
+
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = CustomUser
     permission_required = ('turnos_app.es_administrador')
     template_name = 'administrador/eliminar_usuario.html'
@@ -171,6 +185,8 @@ class EliminarRecepcionistaView(PermissionRequiredMixin, SuccessMessageMixin, De
     success_message = "Recepcionista eliminado con éxito."
 
 class SignUpMedicoView(PermissionRequiredMixin, CustomUserCreateView):
+    
+    login_url = ADMINISTRADOR_LOGIN_URL
     form_class = MedicoCreationForm
     template_name = 'administrador/registrar_medico.html'
     permission_required = ('turnos_app.es_administrador')
@@ -230,6 +246,8 @@ def editar_informacion_medico(request, pk):
         return redirect('index-administrador')
         
 class DetailsMedico(PermissionRequiredMixin, DetailView):
+    
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = CustomUser
     template_name = 'administrador/detalles_medico.html'
     permission_required = ('turnos_app.es_administrador')
@@ -242,6 +260,8 @@ class DetailsMedico(PermissionRequiredMixin, DetailView):
         return context
         
 class MedicoListView(PermissionRequiredMixin, ListView):
+    
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = CustomUser
     template_name = 'administrador/lista_medicos.html'
     permission_required = ('turnos_app.es_administrador')
@@ -256,6 +276,8 @@ class MedicoListView(PermissionRequiredMixin, ListView):
         return context
     
 class EliminarMedicoView(PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
+    
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = CustomUser
     permission_required = ('turnos_app.es_administrador')
     template_name = 'administrador/eliminar_usuario.html'
@@ -271,6 +293,8 @@ class EliminarMedicoView(PermissionRequiredMixin, SuccessMessageMixin, DeleteVie
         return redirect('menu-medicos')
             
 class SignUpAdministradorView(PermissionRequiredMixin, CustomUserCreateView):
+    
+    login_url = ADMINISTRADOR_LOGIN_URL
     form_class = CustomUserCreationForm
     template_name = 'administrador/registrar_administrador.html'
     permission_required = ('turnos_app.es_administrador')
@@ -312,11 +336,15 @@ def editar_informacion_administrador(request, pk):
         return render(request, 'administrador/editar_administrador.html', {'form':form})
 
 class DetailsAdministrador(PermissionRequiredMixin, DetailView):
+    
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = CustomUser
     template_name = 'administrador/detalles_administrador.html'
     permission_required = ('turnos_app.es_administrador')
     
 class AdministradorListView(PermissionRequiredMixin, ListView):
+    
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = CustomUser
     template_name = 'administrador/lista_administradores.html'
     permission_required = ('turnos_app.es_administrador')
@@ -331,6 +359,8 @@ class AdministradorListView(PermissionRequiredMixin, ListView):
         return context
         
 class EliminarAdministradorView(PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
+    
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = CustomUser
     permission_required = ('turnos_app.es_administrador')
     template_name = 'administrador/eliminar_usuario.html'
@@ -346,6 +376,8 @@ class EliminarAdministradorView(PermissionRequiredMixin, SuccessMessageMixin, De
             return redirect('menu-administradores')
 
 class PacienteListView(PermissionRequiredMixin, ListView):
+    
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = CustomUser
     permission_required = ('turnos_app.es_administrador')
     template_name = 'administrador/lista_pacientes.html'
@@ -360,6 +392,8 @@ class PacienteListView(PermissionRequiredMixin, ListView):
         return context
 
 class EliminarPacienteView(PermissionRequiredMixin, DeleteView):
+    
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = CustomUser
     permission_required = ('turnos_app.es_administrador')
     template_name = 'administrador/eliminar_usuario.html'
@@ -375,6 +409,8 @@ class EliminarPacienteView(PermissionRequiredMixin, DeleteView):
         return redirect('menu-pacientes')
 
 class EspecialidadCreate(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+    
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = Especialidad
     fields = ['nombre']
     template_name = 'administrador/crear_especialidad.html'
@@ -383,6 +419,8 @@ class EspecialidadCreate(PermissionRequiredMixin, SuccessMessageMixin, CreateVie
     success_message = "Especialidad creada con éxito."
 
 class EspecialidadDelete(PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
+
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = Especialidad
     template_name = 'administrador/eliminar_especialidad.html'
     permission_required = ('turnos_app.es_administrador')
@@ -398,11 +436,15 @@ class EspecialidadDelete(PermissionRequiredMixin, SuccessMessageMixin, DeleteVie
             return redirect('menu-especialidades')
 
 class EspecialidadListView(PermissionRequiredMixin, ListView):
+
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = Especialidad
     template_name = 'administrador/lista_especialidades.html'
     permission_required = ('turnos_app.es_administrador')    
 
 class ObraSocialCreate(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = ObraSocial
     fields = ['nombre']
     template_name = 'administrador/crear_obra_social.html'
@@ -411,6 +453,8 @@ class ObraSocialCreate(PermissionRequiredMixin, SuccessMessageMixin, CreateView)
     success_message = "Obra Social creada con éxito."
     
 class ObraSocialDelete(PermissionRequiredMixin, SuccessMessageMixin, DeleteView):
+
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = ObraSocial
     template_name = 'administrador/eliminar_obra_social.html'
     permission_required = ('turnos_app.es_administrador')
@@ -427,6 +471,8 @@ class ObraSocialDelete(PermissionRequiredMixin, SuccessMessageMixin, DeleteView)
             return redirect('menu-obras-sociales')
     
 class ObraSocialListView(PermissionRequiredMixin, ListView):
+
+    login_url = ADMINISTRADOR_LOGIN_URL
     model = ObraSocial
     template_name = 'administrador/lista_obras_sociales.html'
     permission_required = ('turnos_app.es_administrador')
@@ -444,6 +490,8 @@ def get_obras_sociales_data(request, *args, **kwargs):
     return JsonResponse(data)
 
 class EstadisticasView(PermissionRequiredMixin, View):
+
+    login_url = ADMINISTRADOR_LOGIN_URL
     permission_required = ('turnos_app.es_administrador')
 
     def get(self, request, *args, **kwargs):

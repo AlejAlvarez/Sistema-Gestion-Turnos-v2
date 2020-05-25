@@ -23,6 +23,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 MEDICO_PERMISSION = 'turnos_app.es_medico' 
+MEDICO_LOGIN_URL = '/medico/login/'
 
 class LoginMedicoView(View):
 
@@ -53,16 +54,19 @@ class LoginMedicoView(View):
             user = authenticate(username=username,password=password)
             if user is not None:
                 # se comprueba que tenga el permiso necesario para ingresar
-                if (user.has_perm('turnos_app.es_medico')):
-                    login(request,user)    
+                if (user.has_perm('turnos_app.es_medico') and not(user.has_perm('turnos_app.is_staff'))):
+                    login(request,user)
+                    next = request.session.get('next', None)
+                    if next:
+                        return redirect(next)    
                     return redirect(self.success_url)
                 else:
-                    context['error_message'] = 'No tiene permiso para acceder'
+                    messages.info(request,'No tiene permiso para acceder')
                     return render(request,self.template_name,context)
-            context['error_message'] = 'No tiene permiso para acceder'
+            messages.info(request,'No tiene permiso para acceder')
             return render(request,self.template_name,context)
         else:
-            context['error_message'] = 'Nombre de Usuario o Contraseña Incorrecto'
+            messages.error(request,'Nombre de Usuario o Contraseña Incorrecto')
             return render(request,self.template_name,context)
             
 @login_required(login_url='/medico/login/')
@@ -79,6 +83,8 @@ def index_medico(request):
 
 
 class ListarTurnosConfirmadosView(PermissionRequiredMixin, ListView):
+
+    login_url = MEDICO_LOGIN_URL
     permission_required = ('turnos_app.es_medico')
     model = Turno
     paginate_by = 10
@@ -94,6 +100,7 @@ class ListarTurnosConfirmadosView(PermissionRequiredMixin, ListView):
 
 class GetMoreTurnosConfirmadosAjax(PermissionRequiredMixin, View):
 
+    login_url = MEDICO_LOGIN_URL
     template_name = "medico/get_mas_turnos.html"
     permission_required = ('turnos_app.es_medico')
 
@@ -223,6 +230,8 @@ def crear_turnos(request):
     return render(request, 'medico/crear_turnos.html', {'form': form})
 
 class ListarHorariosyDiasLaborales(PermissionRequiredMixin, ListView):
+
+    login_url = MEDICO_LOGIN_URL
     permission_required = ('turnos_app.es_medico')
     model = HorarioLaboral
     paginate_by = 10

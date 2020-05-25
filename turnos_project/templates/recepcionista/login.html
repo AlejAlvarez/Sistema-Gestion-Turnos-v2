@@ -101,9 +101,19 @@ body {
             <div class="form-group">
                 {{ auth_form.password|as_crispy_field }}
             </div>    
-            {% if error_message %}
-                <p class="text-center text-danger">{{ error_message }}</p>
-            {% endif %}  
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.level_tag == 'info' %}
+                    <div class="alert alert-info">
+                        {{ message }}
+                    </div>
+                    {% elif message.level_tag == 'error' %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
             <div class="custom-control custom-checkbox mr-sm-2 my-3">
                 <input type="checkbox" class="custom-control-input" id="rememberMe">
                 <label class="custom-control-label" for="rememberMe">Recordarme</label>

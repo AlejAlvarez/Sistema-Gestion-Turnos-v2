@@ -28,8 +28,8 @@ class TurnoForm(forms.Form):
             "dateFormat": "H:i"
         }
     ))
-    duracion_turno = forms.IntegerField()
-    sobreturnos = forms.BooleanField(label="Acepta sobreturnos?", required=False)
+    duracion_turno = forms.IntegerField(label="Duración de cada turno (en minutos)")
+    sobreturnos = forms.BooleanField(label="¿Acepta sobreturnos?", required=False)
 
 class SeleccionarEspecialidadForm(forms.Form):
     especialidades = forms.ModelChoiceField(

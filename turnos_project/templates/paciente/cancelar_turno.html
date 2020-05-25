@@ -8,6 +8,7 @@
             <h2 class="text-danger">Cancelar Turno</h2>
         </div>
         <div class="px-5 py-3">
+            {% if turno %}
             <h4>¿Desea cancelar el siguiente turno?</h4>
             <p class="pl-3"> - <strong>Número de Turno:</strong> {{ turno.pk }}</p>
             <p class="pl-3"> - <strong>Medico:</strong> {{ turno.medico }}</p>
@@ -22,6 +23,9 @@
                     <input class="btn btn-danger btn-lg" name="turno" value="Cancelar" type="submit" >
                 </form>
             </div>
+            {% else %}
+            <h3>El turno ya se encuentra cancelado</h3>
+            {% endif %}
         </div>
     </div>
     {% comment %}<a href="{% url 'cancelar-turno' turno.pk %}">- Cancelar Turno</a>{% endcomment %}

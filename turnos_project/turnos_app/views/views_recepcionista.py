@@ -62,7 +62,6 @@ class LoginRecepcionistaView(View):
         auth_form = AuthenticationForm(data=request.POST)
         context = {
             'auth_form': auth_form,
-            'error_message':'',
         }        
         if auth_form.is_valid():
             username = auth_form.cleaned_data['username']
@@ -70,21 +69,20 @@ class LoginRecepcionistaView(View):
             user = authenticate(username=username,password=password)
             if user is not None:
                 # se comprueba que tenga el permiso necesario para ingresar
-                if (user.has_perm('turnos_app.es_recepcionista')):
+                if (user.has_perm('turnos_app.es_recepcionista') and not(user.has_perm('turnos_app.is_staff'))):
                     login(request,user)  
                     next = request.session.get('next', None)
                     if next:
                         return redirect(next)  
                     return redirect(self.success_url)
                 else:
-                    context['error_message'] = 'No tiene permiso para acceder'
+                    messages.info(request,'No tiene permiso para acceder')
                     return render(request,self.template_name,context)
-            context['error_message'] = 'No tiene permiso para acceder'
+            messages.info(request,'No tiene permiso para acceder')
             return render(request,self.template_name,context)
         else:
-            context['error_message'] = 'Nombre de Usuario o Contraseña Incorrecto'
+            messages.error(request,'No tiene permiso para acceder')
             return render(request,self.template_name,context)
-
 
 @login_required(login_url='/recepcionista/login')
 @permission_required('turnos_app.es_recepcionista',)
@@ -157,6 +155,7 @@ class SignUpPacienteView(PermissionRequiredMixin, CustomUserCreateView):
                 obra_social.save()
                 perfil_paciente = Paciente.objects.create(user=user, genero=genero, obra_social=obra_social)
             perfil_paciente.save()
+            messages.success(request,"El paciente ha sido creado con éxito")
             return redirect('registrar-paciente')
         else:
             print('Error de validacion de formulario')
@@ -238,7 +237,6 @@ class ReservarTurnoView(PermissionRequiredMixin,View):
 
     def post(self,request,*args,**kwargs):
         especialidades_form = SeleccionarEspecialidadForm(especialidades=Especialidad.objects.all(),data=request.POST)
-        print(request.POST)
         if  ("reservar" in request.POST):
             turno_id = request.POST['turnos']
             # lógica para reservar turno

@@ -32,8 +32,18 @@
                 <label for="{{ auth_form.password.id_for_label }}"><strong>Contraseña</strong></label> 
                 {{ auth_form.password | add_class:'form-control' }}
             </div>
-            {% if error_message %}
-                <p class="text-center text-white"><strong>{{ error_message }}</strong></p>
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.level_tag == 'info' %}
+                    <div class="alert alert-info">
+                        {{ message }}
+                    </div>
+                    {% elif message.level_tag == 'error' %}
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
             <button type="submit" class="btn btn-secondary btn-block">Login</button>
         </form>

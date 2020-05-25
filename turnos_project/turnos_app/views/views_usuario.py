@@ -40,9 +40,9 @@ class CustomUserCreateView(LoginRequiredMixin, CreateView):
             user = CustomUser.objects.create_user(username, email, contrasena, first_name=nombre, last_name=apellido,
                                                 documento=documento, domicilio=domicilio, nacimiento=nacimiento, telefono=telefono)            
             # adding permission
+            print(kwargs['user_permission_codename'])
             user_role_permission = Permission.objects.get(codename=kwargs['user_permission_codename'])
             user.user_permissions.add(user_role_permission)            
-
             user.save()
         else:
             return render(request, self.template_name, {'form': form})
