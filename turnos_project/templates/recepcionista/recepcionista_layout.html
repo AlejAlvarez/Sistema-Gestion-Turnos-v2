@@ -9,7 +9,7 @@
   <meta name="author" content="">
 
   <title>{% block title %}Recepcionista Layout{% endblock %}</title>
-
+  <link rel="icon" href="{% static 'images/logo-brand.svg' %}" type="image/gif" sizes="16x16">
   <!-- Bootstrap core CSS -->
   <link href="{% static "css/bootstrap/bootstrap-pulse.min.css" %}" rel="stylesheet">
   <link href="{% static "icons/essential-icon-set-fill/flaticon.css" %}" rel="stylesheet">
@@ -28,7 +28,9 @@
   <div class="d-flex" id="wrapper">
     <!-- Sidebar -->
     <div class="border-right border-light" id="sidebar-wrapper">
-      <div class="sidebar-heading text-white border-bottom border-light py-4">Start Bootstrap</div>
+      <div class="sidebar-heading text-white border-bottom border-light py-4">
+        <img src="{% static 'images/logo-brand.svg' %}" height="50" width="50" /> TURNOS
+      </div>
       <div class="list-group list-group-flush">
         <a href="{% url 'index-recepcionista' %}" class="sidebar-item list-group-item list-group-item-action"><i class="flaticon-television-1"><span class="ml-2">Inicio</span></i></a>
         <a href="{% url 'atender-usuario' %}" class="sidebar-item list-group-item list-group-item-action"><i class="flaticon-notepad-1"><span class="ml-2">Gestionar Turnos</span></i></a>
@@ -40,7 +42,7 @@
     <!-- Page Content -->
     <div id="page-content-wrapper">
       <nav class="navbar main-navbar navbar-expand-lg">
-        <button class="btn btn-light" id="menu-toggle"><i class="flaticon-back"><span class="ml-1">Ocultar</span></i></button>
+        <button class="btn text-light" id="menu-toggle"><i class="flaticon-back"><span class="ml-1">Ocultar</span></i></button>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>

@@ -1,17 +1,16 @@
 {% load static %}
 <html>
     <head>
-        <link href="{% static "css/bootstrap/bootstrap.min.css" %}" rel="stylesheet" />
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-        <script src="{% static "js/bootstrap/bootstrap.bundle.min.js" %}"></script>
-        <script src="{% static "js/bootstrap/bootstrap.min.js" %}"></script>
-        <script src="https://kit.fontawesome.com/6cc7af1c63.js" crossorigin="anonymous"></script>
-        <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet"> 
+        <link href="{% static "css/bootstrap/bootstrap.min.css" %}" rel="stylesheet" /> 
         <link href="{% static "icons/essential-icon-set-fill/flaticon.css" %}" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{% static "css/main_layout.css" %}" />
         <link rel="stylesheet" type="text/css" href="{% static "css/administrador/administrador.css" %}" />
+        <script src="{% static "js/jquery-3.4.1.min.js" %}"></script>
+        <script src="{% static "js/bootstrap/bootstrap.bundle.min.js" %}"></script>
+        <script src="{% static "js/bootstrap/bootstrap.min.js" %}"></script>
         {% block import_links %}{% endblock %}
         <title>{% block title %}Administrador Layout{% endblock %}</title>
+        <link rel="icon" href="{% static 'images/logo-brand.svg' %}" type="image/gif" sizes="16x16">
         <style>
         {% block css %}
         {% endblock %}
@@ -25,10 +24,10 @@
                     <!-- SIDEBAR DE ADMINISTRADOR -->
                 <div class="sidebar-sticky">
                     <ul class="nav flex-column flex-sm-column">
-                        <li class="nav-item py-3" id="brandingNavLink"><a class="nav-link" href="#">logo <strong>GESTIÓN TURNOS</strong></a></li>
+                        <li class="nav-item py-3" id="brandingNavLink"><a class="nav-link" href="#"><img src="{% static "images/logo-brand.svg" %}" height="50" width="50"/>GESTION TURNOS</a></li>
                         <li class="nav-item py-2 border-bottom">
                             <a class="nav-link" href="#">
-                                <i class="flaticon-compact-disc-2 text-success mr-1"></i>
+                                <img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />
                                 {{ user.first_name|upper }} {{ user.last_name|upper }}</a>
                         <li class="nav-item pl-4"><a class="nav-link" href="{% url 'index-administrador' %}">Inicio</a></li>
                         <li class="nav-item pl-4"><a class="nav-link" href="{% url 'menu-pacientes' %}">Pacientes</a></li>
@@ -43,7 +42,7 @@
                 </nav>
                 <div class="col-md-10 px-0 mb-5">
                     <div class="container-fluid pt-4 d-flex title-container">
-                        <h2>{% block content-title %}{% endblock %}</h2>
+                        <h2><strong>{% block content-title %}{% endblock %}</strong></h2>
                         <div class="dropdown show ml-auto">
                             <a class="dropdown-toggle float-right" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="{% static "images/user-white.svg" %}" height="40px"/>

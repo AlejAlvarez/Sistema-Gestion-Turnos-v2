@@ -1,7 +1,7 @@
 {% extends 'administrador/administrador_layout.html' %}
 
 {% block title %} Estadísticas {% endblock title %}
-{% block css %}
+{% block import_links %}
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"/>
 {% endblock %}
 {% block content-title %}Estadisticas{% endblock %}
@@ -15,8 +15,8 @@
         </div>
     </div>
 {% endblock %}
-
-{% block jquery %}
+{% block javascript %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 <script>
     var endpoint = '/administrador/api/estadisticas/';
     var especialidades = [];
@@ -112,8 +112,4 @@
         }
     });
 </script>
-{% endblock %}
-
-{% block javascript %}
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 {% endblock %}

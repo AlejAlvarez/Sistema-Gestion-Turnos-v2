@@ -3,12 +3,14 @@
 {% load crispy_forms_tags %}
 {% block title %}Login Medico{% endblock %}
 {% block css %}
-    #background-column {
-        padding:170px 75px 150px;
+    body {
         background-image:url("{% static "images/photo-background-3.jpg" %}");
         background-position:center center;
         background-repeat: no-repeat;
         background-size: cover;
+    }
+    #full-container {
+        height:800px;
     }
     .login-box {
         padding:100px 50px 100px;
@@ -17,12 +19,12 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-7 col-md-5 col-sm-4" id="background-column">
+        <div class="col-lg-7 col-md-5 col-sm-4">
         </div>
-        <div class="col-lg-5 col-md-7 col-sm-8 login-box shadow-lg bg-white rounded">
+        <div class="col-lg-5 col-md-7 col-sm-8 login-box shadow-lg bg-white rounded" id="full-container">
             <div class="text-center border-bottom pb-3 mb-3">
-                <img src="{% static "images/essential-set-lineal/svg/doctor.svg" %}" height="120" width="120" />
-                <h2 class="text-center mt-1">Ingresar como Médico</h2>
+                <img src="{% static 'images/logo-brand.svg' %}" height="120" width="120" />
+                <h2 class="text-center mt-1">Gestion Turnos</h2>
             </div>
             <form method="POST" action="{% url 'login-medico' %}">
                 {% csrf_token %}
@@ -45,8 +47,9 @@
                         {% endif %}
                     {% endfor %}
                 {% endif %}
-                <button type="submit" class="btn btn-outline-info btn-block">Login</button>
+                <button type="submit" class="btn btn-outline-primary btn-block">Login</button>
             </form>
+            <a href="{% url 'home' %}">Volver al Inicio</a>
         </div>
     </div>
 </div>

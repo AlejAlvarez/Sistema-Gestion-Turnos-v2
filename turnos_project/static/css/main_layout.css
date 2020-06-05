@@ -1,3 +1,10 @@
-body{
-    font-family: 'Raleway', sans-serif;
+.navbar .navbar-nav .nav-item .nav-link, .navbar-brand {   
+    text-decoration:none;
+    color:black;
+}
+#userLoginLink {
+    font-size:1.1em;
+}
+.text-green {
+    color:#18f239;
 }

@@ -81,7 +81,7 @@ class LoginRecepcionistaView(View):
             messages.info(request,'No tiene permiso para acceder')
             return render(request,self.template_name,context)
         else:
-            messages.error(request,'No tiene permiso para acceder')
+            messages.error(request,'Nombre de usuario o contraseña incorrectos')
             return render(request,self.template_name,context)
 
 @login_required(login_url='/recepcionista/login')

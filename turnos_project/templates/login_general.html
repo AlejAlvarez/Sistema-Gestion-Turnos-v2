@@ -2,15 +2,23 @@
 {% load static %}
 {% block title %}Staff Login{% endblock %}
 {% block css %}
-    #loginContainer {
-        padding:170px 75px 150px;
+    body {
         background-image:url("{% static "images/photo-background-2.jpg" %}");
         background-position:center center;
         background-repeat: no-repeat;
         background-size: cover;
     }
+    #loginContainer {
+        padding:170px 75px 150px;
+    }
 {% endblock %}
 {% block content %}
+<nav class="navbar navbar-expand-sm py-lg-3 py-md-2 py-sm-2 mb-3">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <img src="{% static 'images/logo-brand.svg' %}" width="50" height="50" alt="">
+      GESTION TURNOS
+    </a>
+</nav>
 <div class="container-fluid" id="loginContainer">
         <div class="row">
             <div class="col-12 col-sm-12 col-md-4 col-lg-4 p-4 text-white" style="background-color:#1a2830;">
@@ -24,10 +32,10 @@
                     </div>
                 </div>
                 <div class="text-right">
-                    <a class="text-white" href="{% url 'login-recepcionista' %}">Ingresar</a>
+                    <a class="btn btn-light" href="{% url 'login-recepcionista' %}">Ingresar</a>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-md-4 col-lg-4 bg-info text-white p-4">
+            <div class="col-12 col-sm-12 col-md-4 col-lg-4 bg-primary text-white p-4">
                 <div class="row text-center py-4">
                     <div class="col-4 border-right">
                         <img src="{% static "images/essential-set-lineal/svg/doctor.svg" %}" width="85%" height="85%" />
@@ -38,7 +46,7 @@
                     </div>
                 </div>
                 <div class="text-right">
-                    <a class="btn btn-outline-secondary" href="{% url 'login-medico' %}">Ingresar</a>
+                    <a class="btn btn-outline-light" href="{% url 'login-medico' %}">Ingresar</a>
                 </div>
             </div>
             <div class="col-12 col-sm-12 col-md-4 col-lg-4 p-4 bg-light">
@@ -52,7 +60,7 @@
                     </div>
                 </div>
                 <div class="text-right">
-                    <a class="btn btn-outline-info" href="{% url 'login-administrador' %}">Ingresar</a>
+                    <a class="btn btn-outline-primary" href="{% url 'login-administrador' %}">Ingresar</a>
                 </div>
             </div>      
     </div>

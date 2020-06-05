@@ -1,6 +1,11 @@
 {% extends 'paciente/paciente_layout.html' %}
 {% block title %} Listado de Turnos {% endblock title %}
 {% block css %}
+.badge {
+    font-size:12px;
+    font-weight:500;
+    padding: 5px 5px;
+}
 {% endblock %}
 {% block content %}
     <div class="p-0 container mt-5 info-container shadow mb-4 bg-white rounded">
@@ -25,10 +30,10 @@
                         <td>{{ turno.medico.especialidad }}</td>
                         {% comment %} Aca va un link a la DetailView del Turno (donde podra imprimir o cancelar dicho turno) {% endcomment %}
                         {% if turno.estado == 4 %}
-                            <td class="text-success">Atendido</td>
+                            <td><span class="badge badge-pill badge-success">Atendido</span></td>
                         {% endif %}
                         {% if turno.estado == 5 %}
-                            <td class="text-danger">Cancelado</td>
+                            <td><span class="badge badge-pill badge-danger">Cancelado</span></td>
                         {% endif %}
                         <td><a href="{% url 'ver-turno' turno.pk %}">Ver</a></td>
                     </tr>

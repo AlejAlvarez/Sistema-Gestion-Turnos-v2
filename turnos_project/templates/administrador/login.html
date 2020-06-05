@@ -1,11 +1,10 @@
 {% extends "main_layout.html" %}
 {% load static %}
-{% load widget_tweaks %}
+{% load crispy_forms_tags %}
 {% block title %}Login Administrador{% endblock %}
 {% block css %}
     body {
-        background-color: var(--info);
-        color: white;
+        backgroud-color: #868e96;
     }
     @media (min-width: 992px), @media (min-width: 1200px){
         .login-page{
@@ -19,18 +18,16 @@
 <div class="container">
     <div class="mx-auto login-page px-2">
         <div class="text-center pb-3 mb-3">
-            <img src="{% static "images/essential-set-lineal/svg/engineer.svg" %}" height="120" width="120" />
-            <h2 class="text-center mt-1">Ingresar como Administrador</h2>
+            <img src="{% static "images/logo-brand.svg" %}" height="120" width="120" />
+            <h2 class="text-center mt-1">Gestion de Turnos</h2>
         </div>
         <form method="POST" action="{% url 'login-administrador' %}">
             {% csrf_token %}
-            <div class="form-group">
-                <label for="{{ auth_form.username.id_for_label }}"><strong>Usuario</strong></label>            
-                {{ auth_form.username | add_class:'form-control' }}
+            <div class="form-group">            
+                {{ auth_form.username|as_crispy_field }}
             </div>
-            <div class="form-group">
-                <label for="{{ auth_form.password.id_for_label }}"><strong>Contraseña</strong></label> 
-                {{ auth_form.password | add_class:'form-control' }}
+            <div class="form-group"> 
+                {{ auth_form.password|as_crispy_field }}
             </div>
             {% if messages %}
                 {% for message in messages %}
@@ -45,8 +42,9 @@
                     {% endif %}
                 {% endfor %}
             {% endif %}
-            <button type="submit" class="btn btn-secondary btn-block">Login</button>
+            <button type="submit" class="btn btn-outline-secondary btn-block">Login</button>
         </form>
+        <a href="{% url 'home' %}">Volver al Inicio</a>
     </div>
 </div>
 {% endblock %}

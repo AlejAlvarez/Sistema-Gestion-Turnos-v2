@@ -105,6 +105,33 @@
 
         {% block content %}
         <div id="hospital-image-container" class="container-fluid">
+            <nav class="navbar navbar-expand-sm py-lg-3 py-md-2 py-sm-2 mb-3">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="#"><img src="{% static "images/logo-brand.svg" %}" height="50" width="50"/> GESTION TURNOS</a>
+                <ul class="navbar-nav ml-auto">                 
+                {% if user.is_authenticated %}
+                    {% if perms.turnos_app.es_paciente %}
+                      <li class="nav-item">
+                        <a class="nav-link" id="userLoginLink" href="{% url 'login-paciente' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
+                      </li>
+                      {% elif perms.turnos_app.es_recepcionista %}
+                      <li class="nav-item">
+                        <a class="nav-link" id="userLoginLink" href="{% url 'login-recepcionista' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
+                      </li>
+                      {% elif perms.turnos_app.es_medico %}
+                      <li class="nav-item">
+                        <a class="nav-link" id="userLoginLink" href="{% url 'login-medico' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
+                      </li>
+                      {% elif perms.turnos_app.es_administrador %}
+                      <li class="nav-item">
+                        <a class="nav-link" id="userLoginLink" href="{% url 'login-administrador' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
+                      </li>
+                    {% endif %}
+                  {% endif %}
+                </ul>
+            </nav>
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-lg-left text-md-left text-sm-center text-center mt-5 pt-5 px-5">
                     <div class="p-2">

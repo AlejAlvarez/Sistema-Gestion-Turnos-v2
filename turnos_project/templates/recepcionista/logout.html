@@ -1,2 +1,8 @@
 <h1>LOGGED OUT COMO RECEPCIONISTA</h1>
 <a href="{% url 'login-recepcionista' %}">Volver a conectarse</a> | <a href="{% url 'home' %}">Inicio</a>
+<script>
+    window.onload = function() {
+        // similar behavior as an HTTP redirect
+        window.location.replace("{% url 'home' %}");
+    }
+</script>

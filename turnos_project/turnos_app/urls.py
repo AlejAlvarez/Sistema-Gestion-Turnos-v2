@@ -10,6 +10,8 @@ from .views.views_administrador import *
 from .views.ajax_views import *
 
 
+handler404 = 'turnos_app.views.page_views.not_found_view'
+
 paciente_patterns = [
 
     path('login/',LoginPacienteView.as_view(),name='login-paciente'),

@@ -13,16 +13,12 @@
         {% if messages %}
             {% for message in messages %}
                 {% if message.level_tag == 'info' %}
-                <div class="alert-success">
-                    <ul class="messages">
-                        <li>{{ message }}</li>
-                    </ul>
+                <div class="alert alert-success">
+                        {{ message }}
                 </div>                    
                 {% elif message.level_tag == 'warning' %}
-                <div class="alert-danger">
-                    <ul class="messages">
-                        <li>{{ message }}</li>
-                    </ul>
+                <div class="alert alert-danger">
+                        {{ message }}
                 </div>           
                 {% endif %}
             {% endfor %}

@@ -6,8 +6,14 @@
 {% block content %}
     <div class="container">
         <h1>LOGGED OUT AS PACIENTE</h1>
-        <a href="{% url 'login-paciente' %}">Volver a conectarse</a> | <a href="{% url 'home' %}">Inicio</a>
+        <a href="{% url 'home' %}">Inicio</a>
     </div>
 {% endblock %}
 {% block javascript %}
+<script>
+    window.onload = function() {
+        // similar behavior as an HTTP redirect
+        window.location.replace("{% url 'home' %}");
+    }
+</script>
 {% endblock %}
