@@ -10,8 +10,10 @@ table.formatHTML5 tr.selected {
     padding: 1.5em;
 }
 {% endblock %}
-
-{% block content %}
+{% block content-title %}
+Horarios y Días Laborales
+{% endblock %}
+{% block content-body %}
 <!-- Modal -->
     <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminarLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -36,20 +38,15 @@ table.formatHTML5 tr.selected {
         </div>
     </div>
     <div class="container">
-        <h1>Horarios y Días Laborales</h1>
         {% if messages %}
             {% for message in messages %}
                 {% if message.level_tag == 'info' %}
-                <div class="alert-success">
-                    <ul class="messages">
-                        <li>{{ message }}</li>
-                    </ul>
+                <div class="alert alert-success">
+                    {{ message }}
                 </div>                    
                 {% elif message.level_tag == 'warning' %}
-                <div class="alert-danger">
-                    <ul class="messages">
-                        <li>{{ message }}</li>
-                    </ul>
+                <div class="alert alert-danger">
+                    {{ message }}
                 </div>           
                 {% endif %}
             {% endfor %}
@@ -97,15 +94,11 @@ table.formatHTML5 tr.selected {
                 {% endif %}
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <a href="{% url 'crear-turnos' %}" class="btn btn-primary">Nuevo Horario Laboral</a>
-            </div>
-            <div class="col">
-                <button id="btn-eliminar" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalEliminar">
+        <div class="text-center">
+                <a href="{% url 'crear-turnos' %}" class="btn btn-primary mx-2">Nuevo Horario Laboral</a>
+                <button id="btn-eliminar" type="button" class="btn btn-primary mx-2" data-toggle="modal" data-target="#modalEliminar">
                     Eliminar Horario Laboral
                 </button>
-            </div>
         </div>
     </div>
 {% endblock %}

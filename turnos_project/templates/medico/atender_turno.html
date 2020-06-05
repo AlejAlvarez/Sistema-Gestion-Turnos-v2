@@ -1,9 +1,9 @@
 {% extends 'medico/medico_layout.html' %}
 {% load widget_tweaks %}
 
-{% block content %}
+{% block content-title %}Atender Turno{% endblock %}
+{% block content-body %}
     <div class="container">
-        <h2>Atender Turno</h2>
         <h4>Paciente:</h4>
         <form method="POST">
             {% csrf_token %}

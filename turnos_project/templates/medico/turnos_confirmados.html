@@ -8,8 +8,10 @@ table.formatHTML5 tr.selected {
     padding: 1.5em;
 }
 {% endblock %}
-
-{% block content %}
+{% block content-title %}
+Listado de Turnos Confirmados
+{% endblock %}
+{% block content-body %}
 <!-- Modal -->
     <div class="modal fade" id="modalCancelar" tabindex="-1" role="dialog" aria-labelledby="modalCancelarLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -34,21 +36,15 @@ table.formatHTML5 tr.selected {
         </div>
     </div>
     <div class="container">
-        <h1>Listado de Turnos Confirmados</h1>
-        <br>
         {% if messages %}
             {% for message in messages %}
                 {% if message.level_tag == 'info' %}
-                <div class="alert-success">
-                    <ul class="messages">
-                        <li>{{ message }}</li>
-                    </ul>
+                <div class="alert alert-success">
+                    {{ message }}
                 </div>                    
                 {% elif message.level_tag == 'warning' %}
-                <div class="alert-danger">
-                    <ul class="messages">
-                        <li>{{ message }}</li>
-                    </ul>
+                <div class="alert alert-danger">
+                    {{ message }}
                 </div>           
                 {% endif %}
             {% endfor %}
@@ -76,21 +72,17 @@ table.formatHTML5 tr.selected {
             </div>
         </div>
         <div class="row">
-            <div class="col">
-                <button id="btn-cancelar" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCancelar" disabled>
-                    Cancelar
-                </button>
-            </div>
-            <div class="col">
-                <button id="btn-actualizar" type="button" class="btn btn-primary">Actualizar Lista</button>
-            </div>
-            <div class="col">
-                <button id="btn-atender" type="button" class="btn btn-primary" disabled>Atender</button>
-            </div>
+            <div class="col-md-12 text-center">
+                <div class="btn-group">
+                    <button id="btn-cancelar" type="button" class="btn btn-primary mx-2" data-toggle="modal" data-target="#modalCancelar" disabled>Cancelar</button>
+                    <button id="btn-actualizar" type="button" class="btn btn-primary mx-2">Actualizar Lista</button>
+                    <button id="btn-atender" type="button" class="btn btn-primary mx-2" disabled>Atender</button>
+                </div>
+            </div>    
         </div>
     </div>
     <script type="text/javascript">
-        var medicoId = "{{ medico.pk }}"
+        var medicoId = "{{ medico.pk }}";
     </script>
 
 {% endblock %}

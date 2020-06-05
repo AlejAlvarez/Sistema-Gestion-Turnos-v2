@@ -2,17 +2,13 @@
 {% load widget_tweaks %}
 
 {% block title %} Crear Especialidad {% endblock title %}
-
+{% block content-title %}Nueva Especialidad{% endblock %}
 {% block content %}
-<div class="container">
-    <h2>Nueva Especialidad</h2>
     {% if messages %}
-        <div class="alert-success">
-            <ul class="messages">
+        <div class="alert alert-success">
                 {% for message in messages %}
-                    <li>{{ message }}</li>
+                    {{ message }}
                 {% endfor %}
-            </ul>
         </div>
     {% endif %}
     <form method="POST">

@@ -1,0 +1,25 @@
+body {
+    background-color: #f8f8f8;
+}
+.navbar {
+    background-color: #153d77;
+}
+
+.sidebar {
+    background-color:white;
+    
+}
+.sidebar li .nav-link {
+    color: #153d77;
+}
+.title-container {
+    padding-bottom: 50px;
+    background-color: #153d77;
+    color: whitesmoke;
+}
+#brandingNavLink {
+    background-color: #153d77;
+}
+#brandingNavLink a{
+    color: white;
+}

@@ -1,10 +1,7 @@
 {% extends 'administrador/administrador_layout.html' %}
 {% block title %}Detalles Administrador{% endblock title %}
-
+{% block content-title %}Detalles del Administrador{% endblock %}
 {% block content %}
-<div class="container">
-    <h1>Detalles del Administrador</h1>
-    <hr>
     <div class="modal fade" id="modalConfirmar" tabindex="-1" role="dialog" aria-labelledby="modalConfirmarLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -61,18 +58,10 @@
             <input class="form-control" type="text" value="{{ object.nacimiento }}" disabled=true>
         </div>
     </form>
-    <div class="row">
-        <div class="col-2"></div>
-        <div class="col">
-            <a class="btn btn-primary" href="{% url 'editar-administrador' object.pk %}">Editar Administrador</a>
-        </div>
-        <div class="col">
-            <!-- Button trigger modal -->
-            <button id="btn-eliminar" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalConfirmar">
-              Eliminar Administrador
-            </button>
-        </div>
-        <div class="col-2"></div>
+    <div class="btn-group">
+        <a class="btn btn-primary mr-3" href="{% url 'editar-administrador' object.pk %}">Editar Administrador</a>
+        <button id="btn-eliminar" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalConfirmar">
+            Eliminar Administrador
+          </button>
     </div>
-</div>
 {% endblock content %}

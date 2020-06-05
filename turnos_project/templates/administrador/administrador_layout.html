@@ -1,13 +1,15 @@
 {% load static %}
 <html>
     <head>
-        <link href="{% static "css/bootstrap/bootstrap.css" %}" rel="stylesheet" />
         <link href="{% static "css/bootstrap/bootstrap.min.css" %}" rel="stylesheet" />
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="{% static "js/bootstrap/bootstrap.bundle.min.js" %}"></script>
         <script src="{% static "js/bootstrap/bootstrap.min.js" %}"></script>
         <script src="https://kit.fontawesome.com/6cc7af1c63.js" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet"> 
+        <link href="{% static "icons/essential-icon-set-fill/flaticon.css" %}" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{% static "css/main_layout.css" %}" />
+        <link rel="stylesheet" type="text/css" href="{% static "css/administrador/administrador.css" %}" />
         {% block import_links %}{% endblock %}
         <title>{% block title %}Administrador Layout{% endblock %}</title>
         <style>
@@ -17,17 +19,47 @@
     </head>
     <body>
         <!-- El layout va a consistir de una sidebar, una navbar principal y el contenido -->
-
-            {% include "administrador/administrador_navbar.html" %}
-
         <div class="container-fluid">
             <div class="row">
-                <nav class="col-md-2 sidebar flex-shrink-1 bg-light pt-3" id="Navbar">
-                    {% include "administrador/administrador_sidebar.html" %}
+                <nav class="p-0 col-md-2 sidebar" id="Navbar">
+                    <!-- SIDEBAR DE ADMINISTRADOR -->
+                <div class="sidebar-sticky">
+                    <ul class="nav flex-column flex-sm-column">
+                        <li class="nav-item py-3" id="brandingNavLink"><a class="nav-link" href="#">logo <strong>GESTIÓN TURNOS</strong></a></li>
+                        <li class="nav-item py-2 border-bottom">
+                            <a class="nav-link" href="#">
+                                <i class="flaticon-compact-disc-2 text-success mr-1"></i>
+                                {{ user.first_name|upper }} {{ user.last_name|upper }}</a>
+                        <li class="nav-item pl-4"><a class="nav-link" href="{% url 'index-administrador' %}">Inicio</a></li>
+                        <li class="nav-item pl-4"><a class="nav-link" href="{% url 'menu-pacientes' %}">Pacientes</a></li>
+                        <li class="nav-item pl-4"><a class="nav-link" href="{% url 'menu-recepcionistas' %}">Recepcionistas</a></li>
+                        <li class="nav-item pl-4"><a class="nav-link" href="{% url 'menu-medicos' %}">Medicos</a></li>
+                        <li class="nav-item pl-4"><a class="nav-link" href="{% url 'menu-administradores' %}">Administradores</a></li>
+                        <li class="nav-item pl-4"><a class="nav-link" href="{% url 'menu-especialidades' %}">Especialidades</a></li>
+                        <li class="nav-item pl-4"><a class="nav-link" href="{% url 'menu-obras-sociales' %}">Obras Sociales</a></li>
+                        <li class="nav-item pl-4"><a class="nav-link" href="{% url 'ver-estadisticas' %}">Estadísticas</a></li>
+                    </ul>
+                </div>
                 </nav>
-                <div class="col-md-10">
-                        {% block content %}
-                        {% endblock %}           
+                <div class="col-md-10 px-0 mb-5">
+                    <div class="container-fluid pt-4 d-flex title-container">
+                        <h2>{% block content-title %}{% endblock %}</h2>
+                        <div class="dropdown show ml-auto">
+                            <a class="dropdown-toggle float-right" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="{% static "images/user-white.svg" %}" height="40px"/>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="{% url 'logout-administrador' %}">Cerrar Sesión</a>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                    <div class="container mt-n4">
+                        <div class="p-3 container shadow bg-white rounded">
+                            {% block content %}
+                            {% endblock %} 
+                        </div>
+                    </div>          
                 </div>
             </div>
         </div>

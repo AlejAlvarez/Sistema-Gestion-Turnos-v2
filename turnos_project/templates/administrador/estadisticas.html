@@ -4,25 +4,22 @@
 {% block css %}
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"/>
 {% endblock %}
-
+{% block content-title %}Estadisticas{% endblock %}
 {% block content %}
-    <div class="container">
-        <h1>Estadísticas</h1>
-        <div class="row">
-            <div class="col">
-                <canvas id="chartEspecialidad" width="200" height="200"></canvas>
-            </div>
-            <div class="col">
-                <canvas id="chartObraSocial" width="200" height="200"></canvas>                
-            </div>
+    <div class="row">
+        <div class="col">
+            <canvas id="chartEspecialidad" width="200" height="200"></canvas>
+        </div>
+        <div class="col">
+            <canvas id="chartObraSocial" width="200" height="200"></canvas>                
         </div>
     </div>
 {% endblock %}
 
 {% block jquery %}
 <script>
-    var endpoint = '/administrador/api/estadisticas/'
-    var especialidades = []
+    var endpoint = '/administrador/api/estadisticas/';
+    var especialidades = [];
     var medicos = [];
     $.ajax({
         method: "GET",
@@ -30,10 +27,10 @@
         success: function(data){
             //console.log(data)
             console.log(data)
-            especialidades = data.especialidades
-            medicos = data.medicos
-            obrasSociales = data.obras_sociales
-            pacientes = data.pacientes
+            especialidades = data.especialidades;
+            medicos = data.medicos;
+            obrasSociales = data.obras_sociales;
+            pacientes = data.pacientes;
             var ctxEspecialidad = document.getElementById("chartEspecialidad");
             var ctxObraSocial = document.getElementById("chartObraSocial");
             var chartEspecialidad = new Chart(ctxEspecialidad, {
@@ -110,10 +107,10 @@
             });
         },
         error: function(error_data){
-            console.log("error")
-            console.log(error_data)
+            console.log("error");
+            console.log(error_data);
         }
-    })
+    });
 </script>
 {% endblock %}
 

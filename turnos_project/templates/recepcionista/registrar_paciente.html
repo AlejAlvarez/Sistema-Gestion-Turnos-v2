@@ -21,56 +21,54 @@
                         {{ message }}
                     </div>                    
                     {% elif message.level_tag == 'warning' %}
-                    <div class="alert-danger">
-                        <div class="alert alert-danger">
-                            {{ message }}
-                        </div>   
-                    </div>       
+                    <div class="alert alert-danger">
+                        {{ message }}
+                    </div>          
                     {% endif %}
                 {% endfor %}
             {% endif %}
 
             <form method="POST">
             {% csrf_token %}
-            <h4>Datos de Usuario</h4>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.username|as_crispy_field }}</div>
-            </div>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.password1|as_crispy_field }}</div>
-            </div>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.password2|as_crispy_field }}</div>
-            </div>
-            <h4>Datos de Paciente</h4>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.first_name|as_crispy_field }}</div>
-            </div>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.last_name|as_crispy_field }}</div>
-            </div>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.documento|as_crispy_field }}</div>
-            </div>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.nacimiento|as_crispy_field }}</div>
-            </div>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.domicilio|as_crispy_field }}</div>
-            </div>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.telefono|as_crispy_field }}</div>
-            </div>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.email|as_crispy_field }}</div>
-            </div>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.genero|as_crispy_field }}</div>
-            </div>
-            <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.obra_social|as_crispy_field }}</div>
-            </div>
-            <button class="btn btn-info px-4 py-2" type="submit">Registrar</button>
+                <h4>Datos de Usuario</h4>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.username|as_crispy_field }}</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.password1|as_crispy_field }}</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.password2|as_crispy_field }}</div>
+                </div>
+                <h4>Datos de Paciente</h4>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.first_name|as_crispy_field }}</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.last_name|as_crispy_field }}</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.documento|as_crispy_field }}</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.nacimiento|as_crispy_field }}</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.domicilio|as_crispy_field }}</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.telefono|as_crispy_field }}</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.email|as_crispy_field }}</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.genero|as_crispy_field }}</div>
+                </div>
+                <div class="form-row">
+                    <div class="col-lg-8 col-md-8">{{ form.obra_social|as_crispy_field }}</div>
+                </div>
+                <button class="btn btn-info px-4 py-2" type="submit">Registrar</button>
             </form>
         </div>
     </div>

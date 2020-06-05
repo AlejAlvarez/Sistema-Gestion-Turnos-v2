@@ -1,28 +1,20 @@
 {% extends 'administrador/administrador_layout.html' %}
 {% block title %} Lista de Especialidades {% endblock title %}
-{% block import_css %}
+{% block import_links %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/sp-1.0.1/sl-1.3.1/datatables.min.css"/>
 {% endblock %}
-{% block javascript %}
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/sp-1.0.1/sl-1.3.1/datatables.min.js"></script>
-{% endblock %}
+{% block content-title %}Lista de Especialidades{% endblock %}
 {% block content %}
-    <div class="container">
-        <h1>Lista de Especialidades</h1>
         {% if messages %}
             {% for message in messages %}
                 {% if message.level_tag == 'info' %}
-                <div class="alert-success">
-                    <ul class="messages">
-                        <li>{{ message }}</li>
-                    </ul>
+                <div class="alert alert-success">
+                    {{ message }}
                 </div>                    
                 {% elif message.level_tag == 'warning' %}
-                <div class="alert-danger">
-                    <ul class="messages">
-                        <li>{{ message }}</li>
-                    </ul>
-                </div>           
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>     
                 {% endif %}
             {% endfor %}
         {% endif %}
@@ -48,39 +40,35 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <table id="tabla-especialidades" class="table table-striped table-bordered table-hover" style="width: 100%;">
-                    <thead>
+            <table id="tabla-especialidades" class="table table-striped table-bordered table-hover" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Medicos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for especialidad in object_list %}
                         <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Medicos</th>
+                            <td>{{ especialidad.id }}</td>
+                            <td>{{ especialidad.nombre }}</td>
+                            <td>{{ especialidad.medicos }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for especialidad in object_list %}
-                            <tr>
-                                <td>{{ especialidad.id }}</td>
-                                <td>{{ especialidad.nombre }}</td>
-                                <td>{{ especialidad.medicos }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col col-md">
-                <a class="btn btn-primary" href="{% url 'crear-especialidad' %}">Nueva Especialidad</a>
-            </div>    
-            <div class="col col-md">
+                    {% endfor %}
+                </tbody>
+            </table>
+        <div class="text-right my-3">
+            <div class="btn-group">
+                <a class="btn btn-primary mx-2" href="{% url 'crear-especialidad' %}">Nueva Especialidad</a>
                 <button id="btn-eliminar" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalConfirmar">
                     Eliminar Especialidad
                 </button>
             </div>
         </div>
-    </div>
+    {% endblock content %}
+    {% block javascript %}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/sp-1.0.1/sl-1.3.1/datatables.min.js"></script>
     <script>
         $(document).ready(function(){
             $('#tabla-especialidades').DataTable({
@@ -114,7 +102,6 @@
                 }
             });
 
-        });
-        
+        });  
     </script>
-{% endblock content %}
+    {% endblock %}

@@ -8,17 +8,18 @@
     {{ form.media.css }}
     <link href="https://unpkg.com/flatpickr@4.6.3/dist/themes/light.css" rel="stylesheet" type="text/css" />
 {% endblock %}
-
-{% block content %}
+{% block content-title %}
+    Crear Horario Laboral
+{% endblock %}
+{% block content-body %}
 <div class="container">
-    <h2>Crear Horario Laboral</h2>
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
-        <button type="submit">Crear Horario</button>
+        <button class="btn btn-primary" type="submit">Crear Horario</button>
     </form>
 </div>
-{% endblock content %}
+{% endblock content-body %}
 
 {% block javascript %}
     {{ form.media.js }}

@@ -1,13 +1,11 @@
 {% extends 'administrador/administrador_layout.html' %}
 {% block title %} Lista de Pacientes {% endblock title %}
-{% block import_css %}
+{% block import_links %}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/sp-1.0.1/sl-1.3.1/datatables.min.css"/>
 {% endblock %}
-{% block javascript %}
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/sp-1.0.1/sl-1.3.1/datatables.min.js"></script>
-{% endblock %}
+{% block content-title %}Lista de Pacientes{% endblock %}
 {% block content %}
-<!-- Modal -->
+    <!-- Modal -->
     <div class="modal fade" id="modalConfirmar" tabindex="-1" role="dialog" aria-labelledby="modalConfirmarLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -30,21 +28,15 @@
             </div>
         </div>
     </div>
-    <div class="container">
-        <h1>Lista de Pacientes</h1>
         {% if messages %}
             {% for message in messages %}
                 {% if message.level_tag == 'info' %}
-                <div class="alert-success">
-                    <ul class="messages">
-                        <li>{{ message }}</li>
-                    </ul>
+                <div class="alert alert-success">
+                    {{ message }}
                 </div>                    
                 {% elif message.level_tag == 'warning' %}
-                <div class="alert-danger">
-                    <ul class="messages">
-                        <li>{{ message }}</li>
-                    </ul>
+                <div class="alert alert-danger">
+                    {{ message }}
                 </div>           
                 {% endif %}
             {% endfor %}
@@ -75,17 +67,16 @@
                 </table>
             </div>
         </div> 
-        <div class="row">
-            <div class="col col-md">
+        <div class="text-right my-3">
                 <!-- Button trigger modal -->
                 <button id="btn-eliminar" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalConfirmar">
                   Eliminar Paciente
                 </button>
             </div>
         </div>
-    </div>
 {% endblock content %}
-{% block jquery %}
+{% block javascript %}
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/sp-1.0.1/sl-1.3.1/datatables.min.js"></script>
     <script>
         $(document).ready(function(){
             $("#tabla-pacientes").DataTable({
@@ -108,7 +99,6 @@
             tabla.on('select', function(e, dt, type, indexes){
                 if (type === 'row'){
                     paciente_id = tabla.row({selected: true}).data()[0];
-                    console.log(paciente_id);
                     btnEliminar.disabled = false;
                     form.action = "eliminar-paciente/" + paciente_id + "/";
                 }
