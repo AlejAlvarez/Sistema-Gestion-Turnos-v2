@@ -96,9 +96,9 @@ Listado de Turnos Confirmados
         var btnConfirmarCancel = document.getElementById("btn-confirmar-cancel");
         var turnoId;
         var formCancelar =  document.getElementById("form-cancelar") || null;
-        var baseUrl = 'http://' + window.location.host + '/';
+        const baseUrl = 'http://' + window.location.host + '/medico/';
 
-        tBodyU =  $("#updatableBody")
+        tBodyU =  $("#updatableBody");
 
         btnCancelar.disabled = true;
         btnAtender.disabled = true;
@@ -113,7 +113,7 @@ Listado de Turnos Confirmados
         });
 
         $('#btn-atender').on('click', function(){
-            let endUrl = 'medico/atender-turno/' + turnoId + '/';
+            let endUrl = 'atender-turno/' + turnoId + '/';
             let url =  baseUrl + endUrl;
             window.location.replace(url);
         });

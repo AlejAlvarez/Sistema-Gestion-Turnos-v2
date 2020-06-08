@@ -114,19 +114,19 @@
                 {% if user.is_authenticated %}
                     {% if perms.turnos_app.es_paciente %}
                       <li class="nav-item">
-                        <a class="nav-link" id="userLoginLink" href="{% url 'login-paciente' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
+                        <a class="nav-link btn btn-light" id="userLoginLink" href="{% url 'login-paciente' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
                       </li>
                       {% elif perms.turnos_app.es_recepcionista %}
                       <li class="nav-item">
-                        <a class="nav-link" id="userLoginLink" href="{% url 'login-recepcionista' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
+                        <a class="nav-link btn btn-light" id="userLoginLink" href="{% url 'login-recepcionista' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
                       </li>
                       {% elif perms.turnos_app.es_medico %}
                       <li class="nav-item">
-                        <a class="nav-link" id="userLoginLink" href="{% url 'login-medico' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
+                        <a class="nav-link btn btn-light" id="userLoginLink" href="{% url 'login-medico' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
                       </li>
                       {% elif perms.turnos_app.es_administrador %}
                       <li class="nav-item">
-                        <a class="nav-link" id="userLoginLink" href="{% url 'login-administrador' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
+                        <a class="nav-link btn btn-light" id="userLoginLink" href="{% url 'login-administrador' %}"><img class="m-1" src="{% static "images/green-dot.svg" %}" height="10px" width="10px" />{{ user.username|upper }}</a>
                       </li>
                     {% endif %}
                   {% endif %}
