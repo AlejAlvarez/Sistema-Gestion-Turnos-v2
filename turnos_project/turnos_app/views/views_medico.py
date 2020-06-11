@@ -262,7 +262,7 @@ def eliminar_horario_laboral(request, pk):
                     print(hora_turno)
                     fecha_atencion = datetime.combine(fecha_laboral, hora_turno.time()) 
                     try:
-                        turno = Turno.objects.get(medico=medico, estado=1, fecha=fecha_atencion)
+                        turno = Turno.objects.filter(medico=medico, estado=1, fecha=fecha_atencion)
                         turno.delete()
                     except Turno.DoesNotExist:
                         print("Turno para el día %s no existe!" % (fecha_atencion))

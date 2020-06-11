@@ -402,8 +402,9 @@ class EliminarPacienteView(PermissionRequiredMixin, DeleteView):
         user = self.get_object()
         perfil = Paciente.objects.get(user=user)
         obra_social = perfil.obra_social
-        obra_social.pacientes -= 1
-        obra_social.save()
+        if obra_social != None:
+            obra_social.pacientes -= 1
+            obra_social.save()
         user.delete()
         messages.info(request, 'Paciente eliminado con éxito!')
         return redirect('menu-pacientes')

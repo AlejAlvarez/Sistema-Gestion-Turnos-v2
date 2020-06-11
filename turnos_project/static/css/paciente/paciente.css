@@ -36,7 +36,6 @@
 .secondary-navbar .nav-link {
     text-decoration:none;
     color:var(--primary);
-    border-radius: 5px;
 }
 .secondary-navbar .nav-link:hover {
     background-color:var(--primary);
@@ -52,31 +51,6 @@
 .info-fill {
     background-color:var(--info);
     color: white;
-}
-
-
-#secondary-navbar {
-    font-family: 'Montserrat','Nunito', sans-serif;
-    background-color: white;
-}
-#secondary-navbar .nav-link {
-    color: black;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 10px 0px;
-    margin: 5px 20px;
-    display: inline-block;
-}
-#secondary-navbar .nav-link::after {
-    content: '';
-    display: block;
-    width: 0;
-    height: 2px;
-    background: var(--main-bg-color);
-    transition: width .3s;
-}
-#secondary-navbar .nav-link:hover::after {
-    width: 100%;
 }
 
 /*  ----------------------------------

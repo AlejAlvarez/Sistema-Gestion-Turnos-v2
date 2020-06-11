@@ -43,15 +43,15 @@
             <nav aria-label="Turnos Pagination">
                 <ul class="pagination justify-content-center">
                     {% if page_obj.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
                     {% else %}
-                    <li class="page-item disabled"><a class="page-link" href="">Primera</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Primera</a></li>
                     {% endif %}
-                        <li class="page-item active"><a class="page-link" href="">{{ page_obj.number }}<span class="sr-only">(current)</span></a></li>
+                        <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}<span class="sr-only">(current)</span></a></li>
                     {% if page_obj.has_next %}
                     <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a></li>
                     {% else %}
-                    <li class="page-item disabled"><a class="page-link" href="">Última</a></li>       
+                    <li class="page-item"><a class="page-link" href="">&raquo;</a></li>       
                     {% endif %}
                 </ul>
             </nav>

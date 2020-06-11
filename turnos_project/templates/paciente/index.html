@@ -2,6 +2,10 @@
 {% load static %}
 {% block title %}Informacion Paciente{% endblock title %}
 {% block css %}
+.profile-img {
+    width: 30%;
+    height: auto;
+}
 .info-table {
     font-family:'Montserrat',sans-serif;
     font-size: 14px;
@@ -14,9 +18,9 @@
                 <div class="info-container text-center shadow mb-4 bg-white rounded">
                     <div class="py-3 px-2">
                     {% if user.paciente.genero == 1 %}
-                        <img class="mb-3 profile-img" src="{% static "icons/essential-set/user-3.svg" %}" alt="Usuario" style="width:50%">
+                        <img class="mb-3 profile-img img-fluid" src="{% static "icons/essential-set/user-3.svg" %}" width="66%" alt="Usuario">
                     {% elif user.paciente.genero == 2 %}
-                        <img class="mb-3 profile-img" src="{% static "icons/essential-set/user-2.svg" %}" alt="Usuario" style="width:50%">
+                        <img class="mb-3 profile-img img img-fluid" src="{% static "icons/essential-set/user-2.svg" %}" width="66%" alt="Usuario">
                     {% endif %}
                         <br>
                         <h3><strong>{{ user.first_name }} {{ user.last_name }}</strong></h3>
