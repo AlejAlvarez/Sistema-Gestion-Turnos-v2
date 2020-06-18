@@ -113,7 +113,7 @@
                 $("#table-turnos").DataTable();
                 $("#turnos-form").on('submit',function(event){
                     event.preventDefault();
-                    let $targetURL = "{% url 'realizar-reserva-ajax' %}"
+                    const $targetURL = "{% url 'realizar-reserva-ajax' %}";
                     let $formData = $(this).serialize();
                     event.preventDefault();
                     $.post($targetURL,$formData)

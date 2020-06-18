@@ -12,6 +12,8 @@ django-chartjs = "*"
 django-widget-tweaks = "*"
 django-flatpickr = "*"
 django-crispy-forms = "*"
+xhtml2pdf = "*"
+weasyprint = "*"
 
 [requires]
 python_version = "3.6"

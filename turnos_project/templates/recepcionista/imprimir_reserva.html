@@ -2,8 +2,9 @@
 {% block title %} Gestión de Turnos {% endblock title %}
 
 {% block content %}
-        <p>Numero de Turno: {{ turno.id }}</p>
-        <p>Paciente: {{ paciente.user.first_name }} {{ paciente.user.last_name }}</p>
-        <p>Especialidad: {{ turno.medico.especialidad }}</p>
-        <p>Médico: {{ turno.medico }}</p>
+     <div class="container shadow bg-white rounded p-3 text-center">
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe src="{% url 'obtener-turno-pdf' turno.pk %}" height="500" width="800"></iframe>
+        </div>
+    </div>
 {% endblock %}

@@ -8,7 +8,7 @@ from .views.views_recepcionista import *
 from .views.views_medico import *
 from .views.views_administrador import *
 from .views.ajax_views import *
-
+from .views.pdf import ObtenerTurnoPDF
 
 handler404 = 'turnos_app.views.page_views.not_found_view'
 
@@ -107,5 +107,5 @@ urlpatterns = [
     path('recepcionista/', include(recepcionista_patterns)),
     path('medico/', include(medico_patterns)),
     path('administrador/', include(administrador_patterns)),
-
+    path('pdf/turnos/<int:turno_pk>',ObtenerTurnoPDF.as_view(),name='obtener-turno-pdf'),
 ]

@@ -10,12 +10,11 @@
         <div class="px-5 py-3">
             {% if turno %}
             <h4>¿Desea cancelar el siguiente turno?</h4>
-            <p class="pl-3"> - <strong>Número de Turno:</strong> {{ turno.pk }}</p>
-            <p class="pl-3"> - <strong>Medico:</strong> {{ turno.medico }}</p>
-            <p class="pl-3"> - <strong>Fecha:</strong> {{ turno.fecha.date }}</p>
-            <p class="pl-3"> - <strong>Hora:</strong> {{ turno.fecha.time }}</p>
-            <p class="pl-3"> - <strong>Estado:</strong> {{ turno.get_estado_display }}</p>
-            <div class="pl-3">
+            <p class="pl-3"><strong>Estado del Turno:</strong> {{ turno.get_estado_display }}</p>
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe src="{% url 'obtener-turno-pdf' turno.pk %}" height="450" width="700"></iframe>
+            </div>
+            <div class="mt-1">
                 <form method="POST">
                     {% csrf_token %}
                     <input type="hidden" value="{{ turno.pk }}">
