@@ -46,6 +46,19 @@ class SeleccionarEspecialidadForm(forms.Form):
     def set_especialidades(self,especialidades):
         self.fields['especialidades'].queryset = especialidades
 
+class SeleccionarMedicoForm(forms.Form):
+    medicos = forms.ModelChoiceField(
+        queryset = Medico.objects.none(),
+        empty_label = None,
+        widget = forms.RadioSelect(),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(SeleccionarMedicoForm, self).__init__(*args, **kwargs)
+
+    def set_medicos(self, medicos):
+        self.fields['medicos'].queryset = medicos
+    
 
 #retorna los turnos ordenados por id/pk
 class SeleccionarTurnoForm(forms.Form):
@@ -90,3 +103,13 @@ class BuscarTurnosByMedicoForm(forms.Form):
 
 class AtenderTurnoForm(forms.Form):
     diagnostico = forms.CharField()
+
+class CrearSobreturnoForm(forms.Form):
+
+    fecha_sobreturno = forms.DateTimeField(required=True)
+    prioridad = forms.IntegerField(
+        min_value = 1,
+        max_value = 10,
+        required = True,
+        label="Prioridad del Sobreturno. 1 menor prioridad - 10 mayor prioridad"
+    )

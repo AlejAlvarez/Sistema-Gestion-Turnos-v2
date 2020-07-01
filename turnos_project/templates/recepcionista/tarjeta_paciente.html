@@ -10,9 +10,8 @@
                     <h1><strong>{{ paciente.user.last_name }} {{ paciente.user.first_name }}</strong></h1>
                     <h4>Paciente</h4>
                     {% if paciente.penalizado %}
-                        <p class="card-text">Actualmente el usuario se encuentra penalizado.
-                            Será despenalizado el {{ paciente.fecha_despenalizacion.date }}
-                            a las {{ paciente.fecha_despenalizacion.time }}
+                        <p class="card-text text-danger">Actualmente el usuario se encuentra penalizado.
+                            Será despenalizado el {{ paciente.fecha_despenalizacion }}
                         </p>
                     {% endif %}
                 </div>
@@ -31,6 +30,7 @@
                 <a href="{% url 'reservar-turno' paciente.user.pk %}" class="btn btn-persian-green px-4 py-2">Reservar Turno</a>
                 <a href="{% url 'gestionar-turnos' paciente.user.pk %}" class="btn btn-primary px-4 py-2">Gestionar Turnos</a>
                 <a href="{% url 'editar-paciente' paciente.user.pk %}" class="btn btn-info px-4 py-2">Actualizar Datos</a>
+                <a href="{% url 'reservar-sobreturno' paciente.user.pk %}" class="btn btn-danger px-4 py-2">Reservar Sobreturno</a>
             </div>
         </div>
     </div>    

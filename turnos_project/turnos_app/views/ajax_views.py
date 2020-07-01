@@ -4,7 +4,6 @@ from django.core import serializers
 from django.shortcuts import render
 from django.contrib.auth.mixins import PermissionRequiredMixin
 import json
-import datetime
 from datetime import timedelta
 from django.utils import timezone
 from ..models import *

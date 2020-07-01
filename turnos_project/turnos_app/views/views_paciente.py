@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import Http404
 from django.db import transaction, DatabaseError
 from django.http import JsonResponse
+from django.utils import timezone
 
 from ..models import *
 from ..forms.forms_paciente import PacienteChangeForm
@@ -54,10 +55,11 @@ class LoginPacienteView(View):
             if user is not None:
                 # se comprueba que tenga el permiso necesario para ingresar
                 if (user.has_perm('turnos_app.es_paciente') and not(user.has_perm('turnos_app.is_staff'))):
-                    login(request,user) 
+                    login(request,user)
+                    user.paciente.comprobar_penalizaciones() # comprobamos si el paciente tiene o tendrá penalizaciones
                     next = request.session.get('next', None)
                     if next:
-                        return redirect(next)    
+                        return redirect(next)
                     return redirect(self.success_url)
                 else:
                     context = {
@@ -93,7 +95,7 @@ def index_paciente(request):
 @permission_required('turnos_app.es_paciente')
 def reservar_turno_paciente(request,pk):
 
-    if request.method == 'GET': 
+    if request.method == 'GET':
         turno_id = pk
         context = {
             'turno_id':turno_id
@@ -115,13 +117,20 @@ class BuscarTurnosView(PermissionRequiredMixin, View):
     permission_required = ('turnos_app.es_paciente',) 
     template_name = 'paciente/reservar_turno.html'
 
-    def get(self, request, *args, **kwargs): 
-        especialidad_form = BuscarEspecialidadForm()
-        medico_form = BuscarTurnosByMedicoForm()
-        context = {
-            'especialidad_form': especialidad_form,
-            'medico_form':medico_form,
-        }       
+    def get(self, request, *args, **kwargs):
+        paciente = Paciente.objects.get(user_id=request.user.pk)
+        if paciente.penalizado:
+            context = {
+                'paciente_penalizado': True,
+            }
+        else:
+            especialidad_form = BuscarEspecialidadForm()
+            medico_form = BuscarTurnosByMedicoForm()
+            context = {
+                'paciente_penalizado': False,
+                'especialidad_form': especialidad_form,
+                'medico_form':medico_form,
+            }       
         return render(request, self.template_name, context) 
 
 class ListarTurnos(PermissionRequiredMixin, ListView):
@@ -168,21 +177,38 @@ class CancelarTurnoView(PermissionRequiredMixin, View):
 
     def post(self,request, *args, **kwargs):
         turno = Turno.objects.get(pk=kwargs['pk'])
-        hora_actual = timezone.now()
-        turno.estado = 5 # Estado cancelado
-        turno.save()
-        turno_cancelado = TurnoCancelado.objects.create(turno=turno, fecha_cancelado=hora_actual)
-        turno_cancelado.save()
-        # Si cancela menos de 2 horas antes
-        if hora_actual + timedelta(hours=2) >= turno.fecha:
+        fecha_actual = timezone.now()
+        # Si cancela en el mismo día, o días después
+        if fecha_actual.date() >= turno.fecha.date():
             paciente = Paciente.objects.get(pk=request.user.pk)
-            paciente.penalizado = True
-            # Lo penalizo por 2 días nomas porque fue copado y avisó
-            paciente.fecha_despenalizacion = timezone.now() + timedelta(days=2) 
-            paciente.save()
-        # Se crea un nuevo turno disponible con los datos del turno cancelado
-        nuevo_turno_disponible = Turno.objects.create(estado=1,fecha=turno.fecha,medico=turno.medico)
-        nuevo_turno_disponible.save()
+            if (fecha_actual < turno.fecha) and (fecha_actual + timedelta(hours=2) < turno.fecha):
+                # Si cancela en el mismo día, pero con mas de 2 horas de antelación, no lo penalizo
+                turno.estado = 1 # Estado disponible
+                turno.paciente = None
+                turno.save()
+            elif (fecha_actual < turno.fecha) and (fecha_actual + timedelta(hours=2) >= turno.fecha):
+                # Si cancela en el mismo día, pero con menos de 2 horas de antelación, lo penalizo por 2 días nomas
+                paciente.penalizado = True
+                paciente.fecha_despenalizacion = datetime.now() + timedelta(days=2) 
+                paciente.save()
+                turno.estado = 1 # Estado disponible
+                turno.paciente = None
+                turno.save()
+            else:
+                # Si cancela en el mismo día, pero después del turno, o días después, se lo penaliza por tiempo completo de 7 días
+                # A partir de la fecha del turno
+                paciente.penalizado = True
+                paciente.fecha_despenalizacion = turno.fecha() + timedelta(days=7) 
+                paciente.save()
+                turno.estado = 5 # Estado cancelado
+                turno.save()
+                turno_cancelado = TurnoCancelado.objects.create(turno=turno, fecha_cancelado=fecha_actual)
+                turno_cancelado.save()
+        else:
+            # Se libera el turno dado que es cancelado al menos un día antes
+            turno.estado = 1 # Estado disponible
+            turno.paciente = None
+            turno.save()
         return redirect('turno-cancelado',pk=turno.pk)
 
 class TurnoCanceladoView(PermissionRequiredMixin, View):
@@ -200,28 +226,29 @@ class TurnoCanceladoView(PermissionRequiredMixin, View):
         else:
             raise Http404()
 
-@login_required(login_url=PACIENTE_LOGIN_URL)
-@permission_required('turnos_app.es_paciente')
-def cancelar_turno(request, pk):
-    
-    turno = Turno.objects.get(pk=pk)
-    hora_actual = timezone.now()
-
-    # Si cancela menos de 2 horas antes
-    if hora_actual + timedelta(hours=2) >= turno.fecha:
-        turno.estado = 5 # Estado cancelado
-        turno.save()
-        turno_cancelado = TurnoCancelado.objects.create(turno=turno, fecha_cancelado=hora_actual)
-        turno_cancelado.save()
-        paciente.penalizado = True
-        paciente.fecha_despenalizacion = timezone.now() + timedelta(days=2) # Lo penalizo por 2 días nomas porque fue copado y avisó
-        paciente.save()
-    else:
-        turno.estado = 1 # Estado disponible
-        turno.paciente = None
-        turno.save()
-
-    return redirect('mis-turnos')
+# Codigo 'duplicado'. Para esta funcionalidad referirse a 'CancelarTurnoView'
+# @login_required(login_url=PACIENTE_LOGIN_URL)
+# @permission_required('turnos_app.es_paciente')
+# def cancelar_turno(request, pk):
+#     
+#     turno = Turno.objects.get(pk=pk)
+#     hora_actual = datetime.now()
+# 
+#     # Si cancela menos de 2 horas antes
+#     if hora_actual + timedelta(hours=2) >= turno.fecha:
+#         turno.estado = 5 # Estado cancelado
+#         turno.save()
+#         turno_cancelado = TurnoCancelado.objects.create(turno=turno, fecha_cancelado=hora_actual)
+#         turno_cancelado.save()
+#         paciente.penalizado = True
+#         paciente.fecha_despenalizacion = datetime.now() + timedelta(days=2) # Lo penalizo por 2 días nomas porque fue copado y avisó
+#         paciente.save()
+#     else:
+#         turno.estado = 1 # Estado disponible
+#         turno.paciente = None
+#         turno.save()
+# 
+#     return redirect('mis-turnos')
 
 class HistorialPacienteView(PermissionRequiredMixin, ListView):
 

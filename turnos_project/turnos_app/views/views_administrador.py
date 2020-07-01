@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
-from datetime import timedelta, datetime, date
+from datetime import timedelta, date
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView

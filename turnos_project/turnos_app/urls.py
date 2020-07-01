@@ -40,12 +40,15 @@ recepcionista_patterns = [
     path('registrar-paciente/',SignUpPacienteView.as_view(),name='registrar-paciente'),
     path('editar-paciente/<int:pk>/',PacienteUpdateView.as_view(),name='editar-paciente'),
     path('reservar-turno/<int:pk>/',ReservarTurnoView.as_view(),name='reservar-turno'),
+    path('reservar-sobreturno/<int:pk>/',ReservarSobreturnoView.as_view(),name='reservar-sobreturno'),
+    path('confirmar-sobreturno/<int:pacientepk>/<int:medicopk>',ConfirmarSobreturnoView.as_view(),name='confirmar-sobreturno'),
     path('imprimir-reserva/<int:pacientepk>/<int:pk>/',ImprimirReservaView.as_view(),name='imprimir-reserva'),
     path('ajax/buscar-turnos/',ConsultarTurnosEspecialidadAjax.as_view(),name='consultar-turnos-especialidad-ajax'),
     path('ajax/obtener-paciente',ObtenerPacienteAjax.as_view(),name='obtener-paciente-ajax'),
     path('ajax/realizar-reserva/',RealizarReservaAjax.as_view(),name='realizar-reserva-ajax'),
     path('ajax/confirmar-reserva/',ConfirmarReservaAjax.as_view(),name='confirmar-reserva-ajax'),
     path('ajax/cancelar-reserva/',CancelarReservaAjax.as_view(),name='cancelar-reserva-ajax'),
+    path('ajax/consultar-sobreturnos/',ConsultarSobreturnosEspecialidadAjax.as_view(),name='consultar-sobreturnos-especialidad-ajax'),
 ]
 
 medico_patterns = [

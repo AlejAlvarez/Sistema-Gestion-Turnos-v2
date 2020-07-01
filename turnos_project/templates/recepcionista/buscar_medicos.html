@@ -1,0 +1,27 @@
+{% if medicos_form.medicos.field.queryset %}
+<form id="medicos-form" method="POST">
+    {% csrf_token %}
+    <table id="table-medicos" class="table text-center table-bordered" style="width:100%">
+        <thead class="persian-green">
+            <tr>
+                <th scope="col">Médico</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for medico in medicos_form.medicos %}
+            <tr>
+                <td>{{ medico }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-center">
+    <!-- Button trigger modal -->
+        <button id="boton-confirmar" type="submit" class="btn btn-persian-green px-4 py-2">
+            CONFIRMAR
+        </button>
+    </div>
+</form>
+{% else %}
+<h4>No se han encontrado médicos de la especialidad que brinden sobreturnos en el día de la fecha</h4>
+{% endif %}

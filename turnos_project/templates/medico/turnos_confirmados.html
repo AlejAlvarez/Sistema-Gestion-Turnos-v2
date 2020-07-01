@@ -54,17 +54,23 @@ Listado de Turnos Confirmados
                 <table id="tabla-turnos" class="formatHTML5 table table-bordered table-striped table-hover" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th>Id</th>
+                            <th hidden>Id</th>
                             <th>Paciente</th>
                             <th>Hora</th>
+                            <th>Prioridad</th>
                         </tr>
                     </thead>
                     <tbody id="updatableBody">
                         {% for turno in turnos_confirmados %}
                             <tr>
-                                <td class="turno-id">{{ turno.id }}</td>
+                                <td class="turno-id" hidden>{{ turno.id }}</td>
                                 <td>{{ turno.paciente }}</td>
                                 <td>{{ turno.fecha.time }}</td>
+                                {% if turno.prioridad %}
+                                    <td>{{ turno.fecha.time }}</td>
+                                {% else %}
+                                    <td> - </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     </tbody>

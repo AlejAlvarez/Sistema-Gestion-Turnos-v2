@@ -1,8 +1,13 @@
 
 {% for turno in turnos_confirmados %}
     <tr>
-        <td class="turno-id">{{ turno.id }}</td>
+        <td class="turno-id" hidden>{{ turno.id }}</td>
         <td>{{ turno.paciente }}</td>
         <td>{{ turno.fecha.time }}</td>
+        {% if turno.prioridad %}
+            <td>{{ turno.prioridad }}</td>
+        {% else %}
+            <td> - </td>
+        {% endif %}
     </tr>
 {% endfor %}

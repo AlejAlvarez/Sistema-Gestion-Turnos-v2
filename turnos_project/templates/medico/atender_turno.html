@@ -15,8 +15,16 @@
                 <div class="form-group col">
                     <label for="id_last_name">Apellido</label>
                     <input class="form-control" type="text" value="{{ paciente.last_name }}" disabled=true>
-                </div>    
+                </div>
             </div>
+            {% if prioridad %}
+            <div class="form-row">
+                <div class="form-group col">
+                    <label for="prioridad-sobreturno">Prioridad del Sobreturno</label>
+                    <input name="prioridad-sobreturno" class="form-control" type="text" value="{{ prioridad }}" disabled=true>
+                </div>
+            </div>
+            {% endif %}
             <div class="form-group">
                 <label for="{{ form.diagnostico.id_for_label }}">Diagnóstico de turno</label>
                 {{ form.diagnostico|add_class:"form-control" }}

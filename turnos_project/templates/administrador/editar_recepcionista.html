@@ -19,9 +19,14 @@
                         {% endfor %}
                 </div>
             {% endif %}
+            <h4>Datos de Usuario</h4>
             <div class="form-row">
-                <div class="col-lg-8 col-md-8">{{ form.username|as_crispy_field }}</div>
+                <div class="col-lg-8 col-md-8">{{ user_form.username|as_crispy_field }}</div>
             </div>
+            <div class="form-row">
+                <div class="col-lg-8 col-md-8">{{ user_form.password|as_crispy_field }}</div>
+            </div>
+            <h4>Datos de Recepcionista</h4>
             <div class="form-row">
                 <div class="col-lg-8 col-md-8">{{ form.first_name|as_crispy_field }}</div>
             </div>

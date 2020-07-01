@@ -1,8 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import AbstractUser
-import datetime
-from datetime import timedelta
+from datetime import datetime, date, timedelta
 from django.utils import timezone
 
 # Create your models here.
@@ -51,18 +50,31 @@ class Paciente(models.Model):
 
     def __str__(self):
         return self.user.__str__()
-    
-    def penalizar(self):
-        self.penalizado = True
-        self.fecha_despenalizacion = datetime.date.today() + timedelta(days=7)
-    
-    def despenalizar(self):
-        self.penalizado = False
+
+    def comprobar_penalizaciones(self):
+        hoy = timezone.now()
+        if self.penalizado:
+            if self.fecha_despenalizacion.date() <= hoy.date():  
+                # Esto se puede hacer porque estoy buscando el date, sino no se podría, por motivos de que no se pueden 
+                # comparar datetimes off-set naive con offset-aware. Intento usar siempre timezone en lugar de datetime, 
+                # dado que es offset-aware.
+                print('Es hoy rey')
+                self.penalizado = False
+                self.save()
+        else:
+            fecha_hoy = timezone.now().date()
+            turnos_reservados = Turno.objects.filter(paciente=self, estado=2, fecha__date__lt=fecha_hoy)
+            # Si tiene turnos reservados que no han sido confirmados ni cancelados en 24 horas, se le aplica penalización
+            if turnos_reservados:
+                self.penalizado = True
+                self.fecha_despenalizacion = hoy + timedelta(days=7)
+                self.save()
+
 
     """ se filtran por estado y fecha, la hora no se tiene en cuenta, porque puede ser confirmado excediendo el la hora """ 
     def get_turnos_pendientes(self):
         # estado 2 = Reservado y 3 = Confirmado
-        today = datetime.date.today()
+        today = date.today()
         lista_turnos = Turno.objects.filter(Q(paciente=self),Q(estado=2)|Q(estado=3)).order_by('-pk')
         lista_retorno = [turno for turno in lista_turnos if (turno.fecha.date() >= today)]
         return lista_retorno 

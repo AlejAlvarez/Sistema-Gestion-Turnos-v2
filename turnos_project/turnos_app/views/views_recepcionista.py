@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse,Http404
 from django.urls import reverse_lazy
-from datetime import timedelta, datetime, date
+from datetime import timedelta, date
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView 
 from django.views import View
@@ -15,7 +15,7 @@ from .views_usuario import *
 from ..forms.user_forms import CustomUserChangeForm
 from ..forms.forms_recepcionista import *
 from ..forms.forms_paciente import PacienteCreationForm ,PacienteChangeForm
-from ..forms.forms_turno import SeleccionarEspecialidadForm, SeleccionarTurnoForm
+from ..forms.forms_turno import SeleccionarEspecialidadForm, SeleccionarTurnoForm, SeleccionarMedicoForm, CrearSobreturnoForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Permission
@@ -261,11 +261,10 @@ class ImprimirReservaView(PermissionRequiredMixin,View):
     def get(self,request,*args,**kwargs):
         # mejor podría ser el método get_or_404
         turno_reservado = get_object_or_404(Turno,pk=kwargs['pk'])
-        user = CustomUser.objects.get(pk=kwargs['pacientepk'])
-        paciente = Paciente.objects.get(user_id=user.id)
+        paciente = get_object_or_404(Paciente, user_id=kwargs['pacientepk'])
         # el estado del turno ya estará en Estado 2 = 'Reservado'
         # luego verificar por rango de fecha
-        if (turno_reservado.paciente.user.pk != user.pk) or (turno_reservado.fecha.date() < datetime.date.today()):
+        if (turno_reservado.paciente.user.pk != paciente.user.pk) or (turno_reservado.fecha.date() < date.today()):
             raise Http404('Página no encontrada')   
         context = {
             'turno':turno_reservado,
@@ -277,6 +276,75 @@ class ImprimirReservaView(PermissionRequiredMixin,View):
         print(request.POST)
         
         turno_reservado = get_object_or_404(Turno,pk=request.POST['turno'])
+
+class ReservarSobreturnoView(PermissionRequiredMixin, View):
+    login_url = RECEPCIONISTA_LOGIN_URL
+    template_name = 'recepcionista/reservar_sobreturno.html'
+    permission_required = ('turnos_app.es_recepcionista',)
+
+    def get(self, request, *args, **kwargs):
+        paciente = get_object_or_404(Paciente,pk=kwargs['pk'])
+        especialidades = Especialidad.objects.all()
+        especialidades_form = SeleccionarEspecialidadForm(especialidades=especialidades)
+        context = {
+            'paciente':paciente,
+            'especialidad_form':especialidades_form,
+        }
+        return render(request,self.template_name,context)
+    
+    def post(self, request, *args, **kwargs):
+        paciente = get_object_or_404(Paciente,user_id=request.POST['paciente'])
+        medico = get_object_or_404(Medico,user_id=request.POST['medicos'])
+        return redirect('confirmar-sobreturno', pacientepk=paciente.user_id, medicopk=medico.user_id)
+
+class ConfirmarSobreturnoView(PermissionRequiredMixin, View):
+    login_url = RECEPCIONISTA_LOGIN_URL
+    template_name = 'recepcionista/confirmar_sobreturno.html'
+    permission_required = ('turnos_app.es_recepcionista',)
+
+    def get(self, request, *args, **kwargs):
+        paciente = get_object_or_404(Paciente,user_id=kwargs['pacientepk'])
+        medico = get_object_or_404(Medico,user_id=kwargs['medicopk'])
+        turnos_confirmados_hoy = Turno.objects.filter(medico=medico, estado=3, fecha__date=timezone.now().date())
+        if turnos_confirmados_hoy:
+            ultimo_turno_confirmado = turnos_confirmados_hoy.latest('fecha')
+            fecha_sobreturno = ultimo_turno_confirmado.fecha + timedelta(minutes=15)
+        else:
+            fecha_sobreturno = timezone.now() + timedelta(minutes=5)
+        print(fecha_sobreturno)
+        sobreturno_form = CrearSobreturnoForm()
+        sobreturno_form.fields['fecha_sobreturno'].initial = fecha_sobreturno
+        context = {
+            'paciente': paciente,
+            'medico': medico,
+            'fecha_sobreturno': fecha_sobreturno,
+            'form': sobreturno_form,
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        print(request.GET)
+        sobreturno_form = CrearSobreturnoForm(request.POST)
+        if sobreturno_form.is_valid():
+            print(request.POST)
+            paciente = get_object_or_404(Paciente,user_id=kwargs['pacientepk'])
+            print(paciente)
+            medico = get_object_or_404(Medico,user_id=kwargs['medicopk'])
+            print(medico)
+            fecha_sobreturno = sobreturno_form.cleaned_data.get('fecha_sobreturno')
+            print(fecha_sobreturno)
+            prioridad = sobreturno_form.cleaned_data.get('prioridad')
+            sobreturno = Turno.objects.create(paciente=paciente, medico=medico, fecha=fecha_sobreturno, estado=3, prioridad=prioridad, es_sobreturno=True)
+            print('pk: ', sobreturno.pk, ' ', sobreturno)
+            return redirect('imprimir-reserva', pacientepk=paciente.pk, pk=sobreturno.pk)
+        else:
+            print('sobreturno_form invalido')
+            
+            
+
+
+
 
 # RECECEPCIONISTA AJAX VIEWS
 
@@ -313,14 +381,14 @@ class ConsultarTurnosEspecialidadAjax(PermissionRequiredMixin,View):
             time_dt = timedelta(weeks=2)
             day_dt = timedelta(days=1)
             # debería filtrar por fecha en lugar de fecha y hora
-            startdate = datetime.datetime.now() - day_dt
+            startdate = timezone.now() - day_dt
             # debería filtrar por fecha en lugar de fecha y hora
-            enddate = datetime.datetime.now() + time_dt
+            enddate = timezone.now() + time_dt
             turnos = Turno.objects.filter(medico_id__in=medicos_id,estado=1,fecha__range=[startdate,enddate]).order_by('fecha')
-            turno_form = SeleccionarTurnoForm()
-            turno_form.set_turnos(turnos=turnos)
+            turnos_form = SeleccionarTurnoForm()
+            turnos_form.set_turnos(turnos=turnos)
             context = {
-                'turnos_form':turno_form
+                'turnos_form':turnos_form
             }
             return render(request,'recepcionista/buscar_turnos.html',context)
 
@@ -372,7 +440,7 @@ class ConfirmarReservaAjax(PermissionRequiredMixin, View):
 
 class CancelarReservaAjax(PermissionRequiredMixin, View):
 
-    permission_required = ('turnos_app.es_recepcionista',)
+    permission_required = ('turnos_app.es_recepcionista')
 
     def put(self, request, *args, **kwargs):
         if request.is_ajax():
@@ -382,8 +450,35 @@ class CancelarReservaAjax(PermissionRequiredMixin, View):
             # Estado 5 = 'Cancelado'
             turno_a_modificar.estado = 5
             turno_a_modificar.save()
-            turno_cancelado = TurnoCancelado.objects.create(turno=turno_a_modificar,fecha_cancelado=datetime.date.today())
+            turno_cancelado = TurnoCancelado.objects.create(turno=turno_a_modificar,fecha_cancelado=timezone.now())
             data = {
                 'estado_turno':turno_a_modificar.get_estado_display(),
             }
             return JsonResponse(data,status=200)
+
+class ConsultarSobreturnosEspecialidadAjax(PermissionRequiredMixin, View):
+    permission_required = ('turnos_app.es_recepcionista')
+    
+    def get(self,request):
+        if request.is_ajax():
+            # le sumo +1 al día laboral, dado que los dias se cuentan del 0 a 6, pero los Dias Laborales son del 1 al 7
+            dia_laboral_hoy = DiaLaboral.objects.get(pk=timezone.now().weekday() + 1)
+            hora_actual = timezone.now().time()
+            especialidad = request.GET['especialidades']
+            # obtener los médicos por especialidad
+            medicos_especialidad = Medico.objects.filter(especialidad=especialidad)
+            medicos_id_con_sobreturnos = []
+            for medico in medicos_especialidad:
+                horarios = HorarioLaboral.objects.filter(medico=medico)
+                for horario in horarios:
+                    if dia_laboral_hoy in horario.dias.all() and hora_actual >= horario.hora_inicio and hora_actual <= horario.hora_fin and horario.sobreturnos:
+                        # No debería incorporar el mismo médico más de una vez en la lista, dado que no se permite solapamiento de sus Horarios Laborales
+                        medicos_id_con_sobreturnos.append(medico.user_id)
+                        break # No nos fijamos mas en los Horarios de este Medico, ya sabemos que atiende sobreturnos
+            medicos_form = SeleccionarMedicoForm()
+            medicos = Medico.objects.filter(user_id__in=medicos_id_con_sobreturnos)
+            medicos_form.set_medicos(medicos=medicos)
+            context = {
+                'medicos_form': medicos_form
+            }
+            return render(request, 'recepcionista/buscar_medicos.html',context)

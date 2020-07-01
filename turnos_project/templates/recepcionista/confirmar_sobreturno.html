@@ -1,0 +1,34 @@
+{% extends "recepcionista/recepcionista_layout.html" %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}Confirmar Sobreturno{% endblock title %}
+
+
+{% block content %}
+<div class="container shadow bg-white rounded p-0">
+    <div class="title-header py-3 px-5 my-1">
+        <h2>Reservar Sobreturno</h2>
+    </div>
+    <div class="py-3 px-5 content-box">
+        <input name="paciente" type="number" value={{ paciente.user.pk }} hidden>
+        <div class="form-row mb-1">
+            <div class="col-lg-8 col-md-8">
+                <label for="pacienteData">Paciente:</label>
+                <input name="pacienteData" type="text" class="form-control" value="{{ paciente.user.documento }} - {{ paciente.user.first_name }} {{ paciente.user.last_name }}" disabled>
+            </div>
+        </div>
+        <div class="form-row mb-1">
+            <div class="col-lg-8 col-md-8">
+                <label for="medicoData">Médico:</label>
+                <input name="medicoData" type="text" class="form-control" value="{{ medico.user.first_name }} {{ medico.user.last_name }}" disabled>
+            </div>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy}}
+            <button class="btn btn-primary" type="submit">Confirmar Sobreturno</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

@@ -24,25 +24,32 @@
                     <h2>Reservar Turno</h2>
                 </div>
                 <div class="py-3 px-5">
-                    <form id="form-buscar-turnos" method="GET" data-url='/paciente/ajax/buscar-turnos'>
-                        <div class="form-row">
-                            <div class="col-7">
-                                <label for="{{ especialidad_form.especialidad.id_for_label }}">Especialidad</label>
-                                {{ especialidad_form.especialidad|add_class:"form-control" }}
+                    {% if paciente_penalizado %}
+                        <h4 class="text-danger"> 
+                            <i class="flaticon-error text-danger pr-2"> </i>Los pacientes penalizados no pueden reservar turnos! 
+                        </h4>
+                        <p class="text-danger"> <i class="flaticon-info text-danger pr-2"></i> Para caso de urgencias, comunicarse con la recepción del Hospital. </p>
+                    {% else %}
+                        <form id="form-buscar-turnos" method="GET" data-url='/paciente/ajax/buscar-turnos'>
+                            <div class="form-row">
+                                <div class="col-7">
+                                    <label for="{{ especialidad_form.especialidad.id_for_label }}">Especialidad</label>
+                                    {{ especialidad_form.especialidad|add_class:"form-control" }}
+                                </div>
+                                <div class="col-5">
+                                    <label for="{{ especialidad_form.fecha.id_for_label }}">Fecha</label>
+                                    {% render_field especialidad_form.fecha id="form-datepicker" %}
+                                </div>
                             </div>
-                            <div class="col-5">
-                                <label for="{{ especialidad_form.fecha.id_for_label }}">Fecha</label>
-                                {% render_field especialidad_form.fecha id="form-datepicker" %}
+                            <div class="form-group pt-1">
+                                    <label for="{{ medico_form.medico.id_for_label }}">Medico</label>
+                                    {{ medico_form.medico|add_class:"form-control" }}
                             </div>
-                        </div>
-                        <div class="form-group pt-1">
-                                <label for="{{ medico_form.medico.id_for_label }}">Medico</label>
-                                {{ medico_form.medico|add_class:"form-control" }}
-                        </div>
-                        <div class="form-row justify-content-center">
-                            <button type="submit" class="btn btn-primary py-2 px-5"><strong>BUSCAR</strong></button>
-                        </div>
-                    </form>
+                            <div class="form-row justify-content-center">
+                                <button type="submit" class="btn btn-primary py-2 px-5"><strong>BUSCAR</strong></button>
+                            </div>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
             <div id="containerTurnos" class="px-5 py-4 form-container container shadow mb-5 bg-white rounded" hidden>

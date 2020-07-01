@@ -93,7 +93,7 @@ class ListarTurnosConfirmadosView(PermissionRequiredMixin, ListView):
     def get_context_data(request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         medico = request.request.user.medico
-        turnos_confirmados = Turno.objects.filter(estado=3, medico=medico)
+        turnos_confirmados = Turno.objects.filter(estado=3, medico=medico).order_by('-prioridad', 'fecha')
         context['turnos_confirmados'] = turnos_confirmados
         context['medico'] = medico
         return context
@@ -108,7 +108,7 @@ class GetMoreTurnosConfirmadosAjax(PermissionRequiredMixin, View):
         if request.is_ajax():
             if(request.GET['medico_pk']):
                 medico = Medico.objects.get(pk=request.GET['medico_pk'])
-                turnos_confirmados = Turno.objects.filter(estado=3, medico=medico)
+                turnos_confirmados = Turno.objects.filter(estado=3, medico=medico).order_by('-prioridad', 'fecha')
                 data = {"turnos_confirmados": turnos_confirmados}
                 return render(request, self.template_name, data)
             else:
@@ -138,7 +138,7 @@ def atender_turno(request, pk):
             return super().get(request, *args, **kwargs)        
     else:
         form = AtenderTurnoForm()
-        return render(request, 'medico/atender_turno.html', {'form':form, 'paciente':user_paciente})
+        return render(request, 'medico/atender_turno.html', {'form':form, 'paciente':user_paciente, 'prioridad':turno.prioridad})
 
 
 @login_required(login_url='/medico/login/')
@@ -158,6 +158,8 @@ def cancelar_turno_medico(request, pk):
 
 
 # Funcion lambda utilizada para calcular los días de los turnos
+# Primer parametro es la fecha de referencia, segundo parametro es el valor del proximo dia que buscamos
+# tomando como 0 = lunes al 7 = domingo.
 onDay = lambda dt, day: dt + timedelta(days=(day - dt.weekday())%7)
 
 @login_required(login_url='/medico/login/')
@@ -181,7 +183,7 @@ def crear_turnos(request):
                 for i in range(0, 7):
                     DiaLaboral.objects.create(dia=i)
             else:
-                print("Ya tan crea2 lo dia prri")
+                print("Los Dias Laborales ya se encuentran creados")
 
             # Esto corrobora que no se estén superponiendo horarios laborales ya creados
             for dia in dias:
