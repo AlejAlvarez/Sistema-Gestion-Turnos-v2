@@ -6,6 +6,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views import View
 from django.core import serializers
 from django.contrib import messages
+from django.utils.timezone import make_aware
+from django.utils import timezone
 
 from ..models import *
 from .views_usuario import *
@@ -116,6 +118,7 @@ class GetMoreTurnosConfirmadosAjax(PermissionRequiredMixin, View):
         else:
             return render(request, self.template_name, {})
 
+
 @login_required(login_url='/medico/login/')
 @permission_required('turnos_app.es_medico')
 def atender_turno(request, pk):
@@ -127,10 +130,9 @@ def atender_turno(request, pk):
 
         if form.is_valid():
             diagnostico = form.cleaned_data.get("diagnostico")
-            turno_atendido = TurnoAtendido.objects.create(turno=turno, diagnostico=diagnostico)
-            turno_atendido.save()
             turno.estado = 4
             turno.save()
+            TurnoAtendido.objects.create(turno=turno, diagnostico=diagnostico)
             messages.info(request, 'Turno atendido con éxito!')
             return redirect('lista-turnos-confirmados')
         else:
@@ -140,7 +142,6 @@ def atender_turno(request, pk):
         form = AtenderTurnoForm()
         return render(request, 'medico/atender_turno.html', {'form':form, 'paciente':user_paciente, 'prioridad':turno.prioridad})
 
-
 @login_required(login_url='/medico/login/')
 @permission_required('turnos_app.es_medico')
 def cancelar_turno_medico(request, pk):
@@ -149,8 +150,11 @@ def cancelar_turno_medico(request, pk):
         turno = Turno.objects.get(pk=pk)
         turno.estado = 5
         turno.save()
-        turno_cancelado = TurnoCancelado.objects.create(turno=turno)
-        turno_cancelado.save()
+        paciente = turno.paciente
+        paciente.penalizado = True
+        paciente.fecha_despenalizacion = timezone.now() + timedelta(days=7)
+        paciente.save()
+        TurnoCancelado.objects.create(turno=turno)
         messages.info(request, "El turno ha sido cancelado exitosamente!")
         return redirect('lista-turnos-confirmados')
     else:
@@ -174,55 +178,45 @@ def crear_turnos(request):
             hora_fin = form.cleaned_data.get('hora_fin')
             duracion = form.cleaned_data.get('duracion_turno')
             sobreturnos = form.cleaned_data.get('sobreturnos')
+            
             medico = request.user.medico
 
-            mes_actual = date.today().month
+            mes_actual = timezone.now().date().month
 
             # Si es la primera vez que se crea un horario laboral junto con sus turnos, el sistema crea las 7 instancias de DiaLaboral
             if not DiaLaboral.objects.all():
                 for i in range(0, 7):
                     DiaLaboral.objects.create(dia=i)
-            else:
-                print("Los Dias Laborales ya se encuentran creados")
 
+            horarios_laborales_existentes = HorarioLaboral.objects.filter(medico=medico)
             # Esto corrobora que no se estén superponiendo horarios laborales ya creados
-            for dia in dias:
-                dia_laboral = DiaLaboral.objects.get(dia=dia)
-                print(dia_laboral)
-                horarios_laborales_existentes = HorarioLaboral.objects.filter(medico=medico)
-                if horarios_laborales_existentes:
-                    for horario in horarios_laborales_existentes:
+            if horarios_laborales_existentes:
+                for horario in horarios_laborales_existentes:
+                    for dia in dias:
+                        dia_laboral = DiaLaboral.objects.get(dia=dia)
                         if dia_laboral in horario.dias.all():
                             if(hora_inicio >= horario.hora_inicio and hora_inicio < horario.hora_fin) or (hora_fin > horario.hora_inicio and hora_fin <= horario.hora_fin):
                                 messages.warning(request, 'Error, se detectó una superposición de Horarios')
                                 return redirect('horario-laboral')                         
 
-            print("salio de la corroboracion")
-
+            # Creamos el objeto del HorarioLaboral
+            horario_laboral = HorarioLaboral.objects.get_or_create(medico=medico, hora_inicio=hora_inicio, hora_fin=hora_fin, sobreturnos=sobreturnos, intervalo=duracion)[0]
 
             # Creamos los turnos en cada dia, con los distintos horarios posibles.
             for dia in dias:
-                fecha_laboral = onDay(date.today(), int(dia))
                 dia_laboral = DiaLaboral.objects.get(dia=dia)
-                horario_laboral = HorarioLaboral.objects.get_or_create(medico=medico, hora_inicio=hora_inicio, hora_fin=hora_fin, sobreturnos=sobreturnos, intervalo=duracion)[0]
                 if not dia_laboral in horario_laboral.dias.all():
                     horario_laboral.dias.add(dia_laboral)
-                    while fecha_laboral.month == mes_actual:
-                        hora_turno = datetime.combine(fecha_laboral, hora_inicio)
-                        while hora_turno.time() <= hora_fin:
-                            turno = Turno()
-                            turno.medico = medico
-                            turno.estado = 1 # Estado 1 = 'disponible'
-                            fecha_atencion = datetime.combine(fecha_laboral, hora_turno.time())
-                            print("Dia laboral: ", fecha_laboral)
-                            print("Fecha de atencion: ", fecha_atencion)
-                            turno.fecha  = fecha_atencion
-                            turno.save()
-                            hora_turno = hora_turno + timedelta(minutes=duracion)
-                        print("Salió del loop de hora_turno")
-                        fecha_laboral = onDay(fecha_laboral + timedelta(days=7), 1)
-
-            print("Termino de cargar turnos para el mes")
+                    dia_turno = onDay(timezone.now().date(), int(dia))
+                    while dia_turno.month == mes_actual:
+                        # con el make_aware hacemos que la fecha sea de formato UTC
+                        fecha_atencion = make_aware(datetime.combine(dia_turno, horario_laboral.hora_inicio))
+                        while fecha_atencion.time() <= horario_laboral.hora_fin:
+                            # Estado 1 = 'disponible'
+                            turno = Turno.objects.create(medico=medico, estado=1, fecha=fecha_atencion)
+                            fecha_atencion = fecha_atencion + timedelta(minutes=duracion)
+                        # Buscamos el mismo día, pero en la semana siguiente
+                        dia_turno = onDay(dia_turno + timedelta(days=7), int(dia))
             
             messages.info(request, 'Horario Laboral creado con éxito!')
             return redirect('horario-laboral')
@@ -253,26 +247,30 @@ class ListarHorariosyDiasLaborales(PermissionRequiredMixin, ListView):
 def eliminar_horario_laboral(request, pk):
 
     if request.method == "POST":
-        mes_actual = date.today().month
+        mes_actual = timezone.now().date().month
         horario_laboral = HorarioLaboral.objects.get(pk=pk)
-        medico = request.user.medico
-        for dia in horario_laboral.dias.all():
-            fecha_laboral = onDay(date.today().replace(day=1), int(dia.dia))
-            while fecha_laboral.month == mes_actual:
-                hora_turno = datetime.combine(fecha_laboral, horario_laboral.hora_inicio)
-                while hora_turno.time() <= horario_laboral.hora_fin:
-                    print(hora_turno)
-                    fecha_atencion = datetime.combine(fecha_laboral, hora_turno.time()) 
+        medico_logueado = request.user.medico
+
+        if (horario_laboral.medico != medico_logueado):
+            messages.warning('El Horario Laboral que intenta borrar no corresponde al Médico logueado.')
+            return redirect('horario-laboral')
+
+        for dia_laboral in horario_laboral.dias.all():
+            dia_turno = onDay(date.today().replace(day=1), int(dia_laboral.dia))
+            while dia_turno.month == mes_actual:
+                # con el make_aware hacemos que la fecha sea de formato UTC
+                fecha_turno = make_aware(datetime.combine(dia_turno, horario_laboral.hora_inicio))
+                while fecha_turno.time() <= horario_laboral.hora_fin:
                     try:
-                        turno = Turno.objects.filter(medico=medico, estado=1, fecha=fecha_atencion)
-                        turno.delete()
+                        turnos = Turno.objects.filter(medico=medico_logueado, estado=1, fecha=fecha_turno)
+                        turnos.delete()
                     except Turno.DoesNotExist:
-                        print("Turno para el día %s no existe!" % (fecha_atencion))
-                    hora_turno = hora_turno + timedelta(minutes=horario_laboral.intervalo)
-                print("Salió del loop de hora_turno")
-                fecha_laboral = onDay(fecha_laboral + timedelta(days=7), 1)
-            print("Salió del mes")
+                        print("Turno para el día %s no existe!" % (fecha_turno))
+                    fecha_turno = fecha_turno + timedelta(minutes=horario_laboral.intervalo)
+                dia_turno = onDay(dia_turno + timedelta(days=7), int(dia_laboral.dia))
+
         horario_laboral.delete()
+
         messages.info(request, 'Horario Laboral eliminado con éxito!')
         return redirect('horario-laboral')
 

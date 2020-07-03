@@ -28,7 +28,7 @@
                     <p class="py-2 m-0 info-fill">Última Conexión: {{ user.last_login }}</p>
                     {% if user.paciente.penalizado %}
                         <!-- La idea sería que este campo sea similar al de Última Conexión, pero en rojo -->
-                        <p class="py-2 m-0 bg-danger text-light">Penalizado hasta: {{ user.paciente.fecha_despenalizacion }}</p>
+                        <p class="py-2 m-0 bg-danger text-light">Penalizado hasta el {{ user.paciente.fecha_despenalizacion.date }}</p>
                     {% endif %}
                 </div>
             </div>

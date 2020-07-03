@@ -202,8 +202,7 @@ class CancelarTurnoView(PermissionRequiredMixin, View):
                 paciente.save()
                 turno.estado = 5 # Estado cancelado
                 turno.save()
-                turno_cancelado = TurnoCancelado.objects.create(turno=turno, fecha_cancelado=fecha_actual)
-                turno_cancelado.save()
+                TurnoCancelado.objects.create(turno=turno)
         else:
             # Se libera el turno dado que es cancelado al menos un día antes
             turno.estado = 1 # Estado disponible

@@ -42,6 +42,7 @@ class Paciente(models.Model):
     )
     genero = models.PositiveSmallIntegerField(choices=GENERO_CHOICES)
     penalizado = models.BooleanField(default=False)
+    # Tranquilamente podría ser un DateField, dado su uso
     fecha_despenalizacion = models.DateTimeField(verbose_name="fecha de despenalización", blank=True, null=True)
     obra_social = models.ForeignKey(ObraSocial, on_delete=models.CASCADE, blank=True, null=True)
 
@@ -58,7 +59,6 @@ class Paciente(models.Model):
                 # Esto se puede hacer porque estoy buscando el date, sino no se podría, por motivos de que no se pueden 
                 # comparar datetimes off-set naive con offset-aware. Intento usar siempre timezone en lugar de datetime, 
                 # dado que es offset-aware.
-                print('Es hoy rey')
                 self.penalizado = False
                 self.save()
         else:
@@ -66,6 +66,10 @@ class Paciente(models.Model):
             turnos_reservados = Turno.objects.filter(paciente=self, estado=2, fecha__date__lt=fecha_hoy)
             # Si tiene turnos reservados que no han sido confirmados ni cancelados en 24 horas, se le aplica penalización
             if turnos_reservados:
+                for turno in turnos_reservados:
+                    turno.estado = 5
+                    turno.save()
+                    TurnoCancelado.objects.create(turno=turno)
                 self.penalizado = True
                 self.fecha_despenalizacion = hoy + timedelta(days=7)
                 self.save()

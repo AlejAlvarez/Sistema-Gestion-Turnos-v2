@@ -10,8 +10,8 @@
                     <h1><strong>{{ paciente.user.last_name }} {{ paciente.user.first_name }}</strong></h1>
                     <h4>Paciente</h4>
                     {% if paciente.penalizado %}
-                        <p class="card-text text-danger">Actualmente el usuario se encuentra penalizado.
-                            Será despenalizado el {{ paciente.fecha_despenalizacion }}
+                        <p class="card-text text-danger">Actualmente el paciente se encuentra penalizado.
+                            Será despenalizado el {{ paciente.fecha_despenalizacion.date }}
                         </p>
                     {% endif %}
                 </div>

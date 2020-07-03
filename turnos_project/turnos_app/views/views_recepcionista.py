@@ -198,26 +198,27 @@ class PacienteUpdateView(PermissionRequiredMixin, CustomUserUpdateView):
         else:
             raise PermissionDenied
 
-@login_required(login_url='/recepcionista/login')
-@permission_required('turnos_app.es_recepcionista')
-def editar_informacion_paciente(request, pk):
-
-    user = get_object_or_404(CustomUser, pk=pk)
-    if request.method == 'POST':
-        form = CustomUserChangeForm(request.POST, instance=user)
-        paciente_form = PacienteChangeForm(request.POST, instance=user.paciente)
-
-        if form.is_valid() and paciente_form.is_valid():
-            user = form.save()
-            paciente = paciente_form.save(False)
-            paciente.user = user
-            paciente.save()
-            return redirect('home')        
-    else:
-        form = CustomUserChangeForm(instance=user)
-        paciente_form = PacienteChangeForm(instance=user.paciente)
-        args = {'form': form, 'perfil_form': paciente_form}
-        return render(request, 'recepcionista/editar_paciente.html', args)
+# Código que no se usa
+# @login_required(login_url='/recepcionista/login')
+# @permission_required('turnos_app.es_recepcionista')
+# def editar_informacion_paciente(request, pk):
+# 
+#     user = get_object_or_404(CustomUser, pk=pk)
+#     if request.method == 'POST':
+#         form = CustomUserChangeForm(request.POST, instance=user)
+#         paciente_form = PacienteChangeForm(request.POST, instance=user.paciente)
+# 
+#         if form.is_valid() and paciente_form.is_valid():
+#             user = form.save()
+#             paciente = paciente_form.save(False)
+#             paciente.user = user
+#             paciente.save()
+#             return redirect('home')        
+#     else:
+#         form = CustomUserChangeForm(instance=user)
+#         paciente_form = PacienteChangeForm(instance=user.paciente)
+#         args = {'form': form, 'perfil_form': paciente_form}
+#         return render(request, 'recepcionista/editar_paciente.html', args)
 
 class ReservarTurnoView(PermissionRequiredMixin,View):
 
@@ -323,20 +324,15 @@ class ConfirmarSobreturnoView(PermissionRequiredMixin, View):
         return render(request, self.template_name, context)
     
     def post(self, request, *args, **kwargs):
-        print(request.POST)
-        print(request.GET)
         sobreturno_form = CrearSobreturnoForm(request.POST)
         if sobreturno_form.is_valid():
-            print(request.POST)
+            # 3 horas menos por diferencia horaria
+            diferencia_horaria = -timedelta(hours=3)
             paciente = get_object_or_404(Paciente,user_id=kwargs['pacientepk'])
-            print(paciente)
             medico = get_object_or_404(Medico,user_id=kwargs['medicopk'])
-            print(medico)
-            fecha_sobreturno = sobreturno_form.cleaned_data.get('fecha_sobreturno')
-            print(fecha_sobreturno)
+            fecha_sobreturno = sobreturno_form.cleaned_data.get('fecha_sobreturno') + diferencia_horaria
             prioridad = sobreturno_form.cleaned_data.get('prioridad')
             sobreturno = Turno.objects.create(paciente=paciente, medico=medico, fecha=fecha_sobreturno, estado=3, prioridad=prioridad, es_sobreturno=True)
-            print('pk: ', sobreturno.pk, ' ', sobreturno)
             return redirect('imprimir-reserva', pacientepk=paciente.pk, pk=sobreturno.pk)
         else:
             print('sobreturno_form invalido')
@@ -358,6 +354,7 @@ class ObtenerPacienteAjax(PermissionRequiredMixin,View):
             if(request.GET['documento']):
                 paciente = get_paciente_by_documento(request.GET['documento'])
                 if paciente is not None:
+                    paciente.comprobar_penalizaciones()
                     return render(request,self.template_name,{'paciente':paciente})
                 else:
                     return render(request,self.template_name,{})
@@ -373,18 +370,11 @@ class ConsultarTurnosEspecialidadAjax(PermissionRequiredMixin,View):
             especialidad = request.GET['especialidades']
             # obtener los médicos por especialidad
             medicos_especialidad = Medico.objects.filter(especialidad=especialidad)
-            medicos_id = []
-            # creo una lista de ids con los medicos obtenidos
-            for medico in medicos_especialidad:
-                medicos_id.append(medico.user_id)
             # obtengo los turnos por un rango de fecha, en este caso 2 semanas y Estado = 1: Disponible
-            time_dt = timedelta(weeks=2)
-            day_dt = timedelta(days=1)
-            # debería filtrar por fecha en lugar de fecha y hora
-            startdate = timezone.now() - day_dt
-            # debería filtrar por fecha en lugar de fecha y hora
-            enddate = timezone.now() + time_dt
-            turnos = Turno.objects.filter(medico_id__in=medicos_id,estado=1,fecha__range=[startdate,enddate]).order_by('fecha')
+            startdate = timezone.now().date()
+            enddate = timezone.now().date() + timedelta(weeks=2)
+            # filtro turnos por medicos de la especialidad, y las fechas
+            turnos = Turno.objects.filter(medico__in=medicos_especialidad,estado=1,fecha__date__range=[startdate,enddate]).order_by('fecha')
             turnos_form = SeleccionarTurnoForm()
             turnos_form.set_turnos(turnos=turnos)
             context = {
@@ -399,6 +389,7 @@ class RealizarReservaAjax(PermissionRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
+            print(request.POST)
             turno_seleccionado = Turno.objects.get(pk=request.POST['turnos'])
             paciente = Paciente.objects.get(user_id=request.POST['paciente'])
             # Estado 1 = 'Disponible'
@@ -446,13 +437,40 @@ class CancelarReservaAjax(PermissionRequiredMixin, View):
         if request.is_ajax():
             received_data = json.loads(request.body)
             turno_pk = received_data['turno']
-            turno_a_modificar = get_object_or_404(Turno,pk=turno_pk)
-            # Estado 5 = 'Cancelado'
-            turno_a_modificar.estado = 5
-            turno_a_modificar.save()
-            turno_cancelado = TurnoCancelado.objects.create(turno=turno_a_modificar,fecha_cancelado=timezone.now())
+            turno = get_object_or_404(Turno,pk=turno_pk)
+            fecha_actual = timezone.now()
+            # Si cancela en el mismo día, o días después
+            if fecha_actual.date() >= turno.fecha.date():
+                paciente = Paciente.objects.get(pk=request.user.pk)
+                if (fecha_actual < turno.fecha) and (fecha_actual + timedelta(hours=2) < turno.fecha):
+                    # Si cancela en el mismo día, pero con mas de 2 horas de antelación, no lo penalizo
+                    turno.estado = 1 # Estado disponible
+                    turno.paciente = None
+                    turno.save()
+                elif (fecha_actual < turno.fecha) and (fecha_actual + timedelta(hours=2) >= turno.fecha):
+                    # Si cancela en el mismo día, pero con menos de 2 horas de antelación, lo penalizo por 2 días nomas
+                    paciente.penalizado = True
+                    paciente.fecha_despenalizacion = datetime.now() + timedelta(days=2) 
+                    paciente.save()
+                    turno.estado = 1 # Estado disponible
+                    turno.paciente = None
+                    turno.save()
+                else:
+                    # Si cancela en el mismo día, pero después del turno, o días después, se lo penaliza por tiempo completo de 7 días
+                    # A partir de la fecha del turno
+                    paciente.penalizado = True
+                    paciente.fecha_despenalizacion = turno.fecha() + timedelta(days=7) 
+                    paciente.save()
+                    turno.estado = 5 # Estado cancelado
+                    turno.save()
+                    TurnoCancelado.objects.create(turno=turno)
+            # Se libera el turno dado que es cancelado al menos un día antes
+            else:
+                turno.estado = 1 # Estado disponible
+                turno.paciente = None
+                turno.save()
             data = {
-                'estado_turno':turno_a_modificar.get_estado_display(),
+                'estado_turno':turno.get_estado_display(),
             }
             return JsonResponse(data,status=200)
 
@@ -461,9 +479,11 @@ class ConsultarSobreturnosEspecialidadAjax(PermissionRequiredMixin, View):
     
     def get(self,request):
         if request.is_ajax():
+            diferencia_horaria = -timedelta(hours=3)
+            fecha_hoy = timezone.now() + diferencia_horaria
             # le sumo +1 al día laboral, dado que los dias se cuentan del 0 a 6, pero los Dias Laborales son del 1 al 7
-            dia_laboral_hoy = DiaLaboral.objects.get(pk=timezone.now().weekday() + 1)
-            hora_actual = timezone.now().time()
+            dia_laboral_hoy = DiaLaboral.objects.get(pk=fecha_hoy.weekday() + 1)
+            hora_actual = fecha_hoy.time()
             especialidad = request.GET['especialidades']
             # obtener los médicos por especialidad
             medicos_especialidad = Medico.objects.filter(especialidad=especialidad)
@@ -474,7 +494,6 @@ class ConsultarSobreturnosEspecialidadAjax(PermissionRequiredMixin, View):
                     if dia_laboral_hoy in horario.dias.all() and hora_actual >= horario.hora_inicio and hora_actual <= horario.hora_fin and horario.sobreturnos:
                         # No debería incorporar el mismo médico más de una vez en la lista, dado que no se permite solapamiento de sus Horarios Laborales
                         medicos_id_con_sobreturnos.append(medico.user_id)
-                        break # No nos fijamos mas en los Horarios de este Medico, ya sabemos que atiende sobreturnos
             medicos_form = SeleccionarMedicoForm()
             medicos = Medico.objects.filter(user_id__in=medicos_id_con_sobreturnos)
             medicos_form.set_medicos(medicos=medicos)
