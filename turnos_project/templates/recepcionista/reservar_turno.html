@@ -33,6 +33,12 @@
                     <div class="col-lg-8 col-md-8">
                         {{ especialidad_form|crispy }} 
                     </div>   
+                </div>
+                <div id="loadingSpinner" class="d-none my-2">
+                    <div class="spinner-border text-primary align-middle">
+                        <span class="sr-only">Buscando Turnos...</span>
+                    </div>
+                    <span><strong>Buscando turnos...</strong></span>
                 </div>  
                 <input type="submit" class="btn btn-persian-green pl-4 pr-4" value="Buscar Turnos" />  
             </form>
@@ -99,18 +105,25 @@
         event.preventDefault();
         $targetURL = "{% url 'consultar-turnos-especialidad-ajax' %}";
         let $formData = $(this).serialize();
+        const loadingSpinner = $("#loadingSpinner");
+        loadingSpinner.removeClass("d-none");
         $.ajax({
             method: "GET",
             url: $targetURL,
             data: $formData,
             success: function(data) {
+                loadingSpinner.addClass("d-none");
                 $containerTurnos = $("#container-turnos");
                 $containerTurnos.empty();
                 $containerTurnos.html(data);
                 $paciente = $("input[name='paciente']");
                 $("#turnos-form").append($paciente);
                 $containerTurnos.prop("hidden",false);
-                $("#table-turnos").DataTable();
+                $("#table-turnos").DataTable({
+                    "language": {
+                        "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+                    }
+                });
                 $("#turnos-form").on('submit',function(event){
                     event.preventDefault();
                     const $targetURL = "{% url 'realizar-reserva-ajax' %}";

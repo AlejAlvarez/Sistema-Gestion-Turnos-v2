@@ -16,55 +16,26 @@
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
-        <button class="btn btn-primary" type="submit">Crear Horario</button>
+        <div id="loadingSpinner" class="d-none my-2">
+            <div class="spinner-border text-success align-middle">
+                <span class="sr-only">Generando Turnos...</span>
+            </div>
+            <span><strong>Generando turnos. Esto puede tomar un tiempo...</strong></span>
+        </div>
+        <div>
+            <button class="btn btn-primary" type="submit">Crear Horario</button>
+        </div>
     </form>
 </div>
 {% endblock content-body %}
 
 {% block javascript %}
     {{ form.media.js }}
-{% endblock %}
-
-{% comment %}
-<div class="form-group">
-    <label for="{{ form.dias_atencion.id_for_label }}">Días de atención</label>
-    {{ form.dias_atencion|add_class:"form-control" }}
-</div>
-<div class="form-row">
-    <div class="form-group col">
-        <label for="{{ form.hora_inicio.id_for_label }}">Hora de inicio</label>
-        {% render_field form.hora_inicio id="form-timepicker" %}
-    </div>
-    <div class="form-group col">
-        <label for="{{ form.hora_fin.id_for_label }}">Hora de fin</label>
-        {% render_field form.hora_fin id="form-timepicker" %}
-    </div>    
-</div>
-<div class="form-group">
-    <label for="{{ form.duracion_turno.id_for_label }}">Duración de cada turno</label>
-    {{ form.duracion_turno|add_class:"form-control" }}
-</div>
-<div class="form-group">
-    <label for="{{ form.sobreturnos.id_for_label }}">¿Acepta sobreturnos?</label>
-    {{ form.sobreturnos|add_class:"form-control" }}
-</div>
-{% endcomment %}
-
-{% comment %}
-<div class="well">
-    <div id="datetimepicker3" class="input-append">
-      <input data-format="hh:mm:ss" type="text"></input>
-      <span class="add-on">
-        <i data-time-icon="icon-time" data-date-icon="icon-calendar">
-        </i>
-      </span>
-    </div>
-</div>
-<script type="text/javascript">
-$(function() {
-    $('#datetimepicker3').datetimepicker({
-    pickDate: false
+<script>
+    $(document).ready(function(){
+        $("form").on("submit",function(){
+            $("#loadingSpinner").removeClass("d-none");
+        });
     });
-});
 </script>
-{% endcomment %}
+{% endblock %}

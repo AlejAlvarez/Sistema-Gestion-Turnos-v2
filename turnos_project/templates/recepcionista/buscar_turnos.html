@@ -15,7 +15,7 @@
             <tr>
                 {% for t_info in turnos_form.turnos_informacion %}
                     {% if forloop.counter == forloop.parentloop.counter %}
-                        <td>{{ t_info.fecha.date }}</td>
+                        <td>{{ t_info.fecha.date|date:"SHORT_DATE_FORMAT" }}</td>
                         <td>{{ t_info.fecha.time }}</td>
                         <td>{{ t_info.medico }}</td>
                     {% endif %}  

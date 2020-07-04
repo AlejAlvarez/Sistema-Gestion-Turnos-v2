@@ -119,7 +119,7 @@ Horarios y Días Laborales
                 $('.selected').removeClass('selected');
                 $(this).addClass("selected");
                 horarioPk = $('.horario-pk',this).html();
-                console.log("toy ejecutan2")
+                console.log("ejecutando...")
                 btnEliminar.prop("disabled", false);
                 console.log(btnEliminar);
                 formEliminar.action = baseUrl + 'medico/eliminar-horario/' + horarioPk + '/';
