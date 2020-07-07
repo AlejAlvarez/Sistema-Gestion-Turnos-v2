@@ -102,7 +102,7 @@ class BuscarTurnosByMedicoForm(forms.Form):
 
 
 class AtenderTurnoForm(forms.Form):
-    diagnostico = forms.CharField()
+    diagnostico = forms.CharField(widget=forms.Textarea)
 
 class CrearSobreturnoForm(forms.Form):
 

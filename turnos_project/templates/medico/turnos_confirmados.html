@@ -94,7 +94,7 @@ Listado de Turnos Confirmados
 {% endblock %}
 {% block jquery %}
 <script>
-    var tBodyU
+    var tBodyU;
     $(document).ready(function(){
         var btnCancelar = document.getElementById("btn-cancelar");
         var btnActualizar = document.getElementById("btn-actualizar");
@@ -146,31 +146,29 @@ Listado de Turnos Confirmados
                 }
             })
         });
-
-    });
-
-    setInterval(function() {
-        $sendData = {
-            'medico_pk': medicoId,
-        }
-        $.ajax({
-            type: "GET",
-            url: "{% url 'actualizar-turnos-confirmados' %}",  // URL to your view that serves new info
-            data: $sendData,
-            success: function(response){
-                tBodyU.empty();
-                tBodyU.append(response);
-                $("#updatableBody tr").click(function () {
-                    $('.selected').removeClass('selected');
-                    $(this).addClass("selected");
-                    turnoId = $('.turno-id',this).html();
-                    btnCancelar.disabled = false;
-                    btnAtender.disabled = false;
-                    formCancelar.action = baseUrl + 'cancelar-turno-medico/' + turnoId + '/';
-                });
+        setInterval(function() {
+            $sendData = {
+                'medico_pk': medicoId,
             }
-        });
-    }, 30000);
+            $.ajax({
+                type: "GET",
+                url: "{% url 'actualizar-turnos-confirmados' %}",  // URL to your view that serves new info
+                data: $sendData,
+                success: function(response){
+                    tBodyU.empty();
+                    tBodyU.append(response);
+                    $("#updatableBody tr").click(function () {
+                        $('.selected').removeClass('selected');
+                        $(this).addClass("selected");
+                        turnoId = $('.turno-id',this).html();
+                        btnCancelar.disabled = false;
+                        btnAtender.disabled = false;
+                        formCancelar.action = baseUrl + 'cancelar-turno-medico/' + turnoId + '/';
+                    });
+                }
+            });
+        }, 30000);
+    });
 
 
 </script>

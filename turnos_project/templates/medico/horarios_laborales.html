@@ -18,22 +18,25 @@ Horarios y Días Laborales
     <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminarLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalEliminarLabel">Eliminar Horario Laboral</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ¿Está seguro?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <form method="POST" action="/" id="form-eliminar">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary" id="btn-eliminar">Eliminar</button>
-                </form>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEliminarLabel">Eliminar Horario Laboral</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Está seguro?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <form method="POST" action="/" id="form-eliminar">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary" id="btn-eliminar-horario" value="Eliminar">
+                            <span id="spinner-eliminando" class="d-none spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>   
+                            <span id="btn-eliminar-horario-text">Eliminar</span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -107,22 +110,22 @@ Horarios y Días Laborales
 {% block jquery %}
     <script>
         $(document).ready(function(){
-            let btnEliminar = $("#btn-eliminar");
+            const btnEliminar = $("#btn-eliminar");
             btnEliminar.prop("disabled", true);
-            console.log(btnEliminar);
-            // var btnEliminar = document.getElementById("btn-eliminar");
-            var formEliminar =  document.getElementById("form-eliminar") || null;
-            var baseUrl = 'http://' + window.location.host + '/';
-            var horarioPk;
-            
+            let formEliminar =  document.getElementById("form-eliminar") || null;
+            let baseUrl = 'http://' + window.location.host + '/';
+            let horarioPk;      
             $("tbody tr").click(function () {
                 $('.selected').removeClass('selected');
                 $(this).addClass("selected");
                 horarioPk = $('.horario-pk',this).html();
-                console.log("ejecutando...")
+                console.log("ejecutando...");
                 btnEliminar.prop("disabled", false);
-                console.log(btnEliminar);
                 formEliminar.action = baseUrl + 'medico/eliminar-horario/' + horarioPk + '/';
+            });
+            $("#btn-eliminar-horario").on("click",function(e){
+                $("#btn-eliminar-horario-text").html("Eliminando");
+                $("#spinner-eliminando").removeClass("d-none");            
             });
         });
     </script>
